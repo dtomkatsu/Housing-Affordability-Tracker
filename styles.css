@@ -343,7 +343,7 @@ tr:hover {
     background: #F3F4F6;
     border-radius: 4px;
     position: relative;
-    overflow: visible;
+    overflow: hidden;
 }
 
 .bar-fill {
@@ -357,26 +357,20 @@ tr:hover {
     padding-right: 8px;
     cursor: pointer;
     animation: fillBar 0.8s ease-out forwards;
-    transform-origin: left center;
-    clip-path: inset(0);
+    clip-path: inset(0 100% 0 0);
 }
 
 @keyframes fillBar {
     0% {
         clip-path: inset(0 100% 0 0);
-        opacity: 0;
-    }
-    1% {
-        opacity: 1;
     }
     100% {
         clip-path: inset(0 0 0 0);
-        opacity: 1;
     }
 }
 
 .bar-fill:hover {
-    transform: scaleY(1.15) scaleX(1.08);
+    transform: scale(1.05);
     box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5);
     z-index: 10;
     filter: brightness(1.1);
