@@ -76,9 +76,18 @@ function renderMetrics() {
     ];
     
     console.log('Metrics data:', metrics);
+    
+    const icons = {
+        'Median Price': '<svg class="metric-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B907B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+        'Median Income': '<svg class="metric-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B907B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>'
+    };
+    
     metricsGrid.innerHTML = metrics.map(metric => `
         <div class="metric-card">
-            <div class="metric-label">${metric.label}</div>
+            <div class="metric-label">
+                ${icons[metric.label] || ''}
+                ${metric.label}
+            </div>
             <div class="metric-value">${metric.value}</div>
         </div>
     `).join('');
@@ -89,6 +98,7 @@ function renderPriceChart() {
     const container = document.getElementById('priceChart');
     
     const maxPrice = Math.max(...data.medianPrice);
+    const statePercent = (data.medianPrice[0] / maxPrice * 100);
     
     const html = `
         <div class="bar-chart">
@@ -99,6 +109,7 @@ function renderPriceChart() {
                         <div class="bar-fill" style="width: ${(data.medianPrice[index] / maxPrice * 100)}%; animation-delay: ${index * 0.15}s">
                             <span class="bar-value">${formatCurrency(data.medianPrice[index])}</span>
                         </div>
+                        ${index > 0 ? `<div class="reference-line" style="left: ${statePercent}%"><div class="reference-line-label">${index === 1 ? 'State' : ''}</div></div>` : ''}
                     </div>
                 </div>
             `).join('')}
@@ -112,13 +123,12 @@ function renderAffordabilityChart() {
     const data = housingData[currentType];
     const container = document.getElementById('affordabilityChart');
     
-    const maxIndex = 100;
+    const stateIndex = data.affordabilityIndex[0];
     
     const html = `
         <div class="bar-chart">
             ${data.counties.map((county, index) => {
                 const affordIndex = data.affordabilityIndex[index];
-                const barClass = getAffordabilityClass(affordIndex);
                 return `
                     <div class="bar-item">
                         <div class="bar-label">${county}</div>
@@ -130,6 +140,7 @@ function renderAffordabilityChart() {
                             }; animation-delay: ${index * 0.15}s">
                                 <span class="bar-value">${affordIndex}</span>
                             </div>
+                            ${index > 0 ? `<div class="reference-line" style="left: ${stateIndex}%"><div class="reference-line-label">${index === 1 ? 'State' : ''}</div></div>` : ''}
                         </div>
                     </div>
                 `;
@@ -193,8 +204,10 @@ function renderDataTable() {
                 </tr>
             </thead>
             <tbody>
-                ${data.counties.map((county, index) => `
-                    <tr>
+                ${data.counties.map((county, index) => {
+                    const isStateRow = index === 0; // First row is always Hawaii (State)
+                    return `
+                    <tr class="${isStateRow ? 'state-row' : ''}">
                         <td><strong>${county}</strong></td>
                         <td>${formatCurrency(data.medianPrice[index])}</td>
                         <td>${formatCurrency(data.medianIncome[index])}</td>
@@ -207,7 +220,8 @@ function renderDataTable() {
                         </td>
                         <td>${formatCurrency(data.downPayment[index])}</td>
                     </tr>
-                `).join('')}
+                `;
+                }).join('')}
             </tbody>
         </table>
     `;
