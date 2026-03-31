@@ -48,7 +48,6 @@ function getAffordabilityLabel(index) {
 }
 
 function renderMetrics() {
-    console.log('renderMetrics called with geography:', currentGeography, 'type:', currentType);
     const data = housingData[currentType];
     const metricsGrid = document.getElementById('metricsGrid');
     
@@ -75,20 +74,19 @@ function renderMetrics() {
         }
     ];
     
-    console.log('Metrics data:', metrics);
-    
     const icons = {
-        'Median Price': '<svg class="metric-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B907B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
-        'Median Income': '<svg class="metric-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B907B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>'
+        'Median Price': '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4a6b52" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+        'Median Income': '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4a6b52" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+        'Monthly Payment': '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4a6b52" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>',
+        'Affordability Index': '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4a6b52" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>'
     };
     
     metricsGrid.innerHTML = metrics.map(metric => `
-        <div class="metric-card">
-            <div class="metric-label">
-                ${icons[metric.label] || ''}
-                ${metric.label}
-            </div>
-            <div class="metric-value">${metric.value}</div>
+        <div class="figure-cell">
+            <div class="figure-cell__accent"></div>
+            <div class="figure-cell__icon">${icons[metric.label] || ''}</div>
+            <div class="figure-cell__label">${metric.label}</div>
+            <div class="figure-cell__value">${metric.value}</div>
         </div>
     `).join('');
 }
@@ -240,7 +238,7 @@ function renderAll() {
 document.addEventListener('DOMContentLoaded', () => {
     renderAll();
     
-    const tabs = document.querySelectorAll('.tab');
+    const tabs = document.querySelectorAll('.toggle-btn');
     const hoaDisclaimer = document.getElementById('hoaDisclaimer');
     
     tabs.forEach(tab => {
