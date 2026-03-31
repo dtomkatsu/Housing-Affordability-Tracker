@@ -100,17 +100,29 @@ function renderPriceChart() {
     
     const html = `
         <div class="bar-chart">
-            ${data.counties.map((county, index) => `
+            <div class="bar-item bar-item--state">
+                <div class="bar-label bar-label--state">${data.counties[0]} <span class="state-badge">Median</span></div>
+                <div class="bar-container bar-container--state">
+                    <div class="bar-fill bar-fill--state" style="width: ${statePercent}%; animation-delay: 0s">
+                        <span class="bar-value bar-value--state">${formatCurrency(data.medianPrice[0])}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="bar-separator"></div>
+            ${data.counties.slice(1).map((county, i) => {
+                const index = i + 1;
+                return `
                 <div class="bar-item">
                     <div class="bar-label">${county}</div>
                     <div class="bar-container">
                         <div class="bar-fill" style="width: ${(data.medianPrice[index] / maxPrice * 100)}%; animation-delay: ${index * 0.15}s">
                             <span class="bar-value">${formatCurrency(data.medianPrice[index])}</span>
                         </div>
-                        ${index > 0 ? `<div class="reference-line" style="left: ${statePercent}%"><div class="reference-line-label">${index === 1 ? 'State' : ''}</div></div>` : ''}
+                        <div class="reference-line" style="left: ${statePercent}%"><div class="reference-line-label">${i === 0 ? 'State median' : ''}</div></div>
                     </div>
                 </div>
-            `).join('')}
+            `;
+            }).join('')}
         </div>
     `;
     
@@ -125,7 +137,17 @@ function renderAffordabilityChart() {
     
     const html = `
         <div class="bar-chart">
-            ${data.counties.map((county, index) => {
+            <div class="bar-item bar-item--state">
+                <div class="bar-label bar-label--state">${data.counties[0]} <span class="state-badge">Median</span></div>
+                <div class="bar-container bar-container--state">
+                    <div class="bar-fill bar-fill--state" style="width: ${stateIndex}%; animation-delay: 0s">
+                        <span class="bar-value bar-value--state">${stateIndex}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="bar-separator"></div>
+            ${data.counties.slice(1).map((county, i) => {
+                const index = i + 1;
                 const affordIndex = data.affordabilityIndex[index];
                 return `
                     <div class="bar-item">
@@ -138,7 +160,7 @@ function renderAffordabilityChart() {
                             }; animation-delay: ${index * 0.15}s">
                                 <span class="bar-value">${affordIndex}</span>
                             </div>
-                            ${index > 0 ? `<div class="reference-line" style="left: ${stateIndex}%"><div class="reference-line-label">${index === 1 ? 'State' : ''}</div></div>` : ''}
+                            <div class="reference-line" style="left: ${stateIndex}%"><div class="reference-line-label">${i === 0 ? 'State median' : ''}</div></div>
                         </div>
                     </div>
                 `;

@@ -28,9 +28,17 @@ body {
 }
 .masthead-top {
     display: flex;
-    align-items: center;
-    gap: 16px;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
     margin-bottom: 20px;
+}
+.masthead-top-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    flex-shrink: 0;
 }
 .edition-badge {
     font-family: 'Inter', sans-serif;
@@ -313,12 +321,7 @@ body {
     border-bottom: 1px solid #e8ede9;
 }
 .panel-number {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 28px;
-    font-weight: 800;
-    color: #c4d1c5;
-    line-height: 1;
-    min-width: 38px;
+    display: none;
 }
 .panel-title {
     font-family: 'Playfair Display', Georgia, serif;
@@ -397,6 +400,51 @@ body {
     font-weight: 600;
     white-space: nowrap;
     text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+}
+
+/* State bar — distinct visual treatment */
+.bar-item--state {
+    margin-bottom: 2px;
+}
+.bar-label--state {
+    width: 115px;
+    min-width: 115px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e2b1f;
+    text-align: right;
+    line-height: 1.3;
+}
+.state-badge {
+    display: block;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #4a6b52;
+}
+.bar-container--state {
+    background: linear-gradient(135deg, #d8e0da 0%, #e8ede9 100%);
+    border: none;
+    border-radius: 3px;
+    overflow: visible;
+    box-shadow: inset 0 0 0 1.5px rgba(74, 107, 82, 0.25);
+}
+.bar-fill--state {
+    background: linear-gradient(90deg, rgba(74, 107, 82, 0.15) 0%, rgba(74, 107, 82, 0.25) 100%);
+    border-radius: 2px;
+    border-right: 2px solid #4a6b52;
+    opacity: 1;
+}
+.bar-value--state {
+    font-weight: 700;
+}
+
+/* Separator between state and counties */
+.bar-separator {
+    height: 0;
+    border-top: 1px dashed #b5c4b7;
+    margin: 6px 0 6px 129px;
 }
 
 /* Reference line */
