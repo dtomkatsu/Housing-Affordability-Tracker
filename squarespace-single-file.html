@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hawaiʻi Housing Affordability Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --ocean:    #0a4f6e;
+    --ocean-mid:#1a7a9a;
+    --sky:      #e8f4f8;
+    --sand:     #f5f0e8;
+    --coral:    #c94f3a;
+    --coral-lt: #f9ece9;
+    --green:    #2d6a4f;
+    --green-lt: #e8f4ee;
+    --amber:    #b5622a;
+    --amber-lt: #fdf0e6;
+    --text:     #1a2630;
+    --text-mid: #4a6070;
+    --text-lt:  #7a95a5;
+    --border:   #d0dde5;
+    --white:    #ffffff;
+    --bg:       #f2eeea;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body, * {
+    font-family: 'DM Sans', sans-serif !important;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--ocean);
+    color: white;
+    padding: 2.5rem 2rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0; right: 0;
+    height: 24px;
+    background: var(--bg);
+    clip-path: ellipse(55% 100% at 50% 100%);
+  }
+
+  .header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .header-eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 0.5rem;
+  }
+
+  header h1 {
+    font-family: 'DM Serif Display', serif !important;
+    font-size: 2.2rem;
+    font-weight: 400;
+    line-height: 1.2;
+    color: white;
+    margin-bottom: 0.5rem;
+  }
+
+  header h1 em {
+    font-style: italic;
+    color: rgba(255,255,255,0.75);
+  }
+
+  .header-meta {
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    margin-top: 0.4rem;
+  }
+
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-lt);
+    margin: 2.5rem 0 0.75rem;
+  }
+
+  .county-tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 1.75rem;
+  }
+
+  .county-tab {
+    padding: 7px 16px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: white;
+    color: var(--text-mid);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .county-tab:hover { border-color: var(--ocean-mid); color: var(--ocean); }
+
+  .county-tab.active {
+    background: var(--ocean);
+    border-color: var(--ocean);
+    color: white;
+    font-weight: 500;
+  }
+
+  .card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 22px;
+    margin-bottom: 1.25rem;
+  }
+
+  .card-title {
+    font-family: 'DM Serif Display', serif !important;
+    font-size: 1.15rem;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+
+  .card-sub {
+    font-size: 13px;
+    color: var(--text-lt);
+    margin-bottom: 14px;
+  }
+
+  .metrics-container {
+    margin-bottom: 1.75rem;
+  }
+  .metrics-container-title {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-lt);
+    margin-bottom: 12px;
+  }
+  .metric-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; margin-bottom: 0; }
+  .metric-grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; margin-bottom: 0; }
+
+  .mcard {
+    background: white;
+    border-radius: 12px;
+    padding: 16px 18px 18px;
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .mcard-accent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+  }
+  .mcard--sfh .mcard-accent { background: var(--ocean); }
+  .mcard--condo .mcard-accent { background: var(--ocean-mid); }
+  .mcard--income .mcard-accent { background: #059669; }
+  .mcard--idx-sfh .mcard-accent { background: #475569; }
+  .mcard--idx-condo .mcard-accent { background: #64748b; }
+
+  .mlabel { font-size: 11px; color: var(--text-lt); margin-bottom: 8px; line-height: 1.3; letter-spacing: 0.03em; text-transform: uppercase; font-weight: 500; }
+  .mvalue { 
+    font-family: 'DM Serif Display', serif !important;
+    font-size: 1.85rem; 
+    font-weight: 400; 
+    color: var(--ocean);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  .mcard--sfh .mvalue { color: var(--ocean); }
+  .mcard--condo .mvalue { color: var(--ocean-mid); }
+  .mcard--income .mvalue { color: #059669; }
+  .msub { font-size: 12px; color: var(--text-lt); margin-top: 6px; }
+  .mvalue.danger { color: var(--coral) !important; }
+  .mvalue.warning { color: var(--amber) !important; }
+  .mvalue.ok { color: var(--green) !important; }
+  .mcard-icon { display: none; }
+
+  .afford-banner {
+    background: var(--ocean);
+    border-radius: 16px;
+    padding: 20px 22px;
+    margin-bottom: 1.25rem;
+    color: white;
+  }
+
+  .afford-banner-label {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+
+  .afford-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+
+  .afford-price {
+    font-family: 'DM Serif Display', serif !important;
+    font-size: 2.4rem;
+    font-weight: 400;
+    color: white;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .afford-price-label { font-size: 12px; color: rgba(255,255,255,0.5); }
+
+  .afford-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .afford-comp-item {
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+
+  .afford-comp-label { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 3px; }
+  .afford-comp-price { font-size: 1.05rem; font-weight: 500; }
+  .afford-comp-gap { font-size: 11px; margin-top: 2px; }
+  .over { color: #f4a09a; }
+  .under { color: #7dd4a8; }
+
+  .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 1.25rem; }
+
+  .bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+  .bar-lbl { font-size: 14px; color: var(--text-mid); width: 70px; flex-shrink: 0; }
+  .bar-bg { flex: 1; height: 22px; background: var(--sand); border-radius: 4px; overflow: visible; position: relative; }
+  .bar-fill { height: 100%; border-radius: 4px; }
+  .bar-val { font-size: 14px; font-weight: 500; width: 50px; text-align: right; flex-shrink: 0; }
+  .tline { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--text-lt); opacity: 0.5; z-index: 2; }
+
+  /* State bar distinction */
+  .bar-row--state { margin-bottom: 10px; }
+  .bar-lbl--state { font-weight: 600; color: var(--text); }
+  .bar-lbl--state .state-badge { display: block; font-size: 9px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: var(--ocean-mid); margin-top: 1px; }
+  .bar-bg--state { background: linear-gradient(135deg, #d8e8ed 0%, #e8f4f8 100%); box-shadow: inset 0 0 0 1px rgba(26, 122, 154, 0.25); }
+  .bar-fill--state { background: linear-gradient(90deg, rgba(26, 122, 154, 0.2) 0%, rgba(26, 122, 154, 0.3) 100%) !important; border-right: 2px solid var(--ocean-mid); }
+  .bar-separator { height: 0; border-top: 1px dashed #c0d5dd; margin: 8px 0 8px 70px; }
+
+  .rent-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 20px; }
+  .rent-county { text-align: center; }
+  .rent-name { font-size: 13px; color: var(--text-lt); margin-bottom: 14px; font-weight: 500; }
+  .rent-pair { display: flex; gap: 4px; align-items: flex-end; justify-content: center; height: 55px; overflow: hidden; }
+  .rent-bar-wrap { display: flex; flex-direction: column; align-items: center; gap: 2px; justify-content: flex-end; }
+  .rent-bar { width: 20px; border-radius: 3px 3px 0 0; }
+  .rent-amt { font-size: 12px; color: var(--text-mid); margin-top: 2px; }
+
+  .legend-row { display: flex; gap: 16px; font-size: 13px; color: var(--text-lt); margin-bottom: 10px; }
+  .swatch { width: 10px; height: 10px; border-radius: 2px; display: inline-block; margin-right: 3px; vertical-align: middle; }
+
+  .rlb-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin-bottom: 16px; }
+  .rlb-card { background: var(--sand); border-radius: 10px; padding: 11px 13px; }
+  .rlb-label { font-size: 13px; color: var(--text-lt); margin-bottom: 4px; }
+  .rlb-range { font-size: 16px; font-weight: 500; color: var(--text); }
+  .rlb-change { font-size: 13px; color: var(--amber); margin-top: 2px; }
+
+  .calc-section {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 22px;
+    margin-bottom: 1.25rem;
+  }
+
+  .slider-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .slider-label { font-size: 13px; color: var(--text-mid); width: 140px; flex-shrink: 0; }
+  .slider-val { font-size: 14px; font-weight: 500; color: var(--text); min-width: 60px; text-align: right; }
+
+  input[type=range] {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--ocean);
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 0 0 1px var(--ocean);
+  }
+
+  input[type=range]::-moz-range-thumb {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--ocean);
+    cursor: pointer;
+    border: 2px solid white;
+  }
+
+  .calc-result {
+    background: var(--sky);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-top: 14px;
+    border: 1px solid var(--border);
+  }
+
+  .calc-result-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-lt); margin-bottom: 4px; font-weight: 500; }
+  .calc-big {
+    font-family: 'DM Serif Display', serif !important;
+    font-size: 2.2rem;
+    font-weight: 400;
+    color: var(--ocean);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .calc-tiny { font-size: 12px; color: var(--text-lt); }
+
+  .calc-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin-top: 12px; }
+  .calc-mini { background: white; border-radius: 10px; padding: 10px 12px; border: 1px solid var(--border); }
+  .calc-mini-label { font-size: 11px; color: var(--text-lt); margin-bottom: 3px; }
+  .calc-mini-val { font-size: 14px; font-weight: 500; color: var(--text); }
+
+  .market-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+  .mc-item { background: var(--sand); border-radius: 10px; padding: 11px 13px; }
+  .mc-label { font-size: 11px; color: var(--text-lt); margin-bottom: 3px; }
+  .mc-price { font-size: 1rem; font-weight: 500; }
+  .mc-gap { font-size: 11px; margin-top: 2px; }
+  .mc-over { color: var(--coral); }
+  .mc-under { color: var(--green); }
+
+  .market-compare-title { font-size: 12px; color: var(--text-mid); font-weight: 500; margin-bottom: 6px; }
+
+  .note-box {
+    background: white;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--ocean-mid);
+    border-radius: 0 12px 12px 0;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: var(--text-mid);
+    line-height: 1.65;
+    margin-top: 1.25rem;
+  }
+
+  .divider-label {
+    font-size: 13px;
+    color: var(--text-lt);
+    margin: 8px 0 6px;
+    font-weight: 500;
+  }
+
+  /* SFH section distinction */
+  .section-sfh {
+    background: linear-gradient(to right, rgba(10, 79, 110, 0.04) 0%, transparent 100%);
+    border-left: 2px solid rgba(10, 79, 110, 0.25);
+    padding: 8px 0 8px 12px;
+    margin-left: -12px;
+    margin-bottom: 12px;
+  }
+  .divider-label--sfh {
+    color: var(--ocean);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .divider-label--sfh::before {
+    content: '';
+    width: 3px;
+    height: 12px;
+    background: var(--ocean);
+    border-radius: 2px;
+  }
+
+  /* Condo section distinction */
+  .section-condo {
+    background: linear-gradient(to right, rgba(181, 98, 42, 0.04) 0%, transparent 100%);
+    border-left: 2px solid rgba(181, 98, 42, 0.25);
+    padding: 8px 0 8px 12px;
+    margin-left: -12px;
+    margin-top: 12px;
+  }
+  .divider-label--condo {
+    color: var(--amber);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .divider-label--condo::before {
+    content: '';
+    width: 3px;
+    height: 12px;
+    background: var(--amber);
+    border-radius: 2px;
+  }
+
+  /* Treemap from original design */
+  .treemap-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+  }
+  .treemap-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .treemap-county-header {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    color: var(--text-lt);
+    text-transform: uppercase;
+  }
+  .treemap-box {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    border-radius: 6px;
+    padding: 10px 6px;
+    text-align: center;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    cursor: pointer;
+    position: relative;
+    background: var(--sand);
+    border: 1.5px solid var(--border);
+    width: 100%;
+    height: 140px;
+    overflow: hidden;
+  }
+  .treemap-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  }
+  .treemap-payment-box {
+    position: absolute;
+    border-radius: 4px;
+    bottom: 6px;
+    left: 6px;
+    right: 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 4px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  .treemap-payment-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+  }
+  .treemap-payment-box.good {
+    background: linear-gradient(135deg, var(--green), #7a9e82);
+    color: #fff;
+  }
+  .treemap-payment-box.moderate {
+    background: linear-gradient(135deg, var(--amber), #dab44e);
+    color: #fff;
+  }
+  .treemap-payment-box.low {
+    background: linear-gradient(135deg, var(--coral), #d06060);
+    color: #fff;
+  }
+  .treemap-payment-value {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 1px;
+  }
+  .treemap-payment-label {
+    font-size: 9px;
+    opacity: 0.85;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  footer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-lt);
+    padding: 1rem 1.5rem 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.6rem; }
+    .chart-row { grid-template-columns: 1fr; }
+    .metric-grid { grid-template-columns: repeat(2, 1fr); }
+    .afford-row { grid-template-columns: 1fr; }
+    .rlb-grid { grid-template-columns: 1fr; }
+    .calc-grid { grid-template-columns: 1fr 1fr; }
+    .rent-grid { grid-template-columns: repeat(3, 1fr); }
+    .slider-label { width: 100px; }
+    .treemap-container { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-eyebrow">Hawaiʻi Appleseed Center for Law &amp; Economic Justice</div>
+    <h1>Hawaiʻi Housing<br><em>Affordability Tracker</em></h1>
+    <div class="header-meta">Q1 2026 &nbsp;·&nbsp; 20% down payment &nbsp;·&nbsp; 30% housing-to-income threshold &nbsp;·&nbsp; 80% LTV</div>
+  </div>
+</header>
+
+<main>
+  <div class="section-label">Select county</div>
+  <div class="county-tabs">
+    <button class="county-tab active" onclick="selectCounty('State')">Statewide</button>
+    <button class="county-tab" onclick="selectCounty('Honolulu')">Honolulu</button>
+    <button class="county-tab" onclick="selectCounty('Maui')">Maui</button>
+    <button class="county-tab" onclick="selectCounty('Hawaii')">Hawaiʻi</button>
+    <button class="county-tab" onclick="selectCounty('Kauai')">Kauaʻi</button>
+  </div>
+
+  <div class="afford-banner" id="afford-banner"></div>
+
+  <div class="metrics-container">
+    <div class="metrics-container-title">Key metrics</div>
+    <div class="metric-grid" id="metric-grid"></div>
+  </div>
+  <div class="metrics-container">
+    <div class="metrics-container-title">Affordability indices</div>
+    <div class="metric-grid-2" id="metric-grid-2"></div>
+  </div>
+
+  <div class="chart-row">
+    <div class="card" style="margin-bottom:0;">
+      <div class="card-title">Mortgage payment share of income</div>
+      <div class="card-sub">All counties &nbsp;·&nbsp; line = 30% affordability threshold</div>
+      <div id="pti-bars"></div>
+    </div>
+    <div class="card" style="margin-bottom:0;">
+      <div class="card-title">Income gap to qualify</div>
+      <div class="card-sub">Additional income needed at median price</div>
+      <div id="gap-bars"></div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:1.25rem;"></div>
+
+  <div class="card">
+    <div class="card-title">Payment-to-income ratio</div>
+    <div class="card-sub">Share of gross monthly income consumed by mortgage payment</div>
+    <div class="treemap-container" id="paymentIncomeChart"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Rental market</div>
+    <div class="card-sub">Existing leases vs. asking rent for new listings</div>
+    <div class="legend-row">
+      <span><span class="swatch" style="background:#5a9fd4;"></span>Existing lease</span>
+      <span><span class="swatch" style="background:#d97b6c;"></span>Asking rent</span>
+    </div>
+    <div class="rent-grid" id="rent-grid"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Construction hard costs &nbsp;·&nbsp; Honolulu (Q1 2026)</div>
+    <div class="card-sub">RLB Quarterly Cost Report &nbsp;·&nbsp; change measured from Q1 2020</div>
+    <div class="rlb-grid">
+      <div class="rlb-card">
+        <div class="rlb-label">Multifamily</div>
+        <div class="rlb-range">$310 – $520/sf</div>
+        <div class="rlb-change">+51% low end since Q1 2020</div>
+      </div>
+      <div class="rlb-card">
+        <div class="rlb-label">Single-family</div>
+        <div class="rlb-range">$345 – $645/sf</div>
+        <div class="rlb-change">+19% low end since Q1 2020</div>
+      </div>
+      <div class="rlb-card">
+        <div class="rlb-label">Ground parking</div>
+        <div class="rlb-range">$190 – $245/sf</div>
+        <div class="rlb-change">+81% low end since Q1 2020</div>
+      </div>
+    </div>
+    <div class="card-sub" style="margin-bottom:8px;">Low-end cost indices &nbsp;·&nbsp; Q1 2020 = 100</div>
+    <div class="legend-row" style="margin-bottom:10px;">
+      <span><span class="swatch" style="background:#1a7a9a;"></span>Multifamily</span>
+      <span><span class="swatch" style="background:#2d6a4f;"></span>Single-family</span>
+      <span><span class="swatch" style="background:#b5622a;"></span>Ground parking</span>
+      <span><span class="swatch" style="background:#888;"></span>Composite</span>
+    </div>
+    <div style="position:relative;width:100%;height:180px;"><canvas id="rlb-chart"></canvas></div>
+  </div>
+
+  <div class="section-label">Affordability calculator</div>
+  <div class="calc-section">
+    <p style="font-size:13px;color:var(--text-mid);margin-bottom:16px;">Enter your household income and adjust the mortgage rate to see what you can afford — and how it compares to median market prices.</p>
+
+    <div class="slider-row">
+      <div class="slider-label">Household income</div>
+      <input type="range" id="income-slider" min="30000" max="300000" step="1000" value="98317" oninput="updateCalc()">
+      <div class="slider-val" id="income-display">$98,317</div>
+    </div>
+    <div class="slider-row">
+      <div class="slider-label">Mortgage rate</div>
+      <input type="range" id="rate-slider" min="3.0" max="9.0" step="0.05" value="6.38" oninput="updateCalc(); updateAfford()">
+      <div class="slider-val" id="rate-display">6.38%</div>
+    </div>
+
+    <div class="calc-result">
+      <div class="calc-result-label">Max affordable home price</div>
+      <div class="calc-big" id="calc-price">$466,032</div>
+      <div class="calc-tiny">20% down &nbsp;·&nbsp; 30% of gross income to P&amp;I</div>
+      <div class="calc-grid" id="calc-grid"></div>
+    </div>
+
+    <div id="market-compare-wrap" style="margin-top:14px;"></div>
+  </div>
+
+  <div class="note-box">
+    <strong style="color:var(--text);">Note on condos &amp; construction costs</strong><br>
+    Condo mortgage payments exclude HOA fees, which average ~$762/month statewide — among the highest in the nation. At $310–$520/sf for multifamily hard costs alone, up ~30% since 2020, building to price points accessible to median-income households requires substantial public subsidy. Affordability index: 100 = perfectly affordable at median income; below 100 = median income falls short.
+    <br><br>
+    <strong style="color:var(--text);">Note on construction cost indices</strong><br>
+    The cost indices track the <em>low end</em> of each published RLB cost range (e.g., $310/sf for multifamily, not $520/sf), rebased to Q1 2020 = 100. Using the low end understates actual cost growth for higher-complexity projects, so the increases shown — +51% multifamily, +19% single-family, +81% ground parking — should be read as a floor, not a ceiling.
+  </div>
+</main>
+
+<footer>
+  Sources: UHERO 2025 Hawaiʻi Housing Factbook; RLB Quarterly Cost Report Q1 2026; Hawaiʻi Board of Realtors; U.S. Census ACS 5-Year Estimates; Freddie Mac PMMS.
+  <br>Produced by Hawaiʻi Appleseed Center for Law &amp; Economic Justice &nbsp;·&nbsp; <a href="https://hiappleseed.org" style="color:var(--ocean-mid);">hiappleseed.org</a>
+</footer>
+
+<script>
+const countyData = {
+  State:    { income:98317,  sfhPrice:950000,  condoPrice:600000,  sfhPTI:0.5790, condoPTI:0.3657, sfhIdx:51.8, condoIdx:82.0, sfhGap:91439,  condoGap:21529, rent:1938, askRent:2100, sfhMortgage:4744, condoMortgage:2996 },
+  Honolulu: { income:104264, sfhPrice:1092400, condoPrice:560000,  sfhPTI:0.6278, condoPTI:0.3218, sfhIdx:47.8, condoIdx:93.2, sfhGap:113935, condoGap:7592,  rent:2054, askRent:2150, sfhMortgage:5455, condoMortgage:2796 },
+  Maui:     { income:95067,  sfhPrice:1195000, condoPrice:912500,  sfhPTI:0.7532, condoPTI:0.5752, sfhIdx:39.8, condoIdx:52.2, sfhGap:143626, condoGap:87199, rent:1863, askRent:2550, sfhMortgage:5967, condoMortgage:4557 },
+  Hawaii:   { income:77215,  sfhPrice:433750,  condoPrice:550000,  sfhPTI:0.3366, condoPTI:0.4268, sfhIdx:89.1, condoIdx:70.3, sfhGap:9424,   condoGap:32644, rent:1411, askRent:1800, sfhMortgage:2166, condoMortgage:2746 },
+  Kauai:    { income:93612,  sfhPrice:1080000, condoPrice:950000,  sfhPTI:0.6913, condoPTI:0.6081, sfhIdx:43.4, condoIdx:49.3, sfhGap:122110, condoGap:96144, rent:1810, askRent:2450, sfhMortgage:5393, condoMortgage:4744 },
+};
+const counties = ['State','Honolulu','Maui','Hawaii','Kauai'];
+const shortLbl = { State:'State', Honolulu:'Honolulu', Maui:'Maui', Hawaii:'Hawaiʻi', Kauai:'Kauaʻi' };
+const fullLbl  = { State:'Statewide', Honolulu:'Honolulu', Maui:'Maui', Hawaii:'Hawaiʻi', Kauai:'Kauaʻi' };
+
+let currentCounty = 'State';
+
+const fmt = n => '$' + Math.round(n).toLocaleString();
+const pct = n => (n*100).toFixed(1)+'%';
+function ptiColor(v) { return v>0.60?'#c94f3a':v>0.40?'#b5622a':'#2d6a4f'; }
+function ptiTextColor(v) { return v>0.60?'#c94f3a':v>0.40?'#b5622a':'#2d6a4f'; }
+function idxClass(v) { return v<55?'danger':v<80?'warning':'ok'; }
+
+function calcAffordPrice(income, ratePct) {
+  const monthlyMax = income / 12 * 0.30;
+  const r = ratePct / 100 / 12;
+  const n = 360;
+  const loanAmt = r === 0 ? monthlyMax * n : monthlyMax * (1 - Math.pow(1+r,-n)) / r;
+  return loanAmt / 0.80;
+}
+
+function updateAfford() {
+  const rate = parseFloat(document.getElementById('rate-slider').value);
+  const d = countyData[currentCounty];
+  const affordPrice = calcAffordPrice(d.income, rate);
+  const sfhDiff = d.sfhPrice - affordPrice;
+  const condoDiff = d.condoPrice - affordPrice;
+
+  document.getElementById('afford-banner').innerHTML = `
+    <div class="afford-banner-label">What a median-income household can afford at ${rate.toFixed(2)}% &nbsp;·&nbsp; ${fullLbl[currentCounty]}</div>
+    <div class="afford-row">
+      <div>
+        <div class="afford-price">${fmt(affordPrice)}</div>
+        <div class="afford-price-label">Median income: ${fmt(d.income)} &nbsp;·&nbsp; 20% down &nbsp;·&nbsp; 30% of income</div>
+      </div>
+      <div class="afford-compare">
+        <div class="afford-comp-item">
+          <div class="afford-comp-label">vs. median SFH</div>
+          <div class="afford-comp-price over">${fmt(d.sfhPrice)}</div>
+          <div class="afford-comp-gap over">▲ ${fmt(sfhDiff)} over affordable</div>
+        </div>
+        <div class="afford-comp-item">
+          <div class="afford-comp-label">vs. median condo</div>
+          <div class="afford-comp-price ${condoDiff>0?'over':'under'}">${fmt(d.condoPrice)}</div>
+          <div class="afford-comp-gap ${condoDiff>0?'over':'under'}">${condoDiff>0 ? '▲ '+fmt(condoDiff)+' over' : '▼ '+fmt(Math.abs(condoDiff))+' under'} affordable</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function updateCalc() {
+  const income = parseInt(document.getElementById('income-slider').value);
+  const rate = parseFloat(document.getElementById('rate-slider').value);
+  document.getElementById('income-display').textContent = fmt(income);
+  document.getElementById('rate-display').textContent = rate.toFixed(2)+'%';
+
+  const price = calcAffordPrice(income, rate);
+  const monthlyMax = income / 12 * 0.30;
+  const downPay = price * 0.20;
+  const loanAmt = price * 0.80;
+
+  document.getElementById('calc-price').textContent = fmt(price);
+  document.getElementById('calc-grid').innerHTML = `
+    <div class="calc-mini"><div class="calc-mini-label">Monthly budget (P&amp;I)</div><div class="calc-mini-val">${fmt(monthlyMax)}</div></div>
+    <div class="calc-mini"><div class="calc-mini-label">Down payment (20%)</div><div class="calc-mini-val">${fmt(downPay)}</div></div>
+    <div class="calc-mini"><div class="calc-mini-label">Loan amount</div><div class="calc-mini-val">${fmt(loanAmt)}</div></div>
+  `;
+
+  const d = countyData[currentCounty];
+  const sfhDiff = d.sfhPrice - price;
+  const condoDiff = d.condoPrice - price;
+  document.getElementById('market-compare-wrap').innerHTML = `
+    <div class="market-compare-title">How your budget compares in ${fullLbl[currentCounty]}</div>
+    <div class="market-compare">
+      <div class="mc-item">
+        <div class="mc-label">Median SFH price</div>
+        <div class="mc-price ${sfhDiff>0?'mc-over':'mc-under'}">${fmt(d.sfhPrice)}</div>
+        <div class="mc-gap ${sfhDiff>0?'mc-over':'mc-under'}">${sfhDiff>0 ? '▲ '+fmt(sfhDiff)+' over budget' : '▼ '+fmt(Math.abs(sfhDiff))+' under budget'}</div>
+      </div>
+      <div class="mc-item">
+        <div class="mc-label">Median condo price</div>
+        <div class="mc-price ${condoDiff>0?'mc-over':'mc-under'}">${fmt(d.condoPrice)}</div>
+        <div class="mc-gap ${condoDiff>0?'mc-over':'mc-under'}">${condoDiff>0 ? '▲ '+fmt(condoDiff)+' over budget' : '▼ '+fmt(Math.abs(condoDiff))+' under budget'}</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderPaymentIncomeChart() {
+  const container = document.getElementById('paymentIncomeChart');
+  container.innerHTML = counties.map(c => {
+    const d = countyData[c];
+    const ratio = d.sfhPTI * 100;
+    let category = 'good';
+    if (ratio >= 50) category = 'low';
+    else if (ratio >= 30) category = 'moderate';
+    
+    const paymentHeight = Math.min(ratio * 1.2, 120);
+    
+    return `
+      <div class="treemap-wrapper">
+        <div class="treemap-county-header">${shortLbl[c]}</div>
+        <div class="treemap-box">
+          <div class="treemap-payment-box ${category}" style="height: ${paymentHeight}px">
+            <div class="treemap-payment-value">${pct(d.sfhPTI)}</div>
+            <div class="treemap-payment-label">Payment</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function selectCounty(county) {
+  currentCounty = county;
+  document.querySelectorAll('.county-tab').forEach(b => {
+    b.classList.toggle('active', b.textContent.trim() === fullLbl[county]);
+  });
+  const d = countyData[county];
+  document.getElementById('income-slider').value = d.income;
+  updateAfford();
+  updateCalc();
+  renderPaymentIncomeChart();
+
+  document.getElementById('metric-grid').innerHTML = `
+    <div class="mcard mcard--sfh">
+      <div class="mcard-accent"></div>
+      <div class="mcard-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      <div class="mlabel">Median SFH price</div>
+      <div class="mvalue">${fmt(d.sfhPrice)}</div>
+    </div>
+    <div class="mcard mcard--condo">
+      <div class="mcard-accent"></div>
+      <div class="mcard-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="9" y1="6" x2="9" y2="6.01"/><line x1="15" y1="6" x2="15" y2="6.01"/><line x1="9" y1="10" x2="9" y2="10.01"/><line x1="15" y1="10" x2="15" y2="10.01"/><line x1="9" y1="14" x2="9" y2="14.01"/><line x1="15" y1="14" x2="15" y2="14.01"/><line x1="9" y1="18" x2="15" y2="18"/></svg></div>
+      <div class="mlabel">Median condo price</div>
+      <div class="mvalue">${fmt(d.condoPrice)}</div>
+    </div>
+    <div class="mcard mcard--income">
+      <div class="mcard-accent"></div>
+      <div class="mcard-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+      <div class="mlabel">Median family income</div>
+      <div class="mvalue">${fmt(d.income)}</div>
+    </div>
+  `;
+  document.getElementById('metric-grid-2').innerHTML = `
+    <div class="mcard mcard--idx-sfh">
+      <div class="mcard-accent"></div>
+      <div class="mcard-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <div class="mlabel">SFH affordability index</div>
+      <div class="mvalue ${idxClass(d.sfhIdx)}">${d.sfhIdx.toFixed(0)}</div>
+      <div class="msub">Base=100 &nbsp;·&nbsp; P&amp;I: ${fmt(d.sfhMortgage)}/mo</div>
+    </div>
+    <div class="mcard mcard--idx-condo">
+      <div class="mcard-accent"></div>
+      <div class="mcard-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <div class="mlabel">Condo affordability index</div>
+      <div class="mvalue ${idxClass(d.condoIdx)}">${d.condoIdx.toFixed(0)}</div>
+      <div class="msub">Base=100 &nbsp;·&nbsp; P&amp;I: ${fmt(d.condoMortgage)}/mo</div>
+    </div>
+  `;
+
+  const maxPTI = 0.85;
+  document.getElementById('pti-bars').innerHTML = `
+    <div class="section-sfh">
+      <div class="divider-label divider-label--sfh">Single-family home</div>
+      ${counties.map((c, i) => { 
+        const v=countyData[c].sfhPTI; 
+        const w=Math.min(v/maxPTI*100,100).toFixed(1);
+        const isState = c === 'State';
+        return `<div class="bar-row ${isState?'bar-row--state':''}"><div class="bar-lbl ${isState?'bar-lbl--state':''}">${shortLbl[c]}${isState?' <span class="state-badge">Median</span>':''}</div><div class="bar-bg ${isState?'bar-bg--state':''}"><div class="bar-fill ${isState?'bar-fill--state':''}" style="width:${w}%;background:${ptiColor(v)};"></div></div><div class="bar-val" style="color:${ptiTextColor(v)}">${pct(v)}</div></div>${isState?'<div class="bar-separator"></div>':''}`;
+      }).join('')}
+    </div>
+    <div class="section-condo">
+      <div class="divider-label divider-label--condo">Condo</div>
+      ${counties.map((c, i) => { 
+        const v=countyData[c].condoPTI; 
+        const w=Math.min(v/maxPTI*100,100).toFixed(1);
+        const isState = c === 'State';
+        return `<div class="bar-row ${isState?'bar-row--state':''}"><div class="bar-lbl ${isState?'bar-lbl--state':''}">${shortLbl[c]}${isState?' <span class="state-badge">Median</span>':''}</div><div class="bar-bg ${isState?'bar-bg--state':''}"><div class="bar-fill ${isState?'bar-fill--state':''}" style="width:${w}%;background:${ptiColor(v)};"></div></div><div class="bar-val" style="color:${ptiTextColor(v)}">${pct(v)}</div></div>${isState?'<div class="bar-separator"></div>':''}`;
+      }).join('')}
+    </div>
+  `;
+
+  const maxGap = 155000;
+  document.getElementById('gap-bars').innerHTML = `
+    <div class="section-sfh">
+      <div class="divider-label divider-label--sfh">Single-family home</div>
+      ${counties.map(c => { 
+        const v=countyData[c].sfhGap; 
+        const w=Math.min(v/maxGap*100,100).toFixed(1);
+        const isState = c === 'State';
+        return `<div class="bar-row ${isState?'bar-row--state':''}"><div class="bar-lbl ${isState?'bar-lbl--state':''}">${shortLbl[c]}${isState?' <span class="state-badge">Median</span>':''}</div><div class="bar-bg ${isState?'bar-bg--state':''}"><div class="bar-fill ${isState?'bar-fill--state':''}" style="width:${w}%;background:#d97b6c;"></div></div><div class="bar-val" style="color:#c94f3a;font-size:11px;">${fmt(v)}</div></div>${isState?'<div class="bar-separator"></div>':''}`;
+      }).join('')}
+    </div>
+    <div class="section-condo">
+      <div class="divider-label divider-label--condo">Condo</div>
+      ${counties.map(c => { 
+        const v=countyData[c].condoGap; 
+        const w=Math.min(v/maxGap*100,100).toFixed(1);
+        const isState = c === 'State';
+        return `<div class="bar-row ${isState?'bar-row--state':''}"><div class="bar-lbl ${isState?'bar-lbl--state':''}">${shortLbl[c]}${isState?' <span class="state-badge">Median</span>':''}</div><div class="bar-bg ${isState?'bar-bg--state':''}"><div class="bar-fill ${isState?'bar-fill--state':''}" style="width:${w}%;background:#e8c07a;"></div></div><div class="bar-val" style="color:#b5622a;font-size:11px;">${fmt(v)}</div></div>${isState?'<div class="bar-separator"></div>':''}`;
+      }).join('')}
+    </div>
+  `;
+
+  const maxRent = 2700;
+  document.getElementById('rent-grid').innerHTML = counties.map(c => {
+    const rd = countyData[c];
+    const h1 = Math.min(Math.round(rd.rent/maxRent*50), 50);
+    const h2 = Math.min(Math.round(rd.askRent/maxRent*50), 50);
+    return `<div class="rent-county">
+      <div class="rent-name">${shortLbl[c]}</div>
+      <div class="rent-pair">
+        <div class="rent-bar-wrap"><div class="rent-bar" style="height:${h1}px;background:#5a9fd4;"></div><div class="rent-amt">${fmt(rd.rent)}</div></div>
+        <div class="rent-bar-wrap"><div class="rent-bar" style="height:${h2}px;background:#d97b6c;"></div><div class="rent-amt">${fmt(rd.askRent)}</div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+selectCounty('State');
+
+const rlbLabels = ["Q1 2020","Q2 2020","Q3 2020","Q4 2020","Q1 2021","Q2 2021","Q3 2021","Q4 2021","Q1 2022","Q2 2022","Q3 2022","Q4 2022","Q1 2023","Q2 2023","Q3 2023","Q4 2023","Q1 2024","Q2 2024","Q3 2024","Q4 2024","Q1 2025","Q2 2025","Q3 2025","Q4 2025","Q1 2026"];
+const rlbMF  = [100.0,100.0,100.0,100.0,100.0,104.9,122.0,122.0,124.4,124.4,129.3,129.3,131.7,131.7,131.7,131.7,134.1,134.1,136.6,136.6,141.5,141.5,146.3,146.3,151.2];
+const rlbSF  = [100.0,100.0,101.7,101.7,101.7,105.2,94.8,94.8,96.6,96.6,100.0,100.0,101.7,101.7,103.4,103.4,106.9,106.9,108.6,108.6,112.1,112.1,115.5,115.5,119.0];
+const rlbPkg = [100.0,100.0,100.0,100.0,100.0,104.8,133.3,133.3,138.1,138.1,152.4,142.9,142.9,142.9,142.9,142.9,147.6,147.6,152.4,152.4,161.9,161.9,171.4,171.4,181.0];
+const rlbComp= [100.0,100.1,100.1,100.0,101.2,102.1,103.1,104.1,105.2,106.8,108.4,109.4,110.5,111.7,113.5,115.0,116.6,118.1,119.5,121.2,122.9,124.6,126.0,128.1,130.1];
+
+function makeDataset(label, data, color, dash) {
+  return { label, data, borderColor: color, backgroundColor: 'transparent', borderWidth: 2, borderDash: dash||[], pointRadius: 0, pointHoverRadius: 4, pointHoverBackgroundColor: color, tension: 0.3 };
+}
+
+new Chart(document.getElementById('rlb-chart'), {
+  type: 'line',
+  data: {
+    labels: rlbLabels,
+    datasets: [
+      makeDataset('Multifamily',    rlbMF,   '#1a7a9a'),
+      makeDataset('Single-family',  rlbSF,   '#2d6a4f'),
+      makeDataset('Ground parking', rlbPkg,  '#b5622a'),
+      makeDataset('Composite',      rlbComp, '#888888', [4,3]),
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => ctx.dataset.label + ': ' + ctx.parsed.y.toFixed(1)
+        }
+      }
+    },
+    scales: {
+      x: {
+        ticks: { font:{size:10,family:'DM Sans'}, color:'#7a95a5', maxRotation:45,
+          callback: function(val, i) { return rlbLabels[i].startsWith('Q1') ? rlbLabels[i] : ''; }
+        },
+        grid: { display:false }, border: { display:false }
+      },
+      y: {
+        ticks: { font:{size:11,family:'DM Sans'}, color:'#7a95a5', callback: v => v.toFixed(0) },
+        grid: { color:'rgba(0,0,0,0.05)' }, min:85, max:190, border: { display:false }
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
