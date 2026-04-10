@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 """
-Redfin + Zillow → Housing Affordability Tracker price updater.
+Redfin + Zillow + DBEDT → Housing Affordability Tracker price updater.
 
 Downloads:
   - Redfin public S3 TSV files → median sale prices (SFH + condo) per county
   - Zillow ZORI county CSV     → median asking rent per county
+  - DBEDT QSER construction XLSX → private building authorization values per county
 
 Patches squarespace-single-file.html in-place with fresh values.
 
 No API keys needed — all sources are public.
 Redfin data: monthly (Friday of the third full week).
 Zillow ZORI: monthly.
+DBEDT QSER:  quarterly.
 
 Usage:
     python3 redfin-price-updater.py                   # update squarespace-single-file.html
@@ -20,6 +22,7 @@ Usage:
 Sources:
   Redfin:  https://www.redfin.com/news/data-center/
   Zillow:  https://www.zillow.com/research/data/
+  DBEDT:   https://dbedt.hawaii.gov/economic/qser/construction/
 """
 
 import csv
@@ -30,10 +33,21 @@ import sys
 import urllib.request
 from pathlib import Path
 
+try:
+    import openpyxl
+    _OPENPYXL_AVAILABLE = True
+except ImportError:
+    _OPENPYXL_AVAILABLE = False
+
 # ─── CONFIG ─────────────────────────────────────────────────────
 STATE_URL  = "https://redfin-public-data.s3.us-west-2.amazonaws.com/redfin_market_tracker/state_market_tracker.tsv000.gz"
 COUNTY_URL = "https://redfin-public-data.s3.us-west-2.amazonaws.com/redfin_market_tracker/county_market_tracker.tsv000.gz"
 ZORI_URL   = "https://files.zillowstatic.com/research/public_csvs/zori/County_zori_uc_sfrcondomfr_sm_month.csv"
+DBEDT_URL  = "https://files.hawaii.gov/dbedt/economic/data_reports/qser/E-construction-tables.xlsx"
+
+# DBEDT E-8 column header → countyData key (columns in order: State, Honolulu, Hawaii, Kauai, Maui)
+# The header row in the sheet uses newlines inside cell values
+DBEDT_COL_KEYS = ["State", "Honolulu", "Hawaii", "Kauai", "Maui"]  # columns 1–5 in E-8
 
 # Redfin region name → countyData key in the HTML file
 COUNTY_MAP = {
@@ -161,6 +175,85 @@ def fetch_zori_asking_rents() -> dict:
     return result
 
 
+def fetch_dbedt_construction() -> dict:
+    """
+    Download DBEDT QSER construction XLSX and extract E-8:
+    'Estimated Value of Private Building Construction Authorizations, By County'
+    (in thousands of dollars, quarterly).
+
+    Returns {countyKey: buildAuth_millions} for the most recent complete year,
+    plus a '_period' key with the year string.
+    Requires openpyxl (pip install openpyxl).
+    """
+    if not _OPENPYXL_AVAILABLE:
+        raise ImportError("openpyxl is required for DBEDT fetch — run: pip install openpyxl")
+
+    print(f"  Downloading E-construction-tables.xlsx...")
+    req = urllib.request.Request(DBEDT_URL, headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(req) as resp:
+        raw = resp.read()
+
+    wb = openpyxl.load_workbook(io.BytesIO(raw), read_only=True, data_only=True)
+    ws = wb["E-8"]
+
+    rows = list(ws.iter_rows(values_only=True))
+
+    # Locate the header row — it contains "State" in column 1
+    header_idx = None
+    for i, row in enumerate(rows):
+        if row and len(row) > 1 and row[1] is not None and str(row[1]).strip() == "State":
+            header_idx = i
+            break
+
+    if header_idx is None:
+        raise ValueError("Could not find header row in E-8 worksheet")
+
+    # Data columns: 1=State, 2=Honolulu, 3=Hawaii County, 4=Kauai County, 5=Maui County
+    # (indices align with DBEDT_COL_KEYS order)
+    data_col_indices = [1, 2, 3, 4, 5]
+
+    # Collect annual rows (skip quarterly "Qtr." rows and float-valued % change rows)
+    annual_data = {}
+    for row in rows[header_idx + 2:]:   # +2 skips header + "In Thousands" label
+        if not row or row[0] is None:
+            continue
+        year_cell = str(row[0]).strip()
+
+        # Skip quarterly rows
+        if "Qtr" in year_cell or "qtr" in year_cell:
+            continue
+        # Skip percentage-change section (first cell is a float)
+        if isinstance(row[0], float):
+            continue
+
+        # Clean year string: strip "1/  ", "2/  " footnote prefixes
+        year_clean = re.sub(r"^\d+/\s*", "", year_cell).strip()
+        try:
+            year = int(float(year_clean))
+        except (ValueError, TypeError):
+            continue
+
+        row_vals = {}
+        for j, key in zip(data_col_indices, DBEDT_COL_KEYS):
+            if j < len(row) and isinstance(row[j], (int, float)):
+                row_vals[key] = row[j]  # thousands of dollars
+
+        if row_vals:
+            annual_data[year] = row_vals
+
+    if not annual_data:
+        raise ValueError("No annual data parsed from E-8 — check sheet structure")
+
+    latest_year = max(annual_data.keys())
+    latest = annual_data[latest_year]
+
+    result = {"_period": str(latest_year)}
+    for key, val_thousands in latest.items():
+        result[key] = round(val_thousands / 1000)  # → millions, rounded
+
+    return result
+
+
 def patch_html(html: str, prices: dict) -> str:
     """
     Replace sfhPrice, condoPrice, and askRent values in the countyData object.
@@ -227,18 +320,33 @@ def main():
     except Exception as e:
         print(f"  WARNING: Zillow ZORI fetch failed ({e}) — askRent will not be updated")
 
+    # Fetch DBEDT construction authorization data and merge in
+    print("\nFetching DBEDT construction authorization data...")
+    try:
+        dbedt_data = fetch_dbedt_construction()
+        build_period = dbedt_data.pop("_period", "?")
+        for key, build_auth in dbedt_data.items():
+            if key not in all_prices:
+                all_prices[key] = {}
+            all_prices[key]["buildAuth"] = build_auth
+        print(f"  Got buildAuth ({build_period}) for: {', '.join(dbedt_data.keys())}")
+    except Exception as e:
+        build_period = "?"
+        print(f"  WARNING: DBEDT construction fetch failed ({e}) — buildAuth will not be updated")
+
     # Print summary
     print("\nLatest data:\n")
-    print(f"  {'County':<12} {'SFH':>12} {'Condo':>12} {'AskRent':>10}  {'Period'}")
-    print(f"  {'─'*12} {'─'*12} {'─'*12} {'─'*10}  {'─'*10}")
+    print(f"  {'County':<12} {'SFH':>12} {'Condo':>12} {'AskRent':>10} {'BuildAuth($M)':>14}  {'Period'}")
+    print(f"  {'─'*12} {'─'*12} {'─'*12} {'─'*10} {'─'*14}  {'─'*10}")
     for key in ["State", "Honolulu", "Maui", "Hawaii", "Kauai"]:
         if key not in all_prices:
             continue
         v = all_prices[key]
-        sfh     = f"${v.get('sfhPrice', 0):>10,}" if "sfhPrice" in v else f"{'N/A':>11}"
-        condo   = f"${v.get('condoPrice', 0):>10,}" if "condoPrice" in v else f"{'N/A':>11}"
-        askrent = f"${v.get('askRent', 0):>8,}" if "askRent" in v else f"{'N/A':>9}"
-        print(f"  {key:<12} {sfh} {condo} {askrent}  {v.get('period', '?')}")
+        sfh       = f"${v.get('sfhPrice', 0):>10,}" if "sfhPrice" in v else f"{'N/A':>11}"
+        condo     = f"${v.get('condoPrice', 0):>10,}" if "condoPrice" in v else f"{'N/A':>11}"
+        askrent   = f"${v.get('askRent', 0):>8,}" if "askRent" in v else f"{'N/A':>9}"
+        buildauth = f"${v.get('buildAuth', 0):>11,}M" if "buildAuth" in v else f"{'N/A':>13}"
+        print(f"  {key:<12} {sfh} {condo} {askrent} {buildauth}  {v.get('period', build_period)}")
 
     if dry_run:
         print("\n--dry-run: no files modified")
