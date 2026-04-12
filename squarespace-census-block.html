@@ -4,6 +4,8 @@
    Paste this entire block into a Squarespace Code Block on the
    same page as the tracker. It will auto-refresh income and
    rent figures from the U.S. Census Bureau ACS every 30 days.
+   Uses B25058_001E (median contract rent — rent only, no utilities)
+   for an apples-to-apples comparison with Zillow ZORI asking rents.
 
    SETUP:
    1. Get a free API key at: https://api.census.gov/key_signup.html
@@ -17,8 +19,8 @@
   const CENSUS_KEY   = 'YOUR_FREE_API_KEY';
   const ACS_YEAR     = '2023';
   const RATE_DEFAULT = 6.38;               // % — fallback if slider not found
-  const CACHE_KEY    = 'hi_housing_census_data';
-  const CACHE_TS_KEY = 'hi_housing_census_ts';
+  const CACHE_KEY    = 'hi_housing_census_data_v2'; // v2: contract rent instead of gross rent
+  const CACHE_TS_KEY = 'hi_housing_census_ts_v2';
   const CACHE_TTL    = 30 * 24 * 60 * 60 * 1000; // 30 days in ms
   // ─────────────────────────────────────────────────────────────
 
@@ -68,7 +70,7 @@
   // Fetch ACS 5-year estimates for Hawaii state + 4 counties
   async function fetchCensus() {
     const base = `https://api.census.gov/data/${ACS_YEAR}/acs/acs5`;
-    const vars  = 'B19013_001E,B25064_001E';  // median income + median gross rent
+    const vars  = 'B19013_001E,B25058_001E';  // median income + median contract rent (no utilities)
     const apiKey= CENSUS_KEY !== 'YOUR_FREE_API_KEY' ? `&key=${CENSUS_KEY}` : '';
 
     const [stateRes, countyRes] = await Promise.all([
@@ -88,14 +90,14 @@
     const [sHdr, sRow] = stateRows;
     result['State'] = {
       income: parseInt(sRow[sHdr.indexOf('B19013_001E')]),
-      rent:   parseInt(sRow[sHdr.indexOf('B25064_001E')]),
+      rent:   parseInt(sRow[sHdr.indexOf('B25058_001E')]),
     };
 
     // Counties
     const [cHdr, ...cRows] = countyRows;
     const nameIdx   = cHdr.indexOf('NAME');
     const incomeIdx = cHdr.indexOf('B19013_001E');
-    const rentIdx   = cHdr.indexOf('B25064_001E');
+    const rentIdx   = cHdr.indexOf('B25058_001E');
 
     for (const row of cRows) {
       const key = NAME_MAP[row[nameIdx]];

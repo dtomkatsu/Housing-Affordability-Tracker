@@ -49,6 +49,18 @@ DBEDT_URL  = "https://files.hawaii.gov/dbedt/economic/data_reports/qser/E-constr
 # The header row in the sheet uses newlines inside cell values
 DBEDT_COL_KEYS = ["State", "Honolulu", "Hawaii", "Kauai", "Maui"]  # columns 1–5 in E-8
 
+# Census ACS — contract rent (B25058_001E, utilities excluded)
+# ACS releases annually each December; update year when new vintage drops.
+CENSUS_ACS_YEAR = "2023"
+CENSUS_BASE_URL = f"https://api.census.gov/data/{CENSUS_ACS_YEAR}/acs/acs5"
+CENSUS_RENT_VAR = "B25058_001E"   # median contract rent (no utilities) — comparable to Zillow ZORI
+CENSUS_NAME_MAP = {
+    "Honolulu County, Hawaii": "Honolulu",
+    "Hawaii County, Hawaii":   "Hawaii",
+    "Maui County, Hawaii":     "Maui",
+    "Kauai County, Hawaii":    "Kauai",
+}
+
 # Redfin region name → countyData key in the HTML file
 COUNTY_MAP = {
     "Honolulu County, HI": "Honolulu",
@@ -171,6 +183,45 @@ def fetch_zori_asking_rents() -> dict:
     if all(k in result for k in weights):
         state_avg = sum(result[k] * w for k, w in weights.items())
         result["State"] = round(state_avg)
+
+    return result
+
+
+def fetch_census_rent() -> dict:
+    """
+    Download ACS 5-year median contract rent (B25058_001E) for Hawaii state + 4 counties.
+    Contract rent excludes utilities — directly comparable to Zillow ZORI asking rents.
+    No API key required (anonymous access is rate-limited but sufficient for monthly runs).
+    Returns {countyKey: {rent: int}} plus '_year' metadata key.
+    """
+    import json
+
+    def _get(url):
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req) as r:
+            return json.loads(r.read())
+
+    state_url  = f"{CENSUS_BASE_URL}?get={CENSUS_RENT_VAR}&for=state:15"
+    county_url = f"{CENSUS_BASE_URL}?get={CENSUS_RENT_VAR},NAME&for=county:*&in=state:15"
+
+    print(f"  Fetching Census ACS {CENSUS_ACS_YEAR} contract rent (B25058_001E)...")
+    state_data  = _get(state_url)
+    county_data = _get(county_url)
+
+    result = {"_year": CENSUS_ACS_YEAR}
+
+    # State row: [header, data_row]
+    s_hdr, s_row = state_data[0], state_data[1]
+    result["State"] = {"rent": int(s_row[s_hdr.index(CENSUS_RENT_VAR)])}
+
+    # County rows
+    c_hdr, *c_rows = county_data
+    rent_idx = c_hdr.index(CENSUS_RENT_VAR)
+    name_idx = c_hdr.index("NAME")
+    for row in c_rows:
+        key = CENSUS_NAME_MAP.get(row[name_idx])
+        if key:
+            result[key] = {"rent": int(row[rent_idx])}
 
     return result
 
@@ -308,6 +359,19 @@ def main():
         print("ERROR: No Hawaii data found in Redfin exports")
         sys.exit(1)
 
+    # Fetch Census ACS contract rent (existing leases, no utilities) and merge in
+    print("\nFetching Census ACS contract rent (existing leases)...")
+    try:
+        census_rents = fetch_census_rent()
+        acs_year = census_rents.pop("_year", CENSUS_ACS_YEAR)
+        for key, vals in census_rents.items():
+            if key not in all_prices:
+                all_prices[key] = {}
+            all_prices[key].update(vals)
+        print(f"  Got contract rent (ACS {acs_year}) for: {', '.join(census_rents.keys())}")
+    except Exception as e:
+        print(f"  WARNING: Census rent fetch failed ({e}) — rent will not be updated")
+
     # Fetch Zillow ZORI asking rents and merge in
     print("\nFetching Zillow ZORI asking rent data...")
     try:
@@ -336,17 +400,18 @@ def main():
 
     # Print summary
     print("\nLatest data:\n")
-    print(f"  {'County':<12} {'SFH':>12} {'Condo':>12} {'AskRent':>10} {'BuildAuth($M)':>14}  {'Period'}")
-    print(f"  {'─'*12} {'─'*12} {'─'*12} {'─'*10} {'─'*14}  {'─'*10}")
+    print(f"  {'County':<12} {'SFH':>12} {'Condo':>12} {'ContractRent':>13} {'AskRent':>10} {'BuildAuth($M)':>14}  {'Period'}")
+    print(f"  {'─'*12} {'─'*12} {'─'*12} {'─'*13} {'─'*10} {'─'*14}  {'─'*10}")
     for key in ["State", "Honolulu", "Maui", "Hawaii", "Kauai"]:
         if key not in all_prices:
             continue
         v = all_prices[key]
         sfh       = f"${v.get('sfhPrice', 0):>10,}" if "sfhPrice" in v else f"{'N/A':>11}"
         condo     = f"${v.get('condoPrice', 0):>10,}" if "condoPrice" in v else f"{'N/A':>11}"
+        crent     = f"${v.get('rent', 0):>11,}" if "rent" in v else f"{'N/A':>12}"
         askrent   = f"${v.get('askRent', 0):>8,}" if "askRent" in v else f"{'N/A':>9}"
         buildauth = f"${v.get('buildAuth', 0):>11,}M" if "buildAuth" in v else f"{'N/A':>13}"
-        print(f"  {key:<12} {sfh} {condo} {askrent} {buildauth}  {v.get('period', build_period)}")
+        print(f"  {key:<12} {sfh} {condo} {crent} {askrent} {buildauth}  {v.get('period', build_period)}")
 
     if dry_run:
         print("\n--dry-run: no files modified")
