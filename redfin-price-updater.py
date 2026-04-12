@@ -61,6 +61,14 @@ CENSUS_NAME_MAP = {
     "Kauai County, Hawaii":    "Kauai",
 }
 
+# BLS CPI: Honolulu MSA — "Rent of primary residence" (existing tenants, not new leases)
+# Series CUURS49ASEHA, not seasonally adjusted, base 1982-84=100.
+# We scale ACS 2023 contract rent by the BLS index ratio to get a monthly-current estimate.
+BLS_API_URL          = "https://api.bls.gov/publicAPI/v2/timeseries/data/"
+BLS_RENT_SERIES      = "CUURS49ASEHA"
+BLS_BASE_YEAR        = "2023"          # ACS vintage year used as dollar anchor
+BLS_HON_ACS2023_RENT = 1880           # ACS 2023 Honolulu contract rent ($) — the base dollar value
+
 # Redfin region name → countyData key in the HTML file
 COUNTY_MAP = {
     "Honolulu County, HI": "Honolulu",
@@ -226,6 +234,69 @@ def fetch_census_rent() -> dict:
     return result
 
 
+def fetch_bls_rent() -> dict:
+    """
+    Fetch BLS CPI series CUURS49ASEHA (Honolulu MSA, rent of primary residence).
+    Scales ACS 2023 Honolulu contract rent by the BLS index ratio to produce a
+    monthly-current estimate for existing-tenant rent in Honolulu.
+
+    Only updates Honolulu — neighbor islands have no monthly existing-tenant source.
+    Returns {"Honolulu": {"rent": int}, "_period": "YYYY-MM"}.
+    """
+    import json
+    import datetime
+
+    current_year = str(datetime.date.today().year)
+    payload = json.dumps({
+        "seriesid": [BLS_RENT_SERIES],
+        "startyear": BLS_BASE_YEAR,
+        "endyear": current_year,
+    }).encode()
+    req = urllib.request.Request(
+        BLS_API_URL,
+        data=payload,
+        headers={"Content-Type": "application/json", "User-Agent": "Mozilla/5.0"},
+    )
+    with urllib.request.urlopen(req) as r:
+        data = json.loads(r.read())
+
+    series_data = data["Results"]["series"][0]["data"]
+
+    # 2023 annual average from monthly values (exclude M13 annual, skip "-" missing)
+    base_vals = [
+        float(r["value"])
+        for r in series_data
+        if r["year"] == BLS_BASE_YEAR
+        and r["period"].startswith("M")
+        and r["period"] != "M13"
+        and r["value"] != "-"
+    ]
+    if not base_vals:
+        raise ValueError(f"No BLS monthly data found for base year {BLS_BASE_YEAR}")
+    base_avg = sum(base_vals) / len(base_vals)
+
+    # Most recent monthly value (BLS returns newest-first; skip M13 annual and missing)
+    recent = next(
+        (
+            r for r in series_data
+            if r["period"].startswith("M")
+            and r["period"] != "M13"
+            and r["value"] != "-"
+        ),
+        None,
+    )
+    if not recent:
+        raise ValueError("No recent BLS monthly value found")
+
+    current_idx  = float(recent["value"])
+    scaled_rent  = round(BLS_HON_ACS2023_RENT * (current_idx / base_avg))
+    period       = f"{recent['year']}-{recent['period'][1:].zfill(2)}"  # e.g. "2026-03"
+
+    print(f"  BLS {BLS_RENT_SERIES}: base_avg={base_avg:.2f}, current={current_idx:.3f}, "
+          f"ratio={current_idx/base_avg:.4f} → Honolulu rent ${scaled_rent:,} ({period})")
+    return {"Honolulu": {"rent": scaled_rent}, "_period": period}
+
+
 def fetch_dbedt_construction() -> dict:
     """
     Download DBEDT QSER construction XLSX and extract E-8:
@@ -312,7 +383,7 @@ def patch_html(html: str, prices: dict) -> str:
         Honolulu: { income:104264, sfhPrice:1092400, condoPrice:560000, ...
     """
     for county_key, vals in prices.items():
-        for field in ("sfhPrice", "condoPrice", "askRent"):
+        for field in ("sfhPrice", "condoPrice", "rent", "askRent"):
             if field not in vals:
                 continue
             pattern = rf'({re.escape(county_key)}:\s*\{{[^}}]*?){field}:\s*\d+'
@@ -371,6 +442,19 @@ def main():
         print(f"  Got contract rent (ACS {acs_year}) for: {', '.join(census_rents.keys())}")
     except Exception as e:
         print(f"  WARNING: Census rent fetch failed ({e}) — rent will not be updated")
+
+    # Override Honolulu rent with BLS CPI monthly estimate (more current than ACS)
+    print("\nFetching BLS CPI rent index for Honolulu (existing tenants, monthly)...")
+    try:
+        bls_rent = fetch_bls_rent()
+        bls_period = bls_rent.pop("_period", "?")
+        for key, vals in bls_rent.items():
+            if key not in all_prices:
+                all_prices[key] = {}
+            all_prices[key].update(vals)
+        print(f"  Updated Honolulu rent to BLS-scaled estimate ({bls_period})")
+    except Exception as e:
+        print(f"  WARNING: BLS rent fetch failed ({e}) — Honolulu rent stays at ACS value")
 
     # Fetch Zillow ZORI asking rents and merge in
     print("\nFetching Zillow ZORI asking rent data...")
