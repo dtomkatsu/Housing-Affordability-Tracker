@@ -457,19 +457,33 @@ def fetch_hud_state_mfi() -> dict:
 def patch_html(html: str, prices: dict) -> str:
     """
     Replace sfhPrice, condoPrice, rent, askRent, and income values in
-    the countyData object. Matches patterns like:
-        Honolulu: { income:104264, sfhPrice:1092400, condoPrice:560000, ...
+    the countyData object by simple find-and-replace on the lines.
     """
     for county_key, vals in prices.items():
+        # Find the line with this county
+        pattern = rf'^(\s*{re.escape(county_key)}:\s*{{[^}}]*)'
+
+        def replacer(match):
+            line_text = match.group(1)
+            # Replace each field value in this line
+            for field in ("sfhPrice", "condoPrice", "rent", "askRent", "income"):
+                if field in vals:
+                    # Find old value and replace with new
+                    line_text = re.sub(
+                        rf'{field}:\d+',
+                        f'{field}:{vals[field]}',
+                        line_text
+                    )
+            return line_text
+
+        new_html = re.sub(pattern, replacer, html, flags=re.MULTILINE)
+
+        # Check if anything changed by testing each field individually
         for field in ("sfhPrice", "condoPrice", "rent", "askRent", "income"):
-            if field not in vals:
-                continue
-            pattern = rf'({re.escape(county_key)}:\s*\{{[^}}]*?){field}:\s*\d+'
-            replacement = rf'\g<1>{field}:{vals[field]}'
-            new_html = re.sub(pattern, replacement, html)
-            if new_html == html:
-                print(f"  WARNING: could not find {county_key}.{field} in HTML")
-            html = new_html
+            if field in vals and f'{field}:{vals[field]}' not in new_html:
+                print(f"  WARNING: could not set {county_key}.{field}")
+
+        html = new_html
 
     return html
 

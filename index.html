@@ -711,11 +711,11 @@
 
 <script>
 const countyData = {
-  State:    { income:98317,  sfhPrice:1016700,  condoPrice:583300,  sfhPTI:0.5790, condoPTI:0.3657, sfhIdx:51.8, condoIdx:82.0, sfhGap:91439,  condoGap:21529, rent:1768, askRent:2861, sfhMortgage:4744, condoMortgage:2996, buildAuth:4404 },
-  Honolulu: { income:104264, sfhPrice:1200000, condoPrice:504000,  sfhPTI:0.6278, condoPTI:0.3218, sfhIdx:47.8, condoIdx:93.2, sfhGap:113935, condoGap:7592,  rent:2093, askRent:2803, sfhMortgage:5455, condoMortgage:2796, buildAuth:2736 },
-  Maui:     { income:95067,  sfhPrice:1250000, condoPrice:890000,  sfhPTI:0.7532, condoPTI:0.5752, sfhIdx:39.8, condoIdx:52.2, sfhGap:143626, condoGap:87199, rent:1668, askRent:3511, sfhMortgage:5967, condoMortgage:4557, buildAuth:651 },
-  Hawaii:   { income:77215,  sfhPrice:585000,  condoPrice:738000,  sfhPTI:0.3366, condoPTI:0.4268, sfhIdx:89.1, condoIdx:70.3, sfhGap:9424,   condoGap:32644, rent:1203, askRent:2490, sfhMortgage:2166, condoMortgage:2746, buildAuth:911 },
-  Kauai:    { income:93612,  sfhPrice:1350000, condoPrice:785000,  sfhPTI:0.6913, condoPTI:0.6081, sfhIdx:43.4, condoIdx:49.3, sfhGap:122110, condoGap:96144, rent:1582, askRent:3589, sfhMortgage:5393, condoMortgage:4744, buildAuth:106 },
+  State:    { income:123000,  sfhPrice:1016700,  condoPrice:583300,  sfhPTI:0.5790, condoPTI:0.3657, sfhIdx:51.8, condoIdx:82.0, sfhGap:91439,  condoGap:21529, rent:1768, askRent:2861, sfhMortgage:4744, condoMortgage:2996, buildAuth:4404 },
+  Honolulu: { income:129300, sfhPrice:1200000, condoPrice:504000,  sfhPTI:0.6278, condoPTI:0.3218, sfhIdx:47.8, condoIdx:93.2, sfhGap:113935, condoGap:7592,  rent:2093, askRent:2803, sfhMortgage:5455, condoMortgage:2796, buildAuth:2736 },
+  Maui:     { income:110900,  sfhPrice:1250000, condoPrice:890000,  sfhPTI:0.7532, condoPTI:0.5752, sfhIdx:39.8, condoIdx:52.2, sfhGap:143626, condoGap:87199, rent:1668, askRent:3511, sfhMortgage:5967, condoMortgage:4557, buildAuth:651 },
+  Hawaii:   { income:98800,  sfhPrice:585000,  condoPrice:738000,  sfhPTI:0.3366, condoPTI:0.4268, sfhIdx:89.1, condoIdx:70.3, sfhGap:9424,   condoGap:32644, rent:1203, askRent:2490, sfhMortgage:2166, condoMortgage:2746, buildAuth:911 },
+  Kauai:    { income:132900,  sfhPrice:1350000, condoPrice:785000,  sfhPTI:0.6913, condoPTI:0.6081, sfhIdx:43.4, condoIdx:49.3, sfhGap:122110, condoGap:96144, rent:1582, askRent:3589, sfhMortgage:5393, condoMortgage:4744, buildAuth:106 },
 };
 const counties = ['State','Honolulu','Maui','Hawaii','Kauai'];
 const shortLbl = { State:'State', Honolulu:'Honolulu', Maui:'Maui', Hawaii:'Hawaiʻi', Kauai:'Kauaʻi' };
@@ -906,7 +906,7 @@ function selectCounty(county) {
       <div class="mcard-accent"></div>
       <div class="mlabel">Median family income (4-person)</div>
       <div class="mvalue">${fmtM(d.income)}</div>
-      <div class="msub">${fmt(d.income)} &nbsp;·&nbsp; ACS 2023</div>
+      <div class="msub">${fmt(d.income)} &nbsp;·&nbsp; HUD FY 2025</div>
     </div>
   `;
   const sfhIdxColor = d.sfhIdx < 55 ? '#c94f3a' : d.sfhIdx < 80 ? '#b5622a' : '#2d6a4f';
