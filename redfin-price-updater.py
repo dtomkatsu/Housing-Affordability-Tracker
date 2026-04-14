@@ -6,6 +6,8 @@ Downloads:
   - Redfin public S3 TSV files → median sale prices (SFH + condo) per county
   - Zillow ZORI county CSV     → median asking rent per county
   - DBEDT QSER construction XLSX → private building authorization values per county
+  - HHFDC county income schedule PDFs → HUD median family income per county
+  - HUD State Income Limits PDF  → statewide median family income
 
 Patches squarespace-single-file.html in-place with fresh values.
 
@@ -39,11 +41,26 @@ try:
 except ImportError:
     _OPENPYXL_AVAILABLE = False
 
+try:
+    import pdfplumber
+    _PDFPLUMBER_AVAILABLE = True
+except ImportError:
+    _PDFPLUMBER_AVAILABLE = False
+
 # ─── CONFIG ─────────────────────────────────────────────────────
 STATE_URL  = "https://redfin-public-data.s3.us-west-2.amazonaws.com/redfin_market_tracker/state_market_tracker.tsv000.gz"
 COUNTY_URL = "https://redfin-public-data.s3.us-west-2.amazonaws.com/redfin_market_tracker/county_market_tracker.tsv000.gz"
 ZORI_URL   = "https://files.zillowstatic.com/research/public_csvs/zori/County_zori_uc_sfrcondomfr_sm_month.csv"
 DBEDT_URL  = "https://files.hawaii.gov/dbedt/economic/data_reports/qser/E-construction-tables.xlsx"
+
+# HHFDC county income schedule PDFs (HUD income limits, published by state of Hawaii).
+# The "MEDIAN" column in each schedule is HUD's FY2025 4-person median family income.
+HHFDC_PDF_TEMPLATE = "https://dbedt.hawaii.gov/hhfdc/files/2025/05/{county}-County-2025.pdf"
+HHFDC_COUNTIES     = ["Honolulu", "Hawaii", "Maui", "Kauai"]
+
+# HUD State Income Limits report (FY2025) — contains each state's MFI including HI.
+HUD_STATE_IL_URL   = "https://www.huduser.gov/portal/datasets/il/il25/State-Incomelimits-Report-FY25.pdf"
+HUD_FY             = "FY 2025"
 
 # DBEDT E-8 column header → countyData key (columns in order: State, Honolulu, Hawaii, Kauai, Maui)
 # The header row in the sheet uses newlines inside cell values
@@ -376,14 +393,75 @@ def fetch_dbedt_construction() -> dict:
     return result
 
 
+def fetch_hhfdc_county_mfi() -> dict:
+    """
+    Download HHFDC county income schedule PDFs and extract HUD median family
+    income (4-person) for each county. The MFI appears as the first dollar
+    figure on page 1 (e.g. "$129,300" for Honolulu).
+
+    Returns {countyKey: {"income": int}}, plus a "_period" key.
+    Requires pdfplumber (pip install pdfplumber).
+    """
+    if not _PDFPLUMBER_AVAILABLE:
+        raise ImportError("pdfplumber is required for HHFDC fetch — run: pip install pdfplumber")
+
+    result = {"_period": HUD_FY}
+    for county in HHFDC_COUNTIES:
+        url = HHFDC_PDF_TEMPLATE.format(county=county)
+        print(f"  Downloading {county}-County-2025.pdf...")
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req) as resp:
+            raw = resp.read()
+
+        with pdfplumber.open(io.BytesIO(raw)) as pdf:
+            text = pdf.pages[0].extract_text() or ""
+
+        m = re.search(r"\$(\d{2,3}(?:,\d{3})+)", text)
+        if not m:
+            print(f"  WARNING: could not parse MFI from {county} PDF")
+            continue
+        result[county] = {"income": int(m.group(1).replace(",", ""))}
+
+    return result
+
+
+def fetch_hud_state_mfi() -> dict:
+    """
+    Download HUD's FY 2025 State Income Limits report PDF and extract the
+    Hawaii statewide median family income. The Hawaii row appears as:
+        HAWAII
+        FY 2025 MFI: 123000 30% OF MEDIAN ...
+
+    Returns {"State": {"income": int}, "_period": HUD_FY}.
+    Requires pdfplumber.
+    """
+    if not _PDFPLUMBER_AVAILABLE:
+        raise ImportError("pdfplumber is required for HUD state fetch — run: pip install pdfplumber")
+
+    print(f"  Downloading State-Incomelimits-Report-FY25.pdf...")
+    req = urllib.request.Request(HUD_STATE_IL_URL, headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(req) as resp:
+        raw = resp.read()
+
+    with pdfplumber.open(io.BytesIO(raw)) as pdf:
+        # Search all pages for Hawaii — alphabetically it's on page 1, but don't hardcode.
+        text = "\n".join((p.extract_text() or "") for p in pdf.pages)
+
+    m = re.search(r"HAWAII\s+FY\s*2025\s*MFI:\s*(\d+)", text)
+    if not m:
+        raise ValueError("Could not parse Hawaii MFI from HUD state PDF")
+
+    return {"_period": HUD_FY, "State": {"income": int(m.group(1))}}
+
+
 def patch_html(html: str, prices: dict) -> str:
     """
-    Replace sfhPrice, condoPrice, and askRent values in the countyData object.
-    Matches patterns like:
+    Replace sfhPrice, condoPrice, rent, askRent, and income values in
+    the countyData object. Matches patterns like:
         Honolulu: { income:104264, sfhPrice:1092400, condoPrice:560000, ...
     """
     for county_key, vals in prices.items():
-        for field in ("sfhPrice", "condoPrice", "rent", "askRent"):
+        for field in ("sfhPrice", "condoPrice", "rent", "askRent", "income"):
             if field not in vals:
                 continue
             pattern = rf'({re.escape(county_key)}:\s*\{{[^}}]*?){field}:\s*\d+'
@@ -467,6 +545,32 @@ def main():
         print(f"  Got askRent for: {', '.join(zori_rents.keys())}")
     except Exception as e:
         print(f"  WARNING: Zillow ZORI fetch failed ({e}) — askRent will not be updated")
+
+    # Fetch HHFDC county median family incomes (HUD FY2025) and merge in
+    print("\nFetching HHFDC county median family incomes (HUD FY 2025)...")
+    try:
+        hhfdc_incomes = fetch_hhfdc_county_mfi()
+        hhfdc_incomes.pop("_period", None)
+        for key, vals in hhfdc_incomes.items():
+            if key not in all_prices:
+                all_prices[key] = {}
+            all_prices[key].update(vals)
+        print(f"  Got income for: {', '.join(hhfdc_incomes.keys())}")
+    except Exception as e:
+        print(f"  WARNING: HHFDC income fetch failed ({e}) — county income will not be updated")
+
+    # Fetch HUD state-level MFI and merge in
+    print("\nFetching HUD state median family income...")
+    try:
+        state_income = fetch_hud_state_mfi()
+        state_income.pop("_period", None)
+        for key, vals in state_income.items():
+            if key not in all_prices:
+                all_prices[key] = {}
+            all_prices[key].update(vals)
+        print(f"  Got income for: {', '.join(state_income.keys())}")
+    except Exception as e:
+        print(f"  WARNING: HUD state income fetch failed ({e}) — state income will not be updated")
 
     # Fetch DBEDT construction authorization data and merge in
     print("\nFetching DBEDT construction authorization data...")
