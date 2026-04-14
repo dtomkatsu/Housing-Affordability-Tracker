@@ -254,6 +254,55 @@
   .afford-comp-label { font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 3px; }
   .afford-comp-price { font-size: 1.1rem; font-weight: 500; }
   .afford-comp-gap { font-size: 13px; margin-top: 2px; }
+
+  .afford-banner-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+  .afford-banner-header .afford-banner-label { margin-bottom: 0; }
+  .afford-location-chip {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    padding: 3px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  .afford-params {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .afford-param {
+    background: rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 7px 11px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 92px;
+  }
+  .afford-param-val {
+    font-size: 15px;
+    font-weight: 600;
+    color: white;
+    line-height: 1.2;
+  }
+  .afford-param-lbl {
+    font-size: 10px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
   .over { color: #f4a09a; }
   .under { color: #7dd4a8; }
 
@@ -711,11 +760,31 @@ function updateAfford() {
   const condoDiff = d.condoPrice - affordPrice;
 
   document.getElementById('afford-banner').innerHTML = `
-    <div class="afford-banner-label">What a median-income household can afford at ${rate.toFixed(2)}% &nbsp;·&nbsp; ${fullLbl[currentCounty]}</div>
+    <div class="afford-banner-header">
+      <div class="afford-banner-label">Max affordable home price</div>
+      <div class="afford-location-chip">${fullLbl[currentCounty]}</div>
+    </div>
     <div class="afford-row">
       <div>
         <div class="afford-price">${fmt(affordPrice)}</div>
-        <div class="afford-price-label">Median income: ${fmt(d.income)} &nbsp;·&nbsp; 20% down &nbsp;·&nbsp; 30% of income</div>
+        <div class="afford-params">
+          <div class="afford-param">
+            <div class="afford-param-val">${fmt(d.income)}</div>
+            <div class="afford-param-lbl">4-person income</div>
+          </div>
+          <div class="afford-param">
+            <div class="afford-param-val">${rate.toFixed(2)}%</div>
+            <div class="afford-param-lbl">Mortgage rate</div>
+          </div>
+          <div class="afford-param">
+            <div class="afford-param-val">20%</div>
+            <div class="afford-param-lbl">Down payment</div>
+          </div>
+          <div class="afford-param">
+            <div class="afford-param-val">30%</div>
+            <div class="afford-param-lbl">Max DTI</div>
+          </div>
+        </div>
       </div>
       <div class="afford-compare">
         <div class="afford-comp-item">
@@ -807,7 +876,7 @@ function selectCounty(county) {
     const sfhNeed = Math.max(0, Math.round(d2.sfhPrice - affordSFH));
     const loc = county === 'State' ? 'Hawaiʻi statewide' : 'in ' + fullLbl[county];
     const incomeNeeded = Math.round(d2.income + d2.sfhGap);
-    nEl.innerHTML = `<strong style="color:var(--text);">${fullLbl[county]}:</strong> The median household earns <strong>${fmt(d2.income)}/yr</strong> but needs <strong>${fmt(incomeNeeded)}/yr</strong> to afford the median single-family home at ${rate2.toFixed(2)}% — an income gap of <strong style="color:${d2.sfhGap > 50000 ? 'var(--coral)' : d2.sfhGap > 20000 ? 'var(--amber)' : 'var(--green)'};">${fmt(d2.sfhGap)}</strong>. The median condo is ${d2.condoIdx >= 100 ? '<strong style="color:var(--green);">within reach</strong>' : d2.condoGap === 0 ? '<strong style="color:var(--green);">affordable</strong>' : 'also out of reach by <strong style="color:var(--amber);">' + fmt(d2.condoGap) + '</strong>'} at median income.`;
+    nEl.innerHTML = `<strong style="color:var(--text);">${fullLbl[county]}:</strong> The median 4-person household earns <strong>${fmt(d2.income)}/yr</strong> but needs <strong>${fmt(incomeNeeded)}/yr</strong> to afford the median single-family home at ${rate2.toFixed(2)}% — an income gap of <strong style="color:${d2.sfhGap > 50000 ? 'var(--coral)' : d2.sfhGap > 20000 ? 'var(--amber)' : 'var(--green)'};">${fmt(d2.sfhGap)}</strong>. The median condo is ${d2.condoIdx >= 100 ? '<strong style="color:var(--green);">within reach</strong>' : d2.condoGap === 0 ? '<strong style="color:var(--green);">affordable</strong>' : 'also out of reach by <strong style="color:var(--amber);">' + fmt(d2.condoGap) + '</strong>'} at median income.`;
   }
   document.querySelectorAll('.county-tab').forEach(b => {
     b.classList.toggle('active', b.textContent.trim() === fullLbl[county]);
@@ -835,7 +904,7 @@ function selectCounty(county) {
     </div>
     <div class="mcard mcard--income">
       <div class="mcard-accent"></div>
-      <div class="mlabel">Median family income</div>
+      <div class="mlabel">Median family income (4-person)</div>
       <div class="mvalue">${fmtM(d.income)}</div>
       <div class="msub">${fmt(d.income)} &nbsp;·&nbsp; ACS 2023</div>
     </div>
