@@ -1550,12 +1550,6 @@
   </div>
 
   <div class="card">
-    <div class="card-title">Payment-to-income ratio</div>
-    <div class="card-sub">Share of gross monthly income consumed by mortgage payment</div>
-    <div class="treemap-container" id="paymentIncomeChart"></div>
-  </div>
-
-  <div class="card">
     <div class="card-title">Rental market</div>
     <div class="card-sub">Median contract rent (existing leases) vs. asking rent for new listings &nbsp;·&nbsp; both exclude utilities</div>
     <div class="legend-row">
@@ -1565,46 +1559,51 @@
     <div id="rent-grid"></div>
   </div>
 
-  <div class="card">
-    <div class="card-title">Construction hard costs &nbsp;·&nbsp; Honolulu (Q1 2026)</div>
-    <div class="card-sub">RLB Quarterly Cost Report &nbsp;·&nbsp; change measured from Q1 2020</div>
-    <div class="rlb-grid">
-      <div class="rlb-card">
-        <div class="rlb-label">Multifamily</div>
-        <div class="rlb-range">$310 – $520/sf</div>
-        <div class="rlb-change">+51% low end since Q1 2020</div>
+  <details class="goods-detail" id="housing-detail-disclosure">
+    <summary>Construction costs &amp; methodology</summary>
+    <div class="goods-detail-body">
+      <div class="card">
+        <div class="card-title">Construction hard costs &nbsp;·&nbsp; Honolulu (Q1 2026)</div>
+        <div class="card-sub">RLB Quarterly Cost Report &nbsp;·&nbsp; change measured from Q1 2020</div>
+        <div class="rlb-grid">
+          <div class="rlb-card">
+            <div class="rlb-label">Multifamily</div>
+            <div class="rlb-range">$310 – $520/sf</div>
+            <div class="rlb-change">+51% low end since Q1 2020</div>
+          </div>
+          <div class="rlb-card">
+            <div class="rlb-label">Single-family</div>
+            <div class="rlb-range">$345 – $645/sf</div>
+            <div class="rlb-change">+19% low end since Q1 2020</div>
+          </div>
+          <div class="rlb-card">
+            <div class="rlb-label">Ground parking</div>
+            <div class="rlb-range">$190 – $245/sf</div>
+            <div class="rlb-change">+81% low end since Q1 2020</div>
+          </div>
+        </div>
+        <div class="card-sub" style="margin-bottom:8px;">Low-end cost indices &nbsp;·&nbsp; Q1 2020 = 100</div>
+        <div class="legend-row" style="margin-bottom:10px;">
+          <span><span class="swatch" style="background:#1a7a9a;"></span>Multifamily</span>
+          <span><span class="swatch" style="background:#2d6a4f;"></span>Single-family</span>
+          <span><span class="swatch" style="background:#b5622a;"></span>Ground parking</span>
+          <span><span class="swatch" style="background:#888;"></span>Composite</span>
+        </div>
+        <div style="position:relative;width:100%;height:180px;"><canvas id="rlb-chart"></canvas></div>
+
+        <div class="card-sub" style="margin-top:20px;margin-bottom:10px;">Private building authorizations by county &nbsp;·&nbsp; DBEDT QSER · 2025 annual total</div>
+        <div id="build-auth-bars"></div>
       </div>
-      <div class="rlb-card">
-        <div class="rlb-label">Single-family</div>
-        <div class="rlb-range">$345 – $645/sf</div>
-        <div class="rlb-change">+19% low end since Q1 2020</div>
-      </div>
-      <div class="rlb-card">
-        <div class="rlb-label">Ground parking</div>
-        <div class="rlb-range">$190 – $245/sf</div>
-        <div class="rlb-change">+81% low end since Q1 2020</div>
+
+      <div class="note-box" style="margin-bottom:0;">
+        <strong style="color:var(--text);">Note on condos &amp; construction costs</strong><br>
+        Condo mortgage payments exclude HOA fees, which average ~$762/month statewide — among the highest in the nation. At $310–$520/sf for multifamily hard costs alone, up ~30% since 2020, building to price points accessible to median-income households requires substantial public subsidy. Affordability index: 100 = perfectly affordable at median income; below 100 = median income falls short.
+        <br><br>
+        <strong style="color:var(--text);">Note on construction cost indices</strong><br>
+        The cost indices track the <em>low end</em> of each published RLB cost range (e.g., $310/sf for multifamily, not $520/sf), rebased to Q1 2020 = 100. Using the low end understates actual cost growth for higher-complexity projects, so the increases shown — +51% multifamily, +19% single-family, +81% ground parking — should be read as a floor, not a ceiling.
       </div>
     </div>
-    <div class="card-sub" style="margin-bottom:8px;">Low-end cost indices &nbsp;·&nbsp; Q1 2020 = 100</div>
-    <div class="legend-row" style="margin-bottom:10px;">
-      <span><span class="swatch" style="background:#1a7a9a;"></span>Multifamily</span>
-      <span><span class="swatch" style="background:#2d6a4f;"></span>Single-family</span>
-      <span><span class="swatch" style="background:#b5622a;"></span>Ground parking</span>
-      <span><span class="swatch" style="background:#888;"></span>Composite</span>
-    </div>
-    <div style="position:relative;width:100%;height:180px;"><canvas id="rlb-chart"></canvas></div>
-
-    <div class="card-sub" style="margin-top:20px;margin-bottom:10px;">Private building authorizations by county &nbsp;·&nbsp; DBEDT QSER · 2025 annual total</div>
-    <div id="build-auth-bars"></div>
-  </div>
-
-  <div class="note-box">
-    <strong style="color:var(--text);">Note on condos &amp; construction costs</strong><br>
-    Condo mortgage payments exclude HOA fees, which average ~$762/month statewide — among the highest in the nation. At $310–$520/sf for multifamily hard costs alone, up ~30% since 2020, building to price points accessible to median-income households requires substantial public subsidy. Affordability index: 100 = perfectly affordable at median income; below 100 = median income falls short.
-    <br><br>
-    <strong style="color:var(--text);">Note on construction cost indices</strong><br>
-    The cost indices track the <em>low end</em> of each published RLB cost range (e.g., $310/sf for multifamily, not $520/sf), rebased to Q1 2020 = 100. Using the low end understates actual cost growth for higher-complexity projects, so the increases shown — +51% multifamily, +19% single-family, +81% ground parking — should be read as a floor, not a ceiling.
-  </div>
+  </details>
   </section><!-- /#pane-housing -->
 
   <section id="pane-goods" class="pane" role="tabpanel">
@@ -1804,31 +1803,6 @@ function updateCalc() {
   `;
 }
 
-function renderPaymentIncomeChart() {
-  const container = document.getElementById('paymentIncomeChart');
-  container.innerHTML = counties.map(c => {
-    const d = countyData[c];
-    const ratio = d.sfhPTI * 100;
-    let category = 'good';
-    if (ratio >= 50) category = 'low';
-    else if (ratio >= 30) category = 'moderate';
-    
-    const paymentHeight = Math.min(ratio * 1.2, 120);
-    
-    return `
-      <div class="treemap-wrapper">
-        <div class="treemap-county-header">${shortLbl[c]}</div>
-        <div class="treemap-box">
-          <div class="treemap-payment-box ${category}" style="height: ${paymentHeight}px">
-            <div class="treemap-payment-value">${pct(d.sfhPTI)}</div>
-            <div class="treemap-payment-label">Payment</div>
-          </div>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
 function selectCounty(county) {
   currentCounty = county;
   // Narrative headline
@@ -1842,19 +1816,23 @@ function selectCounty(county) {
     const gapPct = 100 - incomePct;
     const affordable = d2.sfhGap <= 0;
 
+    // SFH status chip (green when affordable, coral/amber otherwise)
+    let sfhChip;
+    if (affordable) {
+      sfhChip = `<span class="chip chip--green">&#10003; SFH affordable at median income</span>`;
+    } else {
+      const sfhCls = d2.sfhGap > 50000 ? 'chip--coral' : 'chip--amber';
+      sfhChip = `<span class="chip ${sfhCls}">SFH gap &minus;${fmt(d2.sfhGap)}</span>`;
+    }
+
     // Condo status chip
     let condoChip;
     if (d2.condoIdx >= 100 || d2.condoGap <= 0) {
-      condoChip = `<span class="chip chip--green">Condo within reach at median income</span>`;
+      condoChip = `<span class="chip chip--green">Condo within reach</span>`;
     } else {
       const chipCls = d2.condoGap > 50000 ? 'chip--coral' : 'chip--amber';
-      condoChip = `<span class="chip ${chipCls}">Condo also out of reach &minus;${fmt(d2.condoGap)}</span>`;
+      condoChip = `<span class="chip ${chipCls}">Condo gap &minus;${fmt(d2.condoGap)}</span>`;
     }
-
-    // Right-side gap value
-    const gapValHtml = affordable
-      ? `<span class="narrative-gap-val is-ok">&#10003; Affordable at median income</span>`
-      : `<span class="narrative-gap-val">${fmt(d2.sfhGap)} short</span>`;
 
     const eyebrowLbl = county === 'State' ? 'Statewide affordability' : `${fullLbl[county]} &middot; Affordability`;
 
@@ -1862,19 +1840,15 @@ function selectCounty(county) {
       <div class="narrative-eyebrow">${eyebrowLbl}</div>
       <div class="narrative-prose">
         The median 4-person household earns <strong>${fmt(d2.income)}</strong> but needs
-        <strong>${fmt(incomeNeeded)}</strong> to afford the median single-family home at ${rate2.toFixed(2)}%.
+        <strong>${fmt(incomeNeeded)}</strong> to afford the median single-family home at ${rate2.toFixed(2)}%
+        &mdash; income covers <strong>${incomePct}%</strong> of what's needed.
       </div>
-      <div class="narrative-gap">
-        <div class="narrative-gap-lbl">
-          <span>Income covers <span class="pct">${incomePct}%</span> of what's needed</span>
-          ${gapValHtml}
-        </div>
-        <div class="narrative-bar">
-          <div class="narrative-bar-income${affordable ? ' is-affordable is-full' : ''}" style="width:${incomePct}%"></div>
-          <div class="narrative-bar-gap" style="width:${gapPct}%"></div>
-        </div>
+      <div class="narrative-bar" style="margin-bottom:14px;">
+        <div class="narrative-bar-income${affordable ? ' is-affordable is-full' : ''}" style="width:${incomePct}%"></div>
+        <div class="narrative-bar-gap" style="width:${gapPct}%"></div>
       </div>
       <div class="narrative-chips">
+        ${sfhChip}
         ${condoChip}
       </div>
     `;
@@ -1891,7 +1865,6 @@ function selectCounty(county) {
   document.getElementById('income-slider').value = d.income;
   updateAfford();
   updateCalc();
-  renderPaymentIncomeChart();
 
   // —— Housing paired cards (v2): price + affordability index merged ——
   const verdict = (idx) => idx >= 100 ? { cls:'chip--green', lbl:'Within reach' }
@@ -2520,7 +2493,7 @@ function makeDataset(label, data, color, dash) {
   return { label, data, borderColor: color, backgroundColor: 'transparent', borderWidth: 2, borderDash: dash||[], pointRadius: 0, pointHoverRadius: 4, pointHoverBackgroundColor: color, tension: 0.3 };
 }
 
-new Chart(document.getElementById('rlb-chart'), {
+const rlbChart = new Chart(document.getElementById('rlb-chart'), {
   type: 'line',
   data: {
     labels: rlbLabels,
@@ -2556,6 +2529,15 @@ new Chart(document.getElementById('rlb-chart'), {
     }
   }
 });
+
+/* When the Housing construction <details> opens, resize the RLB chart —
+   its canvas had 0 layout size while hidden and may not have drawn correctly. */
+const housingDetail = document.getElementById('housing-detail-disclosure');
+if (housingDetail && rlbChart) {
+  housingDetail.addEventListener('toggle', () => {
+    if (housingDetail.open) requestAnimationFrame(() => rlbChart.resize());
+  });
+}
 </script>
 </body>
 </html>
