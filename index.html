@@ -10,22 +10,52 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
   :root {
-    --ocean:    #0a4f6e;
-    --ocean-mid:#1a7a9a;
-    --sky:      #e8f4f8;
+    /* ——— Unified coastal palette: ocean + seafoam + coral ———
+       Three families × five tints replace ~34 ad-hoc hexes.
+       See palette audit commit for the full swap table.           */
+
+    /* Ocean — primary chrome, headings, links, chart accents */
+    --ocean-900: #0a3d58;
+    --ocean-700: #0a4f6e;       /* = legacy --ocean */
+    --ocean-500: #1a7a9a;       /* = legacy --ocean-mid */
+    --ocean-300: #7dc0d9;
+    --ocean-100: #e8f4f8;       /* = legacy --sky */
+
+    /* Seafoam — brand accent + "affordable / good" semantic */
+    --seafoam-700: #2d8570;
+    --seafoam-500: #5ab59a;
+    --seafoam-400: #7dd4b5;
+    --seafoam-200: #bfe5d6;
+    --seafoam-100: #e8f5ef;
+
+    /* Coral — single warning role. coral-300 replaces mustard amber. */
+    --coral-500: #c94f3a;
+    --coral-300: #e08a5b;
+    --coral-100: #f9ece9;
+
+    /* Warm neutrals */
     --sand:     #f5f0e8;
-    --coral:    #c94f3a;
-    --coral-lt: #f9ece9;
-    --green:    #2d6a4f;
-    --green-lt: #e8f4ee;
-    --amber:    #b5622a;
-    --amber-lt: #fdf0e6;
+    --bg:       #f2eeea;
+    --border:   #d0dde5;
+    --white:    #ffffff;
+
+    /* Text scale */
     --text:     #1a2630;
     --text-mid: #4a6070;
     --text-lt:  #7a95a5;
-    --border:   #d0dde5;
-    --white:    #ffffff;
-    --bg:       #f2eeea;
+
+    /* ——— Semantic aliases ——— convenient short names that map into the
+       palette above. --green / --amber now point at seafoam / coral-300
+       respectively: that's the whole point of the palette unification.  */
+    --ocean:    var(--ocean-700);
+    --ocean-mid:var(--ocean-500);
+    --sky:      var(--ocean-100);
+    --coral:    var(--coral-500);
+    --coral-lt: var(--coral-100);
+    --green:    var(--seafoam-700);
+    --green-lt: var(--seafoam-100);
+    --amber:    var(--coral-300);
+    --amber-lt: var(--coral-100);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -133,9 +163,9 @@
     font-size: 10.5px;
   }
   .header-inflation-val { font-weight: 600; letter-spacing: 0.02em; }
-  .header-inflation-val.is-hi  { color: #ff9a88; }
-  .header-inflation-val.is-mid { color: #ffc99a; }
-  .header-inflation-val.is-low { color: #a6e8c0; }
+  .header-inflation-val.is-hi  { color: #f19b86; }        /* lightened coral-500 for readability on navy */
+  .header-inflation-val.is-mid { color: #f5c4a7; }        /* lightened coral-300 */
+  .header-inflation-val.is-low { color: var(--seafoam-400); }
 
   /* County selector in hero */
   .county-select-wrap { position: relative; flex-shrink: 0; }
@@ -435,8 +465,8 @@
 
   /* Gas price live card (replaces Transportation coming-soon) */
   .gas-live-card {
-    background: linear-gradient(135deg, var(--amber-lt) 0%, white 70%);
-    border: 1px solid #e8c9a0;
+    background: linear-gradient(135deg, var(--coral-100) 0%, white 70%);
+    border: 1px solid var(--border);
     border-radius: 12px;
     padding: 18px 14px;
     text-align: center;
@@ -573,7 +603,7 @@
     transition: width 0.45s cubic-bezier(.4,0,.2,1);
   }
   .narrative-bar-income.is-affordable {
-    background: linear-gradient(90deg, #5aa97a, var(--green));
+    background: linear-gradient(90deg, var(--seafoam-400), var(--seafoam-500));
   }
 
   .narrative-chips {
@@ -655,9 +685,9 @@
   }
   .mcard--sfh .mcard-accent { background: var(--ocean); }
   .mcard--condo .mcard-accent { background: var(--ocean-mid); }
-  .mcard--income .mcard-accent { background: #059669; }
-  .mcard--idx-sfh .mcard-accent { background: #475569; }
-  .mcard--idx-condo .mcard-accent { background: #64748b; }
+  .mcard--income .mcard-accent { background: var(--seafoam-500); }
+  .mcard--idx-sfh .mcard-accent { background: var(--ocean-700); }
+  .mcard--idx-condo .mcard-accent { background: var(--ocean-500); }
 
   /* ——— Housing paired cards (v2): price + affordability merged ——— */
   .housing-pair-grid {
@@ -715,7 +745,7 @@
     border-radius: 999px;
   }
   .mcard-v2-yoy-fill.is-up   { background: linear-gradient(90deg, var(--amber), var(--coral)); }
-  .mcard-v2-yoy-fill.is-down { background: linear-gradient(90deg, var(--green), #5aa97a); }
+  .mcard-v2-yoy-fill.is-down { background: linear-gradient(90deg, var(--seafoam-500), var(--seafoam-400)); }
   .mcard-v2-yoy-fill.is-flat { background: var(--text-lt); }
 
   /* CPI sub-badge on .mcard-v2 (top-right, under date) */
@@ -863,7 +893,7 @@
   }
   .mcard-v2-bar-income.is-full { border-radius: 999px; }
   .mcard-v2-bar-income.is-affordable {
-    background: linear-gradient(90deg, #5aa97a, var(--green));
+    background: linear-gradient(90deg, var(--seafoam-400), var(--seafoam-500));
   }
   .mcard-v2-bar-gap {
     background: repeating-linear-gradient(
@@ -923,7 +953,7 @@
   }
   .kpi-idx-bar-income.is-full { border-radius: 999px; }
   .kpi-idx-bar-income.is-affordable {
-    background: linear-gradient(90deg, #5aa97a, var(--green));
+    background: linear-gradient(90deg, var(--seafoam-400), var(--seafoam-500));
   }
   .kpi-idx-bar-gap {
     background: repeating-linear-gradient(
@@ -965,7 +995,7 @@
   }
   .mcard--sfh .mvalue { color: var(--ocean); }
   .mcard--condo .mvalue { color: var(--ocean-mid); }
-  .mcard--income .mvalue { color: #059669; }
+  .mcard--income .mvalue { color: var(--seafoam-700); }
   .msub { font-size: 14px; color: var(--text-lt); margin-top: 6px; }
   .mvalue.danger { color: var(--coral) !important; }
   .mvalue.warning { color: var(--amber) !important; }
@@ -1062,8 +1092,8 @@
     text-transform: uppercase;
     font-weight: 500;
   }
-  .over { color: #f4a09a; }
-  .under { color: #7dd4a8; }
+  .over { color: var(--coral-300); }
+  .under { color: var(--seafoam-400); }
 
   .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 1.25rem; }
 
@@ -1078,9 +1108,9 @@
   .bar-row--state { margin-bottom: 10px; }
   .bar-lbl--state { font-weight: 600; color: var(--text); }
   .bar-lbl--state .state-badge { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: var(--ocean-mid); margin-top: 1px; }
-  .bar-bg--state { background: linear-gradient(135deg, #d8e8ed 0%, #e8f4f8 100%); box-shadow: inset 0 0 0 1px rgba(26, 122, 154, 0.25); }
+  .bar-bg--state { background: linear-gradient(135deg, var(--seafoam-100) 0%, var(--ocean-100) 100%); box-shadow: inset 0 0 0 1px rgba(26, 122, 154, 0.25); }
   .bar-fill--state { background: linear-gradient(90deg, rgba(26, 122, 154, 0.2) 0%, rgba(26, 122, 154, 0.3) 100%) !important; border-right: 2px solid var(--ocean-mid); }
-  .bar-separator { height: 0; border-top: 1px dashed #c0d5dd; margin: 8px 0 8px 70px; }
+  .bar-separator { height: 0; border-top: 1px dashed var(--border); margin: 8px 0 8px 70px; }
 
   .rent-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
   .rent-row-lbl { font-size: 15px; font-weight: 500; color: var(--text-mid); width: 72px; flex-shrink: 0; }
@@ -1298,15 +1328,15 @@
     box-shadow: 0 4px 14px rgba(0,0,0,0.18);
   }
   .treemap-payment-box.good {
-    background: linear-gradient(135deg, var(--green), #7a9e82);
+    background: linear-gradient(135deg, var(--seafoam-500), var(--seafoam-700));
     color: #fff;
   }
   .treemap-payment-box.moderate {
-    background: linear-gradient(135deg, var(--amber), #dab44e);
+    background: linear-gradient(135deg, var(--coral-300), var(--coral-500));
     color: #fff;
   }
   .treemap-payment-box.low {
-    background: linear-gradient(135deg, var(--coral), #d06060);
+    background: linear-gradient(135deg, var(--coral-500), #a8422f);
     color: #fff;
   }
   .treemap-payment-value {
@@ -1553,8 +1583,8 @@
     <div class="card-title">Rental market</div>
     <div class="card-sub">Median contract rent (existing leases) vs. asking rent for new listings &nbsp;·&nbsp; both exclude utilities</div>
     <div class="legend-row">
-      <span><span class="swatch" style="background:#5a9fd4;"></span>Existing lease <span style="color:var(--text-lt);font-size:13px;">(BLS CPI — Honolulu; Census ACS — neighbor islands)</span></span>
-      <span><span class="swatch" style="background:#d97b6c;"></span>Asking rent <span style="color:var(--text-lt);font-size:13px;">(Zillow ZORI)</span></span>
+      <span><span class="swatch" style="background:var(--ocean-300);"></span>Existing lease <span style="color:var(--text-lt);font-size:13px;">(BLS CPI — Honolulu; Census ACS — neighbor islands)</span></span>
+      <span><span class="swatch" style="background:var(--coral-500);"></span>Asking rent <span style="color:var(--text-lt);font-size:13px;">(Zillow ZORI)</span></span>
     </div>
     <div id="rent-grid"></div>
   </div>
@@ -1584,10 +1614,10 @@
         </div>
         <div class="card-sub" style="margin-bottom:8px;">Low-end cost indices &nbsp;·&nbsp; Q1 2020 = 100</div>
         <div class="legend-row" style="margin-bottom:10px;">
-          <span><span class="swatch" style="background:#1a7a9a;"></span>Multifamily</span>
-          <span><span class="swatch" style="background:#2d6a4f;"></span>Single-family</span>
-          <span><span class="swatch" style="background:#b5622a;"></span>Ground parking</span>
-          <span><span class="swatch" style="background:#888;"></span>Composite</span>
+          <span><span class="swatch" style="background:var(--ocean-500);"></span>Multifamily</span>
+          <span><span class="swatch" style="background:var(--seafoam-500);"></span>Single-family</span>
+          <span><span class="swatch" style="background:var(--coral-300);"></span>Ground parking</span>
+          <span><span class="swatch" style="background:var(--ocean-900);"></span>Composite</span>
         </div>
         <div style="position:relative;width:100%;height:180px;"><canvas id="rlb-chart"></canvas></div>
 
@@ -1704,14 +1734,16 @@ function gaugeArc(val, color) {
   const total = 157;
   const filled = Math.min(val / 100, 1) * total;
   return `<svg viewBox="0 0 120 72" width="100%" style="max-width:140px;display:block;margin:0 auto;">
-    <path d="M 10 62 A 50 50 0 0 1 110 62" fill="none" stroke="#e8edf0" stroke-width="10" stroke-linecap="round"/>
+    <path d="M 10 62 A 50 50 0 0 1 110 62" fill="none" stroke="var(--ocean-100)" stroke-width="10" stroke-linecap="round"/>
     <path d="M 10 62 A 50 50 0 0 1 110 62" fill="none" stroke="${color}" stroke-width="10" stroke-linecap="round" stroke-dasharray="${filled.toFixed(1)} ${total}"/>
     <text x="60" y="60" text-anchor="middle" font-family="DM Serif Display, serif" font-size="26" fill="${color}">${Math.round(val)}</text>
   </svg>`;
 }
 const countyPop = { State: 1435000, Honolulu: 1016000, Hawaii: 201000, Maui: 167000, Kauai: 73000 };
-function ptiColor(v) { return v>0.60?'#c94f3a':v>0.40?'#b5622a':'#2d6a4f'; }
-function ptiTextColor(v) { return v>0.60?'#c94f3a':v>0.40?'#b5622a':'#2d6a4f'; }
+/* Hexes here map 1:1 to --coral-500 / --coral-300 / --seafoam-500;
+   kept inline because these values flow straight into SVG fill attrs. */
+function ptiColor(v)     { return v>0.60?'#c94f3a':v>0.40?'#e08a5b':'#5ab59a'; }
+function ptiTextColor(v) { return v>0.60?'#c94f3a':v>0.40?'#e08a5b':'#5ab59a'; }
 function idxClass(v) { return v<55?'danger':v<80?'warning':'ok'; }
 
 function calcAffordPrice(income, ratePct) {
@@ -1953,11 +1985,11 @@ function selectCounty(county) {
       <div class="rent-row-lbl" style="${isState?'font-weight:700;color:var(--text);':''}">${shortLbl[c]}${isState?'<br><span style="font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:var(--ocean-mid);">Median</span>':''}</div>
       <div class="rent-bar-group">
         <div class="rent-hbar-wrap">
-          <div class="rent-hbar" style="width:${w1}%;background:#5a9fd4;"></div>
+          <div class="rent-hbar" style="width:${w1}%;background:var(--ocean-300);"></div>
           <div class="rent-hbar-val">${fmt(rd.rent)}</div>
         </div>
         <div class="rent-hbar-wrap">
-          <div class="rent-hbar" style="width:${w2}%;background:#d97b6c;"></div>
+          <div class="rent-hbar" style="width:${w2}%;background:var(--coral-500);"></div>
           <div class="rent-hbar-val">${fmt(rd.askRent)} <span class="rent-gap-label">+${fmt(gap)}/mo premium</span></div>
         </div>
       </div>
@@ -2349,7 +2381,7 @@ function renderBuildAuth() {
     const w = (v / maxAuth * 100).toFixed(1);
     return `<div class="bar-row">
       <div class="bar-lbl">${shortLbl[c]}</div>
-      <div class="bar-bg"><div class="bar-fill" style="width:${w}%;background:#1a7a9a;opacity:0.75;"></div></div>
+      <div class="bar-bg"><div class="bar-fill" style="width:${w}%;background:var(--ocean-500);opacity:0.75;"></div></div>
       <div style="flex-shrink:0;text-align:right;min-width:160px;">
         <span style="font-size:14px;color:var(--ocean);font-weight:500;">$${v.toLocaleString()}M total</span>
         <span style="font-size:13px;color:var(--text-lt);margin-left:8px;">$${pc.toLocaleString()}/resident</span>
@@ -2510,10 +2542,12 @@ const rlbChart = new Chart(document.getElementById('rlb-chart'), {
   data: {
     labels: rlbLabels,
     datasets: [
+      // Colors track --ocean-500 / --seafoam-500 / --coral-300 / --ocean-900.
+      // Kept as hex because Chart.js doesn't resolve CSS variables.
       makeDataset('Multifamily',    rlbMF,   '#1a7a9a'),
-      makeDataset('Single-family',  rlbSF,   '#2d6a4f'),
-      makeDataset('Ground parking', rlbPkg,  '#b5622a'),
-      makeDataset('Composite',      rlbComp, '#888888', [4,3]),
+      makeDataset('Single-family',  rlbSF,   '#5ab59a'),
+      makeDataset('Ground parking', rlbPkg,  '#e08a5b'),
+      makeDataset('Composite',      rlbComp, '#0a3d58', [4,3]),
     ]
   },
   options: {
