@@ -1,0 +1,17 @@
+household_type,household_label,county,geoid,date,basket_total_pretax,household_cost_pretax,household_cost_with_tax,effective_factor,get_tax_rate
+single_adult_female,"Single adult (female, 19-50)",hawaii,15001,2026-04-15,172.31,51.35,53.66,0.298,0.045
+single_adult_female,"Single adult (female, 19-50)",honolulu,15003,2026-04-15,171.82,51.2,53.5,0.298,0.045
+single_adult_female,"Single adult (female, 19-50)",kauai,15007,2026-04-15,165.41,49.29,51.51,0.298,0.045
+single_adult_female,"Single adult (female, 19-50)",maui,15009,2026-04-15,180.69,53.85,56.27,0.298,0.045
+single_adult_male,"Single adult (male, 19-50)",hawaii,15001,2026-04-15,172.31,64.27,67.16,0.373,0.045
+single_adult_male,"Single adult (male, 19-50)",honolulu,15003,2026-04-15,171.82,64.09,66.97,0.373,0.045
+single_adult_male,"Single adult (male, 19-50)",kauai,15007,2026-04-15,165.41,61.7,64.48,0.373,0.045
+single_adult_male,"Single adult (male, 19-50)",maui,15009,2026-04-15,180.69,67.4,70.43,0.373,0.045
+single_parent_one_child,Single parent + 1 child (6-8),hawaii,15001,2026-04-15,172.31,88.57,92.56,0.514,0.045
+single_parent_one_child,Single parent + 1 child (6-8),honolulu,15003,2026-04-15,171.82,88.32,92.29,0.514,0.045
+single_parent_one_child,Single parent + 1 child (6-8),kauai,15007,2026-04-15,165.41,85.02,88.85,0.514,0.045
+single_parent_one_child,Single parent + 1 child (6-8),maui,15009,2026-04-15,180.69,92.87,97.05,0.514,0.045
+two_adults_two_children,Two adults + two children,hawaii,15001,2026-04-15,172.31,172.31,180.06,1.0,0.045
+two_adults_two_children,Two adults + two children,honolulu,15003,2026-04-15,171.82,171.82,179.55,1.0,0.045
+two_adults_two_children,Two adults + two children,kauai,15007,2026-04-15,165.41,165.41,172.85,1.0,0.045
+two_adults_two_children,Two adults + two children,maui,15009,2026-04-15,180.69,180.69,188.82,1.0,0.045

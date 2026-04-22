@@ -1,0 +1,1128 @@
+{
+  "version": "1.0.0",
+  "description": "Fixed basket of 85 grocery items for Hawaii county-level price index",
+  "methodology": "USDA Thrifty Food Plan commodity groups, adjusted for Hawaii consumption patterns",
+  "last_updated": "2026-04-09",
+  "rebase_schedule": "quarterly",
+  "categories": [
+    {
+      "id": "grains",
+      "name": "Grains",
+      "weight": 0.16,
+      "items": [
+        {
+          "slot_id": "GRAIN-01",
+          "subcategory": "rice",
+          "description": "Medium grain white Calrose rice, 5 lb",
+          "brand": "Nishiki",
+          "pack_size": 80,
+          "pack_unit": "oz",
+          "norm_unit": "lb",
+          "upc": null,
+          "substitutions": ["Botan Calrose 5 lb", "Hinode Calrose 5 lb"],
+          "notes": "Hawaii #1 staple grain. Calrose medium grain is the standard variety."
+        },
+        {
+          "slot_id": "GRAIN-02",
+          "subcategory": "rice",
+          "description": "Jasmine rice, 5 lb",
+          "brand": "Dynasty",
+          "pack_size": 80,
+          "pack_unit": "oz",
+          "norm_unit": "lb",
+          "upc": null,
+          "substitutions": ["Mahatma Jasmine 5 lb"],
+          "notes": "Reflects Southeast Asian food culture in Hawaii."
+        },
+        {
+          "slot_id": "GRAIN-03",
+          "subcategory": "bread",
+          "description": "White sandwich bread, 20 oz",
+          "brand": "Nature's Own Butterbread",
+          "pack_size": 20,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Sara Lee White", "King's Hawaiian Sliced"]
+        },
+        {
+          "slot_id": "GRAIN-04",
+          "subcategory": "bread",
+          "description": "Whole wheat sandwich bread, 20 oz",
+          "brand": "Nature's Own 100% Whole Wheat",
+          "pack_size": 20,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Sara Lee 100% Whole Wheat", "Oroweat"]
+        },
+        {
+          "slot_id": "GRAIN-05",
+          "subcategory": "cereal",
+          "description": "Toasted oat cereal, 18 oz",
+          "brand": "General Mills Cheerios",
+          "pack_size": 18,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": "016000275287",
+          "substitutions": ["Store brand toasted oats"]
+        },
+        {
+          "slot_id": "GRAIN-06",
+          "subcategory": "cereal",
+          "description": "Frosted flakes cereal, 13.5 oz",
+          "brand": "Kellogg's Frosted Flakes",
+          "pack_size": 13.5,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Store brand frosted flakes"]
+        },
+        {
+          "slot_id": "GRAIN-07",
+          "subcategory": "pasta",
+          "description": "Spaghetti, enriched, 16 oz",
+          "brand": "Barilla",
+          "pack_size": 16,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Ronzoni", "Store brand spaghetti"]
+        },
+        {
+          "slot_id": "GRAIN-08",
+          "subcategory": "pasta",
+          "description": "Elbow macaroni, enriched, 16 oz",
+          "brand": "Barilla",
+          "pack_size": 16,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Store brand elbow macaroni"]
+        },
+        {
+          "slot_id": "GRAIN-09",
+          "subcategory": "flour",
+          "description": "All-purpose flour, 5 lb",
+          "brand": "Gold Medal",
+          "pack_size": 80,
+          "pack_unit": "oz",
+          "norm_unit": "lb",
+          "upc": null,
+          "substitutions": ["Pillsbury", "Store brand"]
+        },
+        {
+          "slot_id": "GRAIN-10",
+          "subcategory": "oats",
+          "description": "Old fashioned rolled oats, 42 oz",
+          "brand": "Quaker",
+          "pack_size": 42,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Store brand rolled oats"]
+        },
+        {
+          "slot_id": "GRAIN-11",
+          "subcategory": "tortillas",
+          "description": "Flour tortillas, burrito size, 8 ct",
+          "brand": "Mission",
+          "pack_size": 20,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Store brand flour tortillas"]
+        }
+      ]
+    },
+    {
+      "id": "vegetables",
+      "name": "Vegetables",
+      "weight": 0.12,
+      "items": [
+        {
+          "slot_id": "VEG-01",
+          "subcategory": "fresh",
+          "description": "Russet potatoes, 5 lb bag",
+          "brand": "PLU 4072",
+          "pack_size": 80,
+          "pack_unit": "oz",
+          "norm_unit": "lb",
+          "upc": null,
+          "plu": "4072",
+          "substitutions": ["Any 5 lb bag"]
+        },
+        {
+          "slot_id": "VEG-02",
+          "subcategory": "fresh",
+          "description": "Yellow onions, 3 lb bag",
+          "brand": "PLU 4093",
+          "pack_size": 48,
+          "pack_unit": "oz",
+          "norm_unit": "lb",
+          "upc": null,
+          "plu": "4093",
+          "substitutions": ["Any 3 lb bag"]
+        },
+        {
+          "slot_id": "VEG-03",
+          "subcategory": "fresh",
+          "description": "Bolthouse Farms Baby-Cut Carrots 2 lb bag",
+          "brand": "Bolthouse Farms",
+          "pack_size": 32,
+          "pack_unit": "oz",
+          "norm_unit": "lb",
+          "upc": "033383666044",
+          "plu": "4562",
+          "substitutions": ["Store brand 2 lb bag", "Loose carrots PLU 4562"]
+        },
+        {
+          "slot_id": "VEG-04",
+          "subcategory": "fresh",
+          "description": "Broccoli crowns, per lb",
+          "brand": "PLU 4060",
+          "pack_size": null,
+          "pack_unit": "lb",
+          "norm_unit": "lb",
+          "upc": null,
+          "plu": "4060",
+          "substitutions": ["Any fresh broccoli crowns"]
+        },
+        {
+          "slot_id": "VEG-05",
+          "subcategory": "fresh",
+          "description": "Iceberg lettuce, head",
+          "brand": "PLU 4061",
+          "pack_size": 1,
+          "pack_unit": "head",
+          "norm_unit": "head",
+          "upc": null,
+          "plu": "4061",
+          "substitutions": ["Any iceberg head"],
+          "notes": "Perishable — outer island availability may vary."
+        },
+        {
+          "slot_id": "VEG-06",
+          "subcategory": "fresh",
+          "description": "Roma tomatoes, per lb",
+          "brand": "PLU 4087",
+          "pack_size": null,
+          "pack_unit": "lb",
+          "norm_unit": "lb",
+          "upc": null,
+          "plu": "4087",
+          "substitutions": ["Vine-ripened PLU 4664"]
+        },
+        {
+          "slot_id": "VEG-07",
+          "subcategory": "fresh",
+          "description": "Green cabbage, per lb",
+          "brand": "PLU 4069",
+          "pack_size": null,
+          "pack_unit": "lb",
+          "norm_unit": "lb",
+          "upc": null,
+          "plu": "4069",
+          "substitutions": ["Any green cabbage"],
+          "notes": "Important for local plate lunch sides."
+        },
+        {
+          "slot_id": "VEG-08",
+          "subcategory": "canned",
+          "description": "Whole kernel corn, 15.25 oz",
+          "brand": "Del Monte",
+          "pack_size": 15.25,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Green Giant", "Store brand"]
+        },
+        {
+          "slot_id": "VEG-09",
+          "subcategory": "canned",
+          "description": "Cut green beans, 14.5 oz",
+          "brand": "Del Monte",
+          "pack_size": 14.5,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Green Giant", "Store brand"]
+        },
+        {
+          "slot_id": "VEG-10",
+          "subcategory": "canned",
+          "description": "Diced tomatoes, 14.5 oz",
+          "brand": "Hunt's",
+          "pack_size": 14.5,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Del Monte", "Muir Glen", "Store brand"]
+        },
+        {
+          "slot_id": "VEG-11",
+          "subcategory": "frozen",
+          "description": "Frozen mixed vegetables, 12 oz",
+          "brand": "Birds Eye",
+          "pack_size": 12,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Store brand frozen mixed veg"],
+          "notes": "Check freezer availability on Kauai (smaller stores)."
+        }
+      ]
+    },
+    {
+      "id": "fruits",
+      "name": "Fruits",
+      "weight": 0.08,
+      "items": [
+        {
+          "slot_id": "FRUIT-01",
+          "subcategory": "fresh",
+          "description": "Bananas, per lb",
+          "brand": "PLU 4011",
+          "pack_size": null,
+          "pack_unit": "lb",
+          "norm_unit": "lb",
+          "upc": null,
+          "plu": "4011",
+          "substitutions": ["Any conventional bananas"],
+          "notes": "Some locally grown on Big Island."
+        },
+        {
+          "slot_id": "FRUIT-02",
+          "subcategory": "fresh",
+          "description": "Navel oranges, per lb",
+          "brand": "PLU 4012",
+          "pack_size": null,
+          "pack_unit": "lb",
+          "norm_unit": "lb",
+          "upc": null,
+          "plu": "4012",
+          "substitutions": ["Any navel oranges"]
+        },
+        {
+          "slot_id": "FRUIT-03",
+          "subcategory": "fresh",
+          "description": "Fuji apples, per lb",
+          "brand": "PLU 4131",
+          "pack_size": null,
+          "pack_unit": "lb",
+          "norm_unit": "lb",
+          "upc": null,
+          "plu": "4131",
+          "substitutions": ["Gala PLU 4133", "Red Delicious PLU 4015"]
+        },
+        {
+          "slot_id": "FRUIT-04",
+          "subcategory": "fresh",
+          "description": "Strawberries, 1 lb clamshell",
+          "brand": "Driscoll's",
+          "pack_size": 16,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Store brand"],
+          "notes": "Highly perishable — outer island prices often significantly higher."
+        },
+        {
+          "slot_id": "FRUIT-05",
+          "subcategory": "canned",
+          "description": "Pineapple chunks in juice, 20 oz",
+          "brand": "Dole",
+          "pack_size": 20,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Del Monte", "Store brand"],
+          "notes": "Iconic Hawaii item — Dole has historic Hawaii ties."
+        },
+        {
+          "slot_id": "FRUIT-06",
+          "subcategory": "canned",
+          "description": "Mandarin oranges in light syrup, 15 oz",
+          "brand": "Del Monte",
+          "pack_size": 15,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Dole", "Store brand"]
+        },
+        {
+          "slot_id": "FRUIT-07",
+          "subcategory": "canned",
+          "description": "Peaches sliced in juice, 15 oz",
+          "brand": "Del Monte",
+          "pack_size": 15,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Store brand"]
+        },
+        {
+          "slot_id": "FRUIT-08",
+          "subcategory": "juice",
+          "description": "Orange juice, not from concentrate, 52 fl oz",
+          "brand": "Tropicana Pure Premium",
+          "pack_size": 52,
+          "pack_unit": "fl_oz",
+          "norm_unit": "fl_oz",
+          "upc": null,
+          "substitutions": ["Simply Orange", "Minute Maid"],
+          "notes": "Refrigerated — freight-sensitive."
+        },
+        {
+          "slot_id": "FRUIT-09",
+          "subcategory": "dried",
+          "description": "Raisins, 12 oz canister",
+          "brand": "Sun-Maid",
+          "pack_size": 12,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Store brand raisins"]
+        }
+      ]
+    },
+    {
+      "id": "dairy",
+      "name": "Dairy",
+      "weight": 0.10,
+      "items": [
+        {
+          "slot_id": "DAIRY-01",
+          "subcategory": "milk",
+          "description": "Whole milk, gallon",
+          "brand": "Meadow Gold",
+          "pack_size": 128,
+          "pack_unit": "fl_oz",
+          "norm_unit": "fl_oz",
+          "upc": null,
+          "substitutions": ["Store brand gallon"],
+          "notes": "Produced on Oahu by Laulima Dairy. Outer island prices include inter-island freight surcharge — key freight differential indicator."
+        },
+        {
+          "slot_id": "DAIRY-02",
+          "subcategory": "milk",
+          "description": "2% reduced fat milk, gallon",
+          "brand": "Meadow Gold",
+          "pack_size": 128,
+          "pack_unit": "fl_oz",
+          "norm_unit": "fl_oz",
+          "upc": null,
+          "substitutions": ["Store brand 2% gallon"]
+        },
+        {
+          "slot_id": "DAIRY-03",
+          "subcategory": "cheese",
+          "description": "Mild cheddar cheese, block, 8 oz",
+          "brand": "Tillamook Medium Cheddar",
+          "pack_size": 8,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Kraft", "Cracker Barrel"],
+          "notes": "Tillamook has strong West Coast / Hawaii distribution."
+        },
+        {
+          "slot_id": "DAIRY-04",
+          "subcategory": "cheese",
+          "description": "Shredded mozzarella cheese, 8 oz",
+          "brand": "Kraft",
+          "pack_size": 8,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Store brand shredded mozzarella"]
+        },
+        {
+          "slot_id": "DAIRY-05",
+          "subcategory": "yogurt",
+          "description": "Greek yogurt, strawberry, 5.3 oz",
+          "brand": "Chobani",
+          "pack_size": 5.3,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Dannon", "Store brand Greek yogurt"]
+        },
+        {
+          "slot_id": "DAIRY-06",
+          "subcategory": "butter",
+          "description": "Salted butter, 1 lb (4 sticks)",
+          "brand": "Land O'Lakes",
+          "pack_size": 16,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Challenge", "Store brand"]
+        },
+        {
+          "slot_id": "DAIRY-07",
+          "subcategory": "eggs",
+          "description": "Large eggs, Grade A, dozen",
+          "brand": "Eggland's Best",
+          "pack_size": 12,
+          "pack_unit": "ct",
+          "norm_unit": "ct",
+          "upc": null,
+          "substitutions": ["Store brand Grade A large"],
+          "notes": "Freight-sensitive. Significant outer-island premiums."
+        },
+        {
+          "slot_id": "DAIRY-08",
+          "subcategory": "cream",
+          "description": "Half & half, quart",
+          "brand": "Meadow Gold",
+          "pack_size": 32,
+          "pack_unit": "fl_oz",
+          "norm_unit": "fl_oz",
+          "upc": null,
+          "substitutions": ["Store brand"],
+          "notes": "Local Meadow Gold production — freight tracking item."
+        },
+        {
+          "slot_id": "DAIRY-09",
+          "subcategory": "cheese",
+          "description": "Cream cheese, 8 oz brick",
+          "brand": "Philadelphia",
+          "pack_size": 8,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Store brand"]
+        }
+      ]
+    },
+    {
+      "id": "protein_meat",
+      "name": "Protein — Meat",
+      "weight": 0.19,
+      "items": [
+        {
+          "slot_id": "MEAT-01",
+          "subcategory": "beef",
+          "description": "Ground beef, 80/20, per lb",
+          "brand": "Unbranded",
+          "pack_size": null,
+          "pack_unit": "lb",
+          "norm_unit": "lb",
+          "upc": null,
+          "substitutions": ["Any 80% lean ground beef"]
+        },
+        {
+          "slot_id": "MEAT-02",
+          "subcategory": "beef",
+          "description": "Beef chuck roast, boneless, per lb",
+          "brand": "Unbranded",
+          "pack_size": null,
+          "pack_unit": "lb",
+          "norm_unit": "lb",
+          "upc": null,
+          "substitutions": ["Any boneless chuck roast"]
+        },
+        {
+          "slot_id": "MEAT-03",
+          "subcategory": "chicken",
+          "description": "Whole chicken, per lb",
+          "brand": "Foster Farms / Tyson",
+          "pack_size": null,
+          "pack_unit": "lb",
+          "norm_unit": "lb",
+          "upc": null,
+          "substitutions": ["Any whole fryer"]
+        },
+        {
+          "slot_id": "MEAT-04",
+          "subcategory": "chicken",
+          "description": "Boneless skinless chicken breast, per lb",
+          "brand": "Tyson",
+          "pack_size": null,
+          "pack_unit": "lb",
+          "norm_unit": "lb",
+          "upc": null,
+          "substitutions": ["Foster Farms", "Store brand"]
+        },
+        {
+          "slot_id": "MEAT-05",
+          "subcategory": "chicken",
+          "description": "Chicken thighs, bone-in skin-on, per lb",
+          "brand": "Unbranded",
+          "pack_size": null,
+          "pack_unit": "lb",
+          "norm_unit": "lb",
+          "upc": null,
+          "substitutions": ["Any bone-in thighs"],
+          "notes": "Very popular cut in Hawaii plate lunch culture."
+        },
+        {
+          "slot_id": "MEAT-06",
+          "subcategory": "pork",
+          "description": "Pork butt/shoulder, bone-in, per lb",
+          "brand": "Unbranded",
+          "pack_size": null,
+          "pack_unit": "lb",
+          "norm_unit": "lb",
+          "upc": null,
+          "substitutions": ["Any bone-in pork shoulder"],
+          "notes": "Essential for kalua pig and local preparations."
+        },
+        {
+          "slot_id": "MEAT-07",
+          "subcategory": "pork",
+          "description": "Pork loin chops, bone-in, per lb",
+          "brand": "Unbranded",
+          "pack_size": null,
+          "pack_unit": "lb",
+          "norm_unit": "lb",
+          "upc": null,
+          "substitutions": ["Boneless pork chops"]
+        },
+        {
+          "slot_id": "MEAT-08",
+          "subcategory": "processed",
+          "description": "SPAM Classic, 12 oz",
+          "brand": "Hormel",
+          "pack_size": 12,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": "0037600138727",
+          "substitutions": ["SPAM 25% Less Sodium"],
+          "notes": "Hawaii consumes ~7M cans/year. Present at every chain statewide."
+        },
+        {
+          "slot_id": "MEAT-09",
+          "subcategory": "processed",
+          "description": "Sliced turkey deli meat, 9 oz",
+          "brand": "Oscar Mayer Deli Fresh Oven Roasted Turkey",
+          "pack_size": 9,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Hillshire Farm", "Store brand"]
+        },
+        {
+          "slot_id": "MEAT-10",
+          "subcategory": "processed",
+          "description": "Bacon, regular sliced, 16 oz",
+          "brand": "Oscar Mayer",
+          "pack_size": 16,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Hormel Black Label", "Store brand"]
+        }
+      ]
+    },
+    {
+      "id": "protein_seafood",
+      "name": "Protein — Seafood",
+      "weight": 0.06,
+      "items": [
+        {
+          "slot_id": "FISH-01",
+          "subcategory": "canned",
+          "description": "Chunk light tuna in water, 5 oz",
+          "brand": "StarKist",
+          "pack_size": 5,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Bumble Bee", "Store brand"]
+        },
+        {
+          "slot_id": "FISH-02",
+          "subcategory": "canned",
+          "description": "Pink salmon, 14.75 oz",
+          "brand": "Bumble Bee",
+          "pack_size": 14.75,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Chicken of the Sea", "Store brand"]
+        },
+        {
+          "slot_id": "FISH-03",
+          "subcategory": "frozen",
+          "description": "SeaPak Popcorn Shrimp 16 oz (breaded)",
+          "brand": "SeaPak",
+          "pack_size": 16,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": "041322224910",
+          "substitutions": ["Great Value Raw Shrimp 16 oz (Walmart only, UPC 078742001357)"],
+          "notes": "Breaded shrimp used for cross-chain consistency — no national raw shrimp brand available at all 4 Hawaii chains."
+        },
+        {
+          "slot_id": "FISH-04",
+          "subcategory": "shelf_stable",
+          "description": "Imitation crab (surimi), 8 oz",
+          "brand": "Louis Kemp Crab Delights",
+          "pack_size": 8,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Store brand surimi"],
+          "notes": "Popular in Hawaii for poke-style preparations and musubi."
+        }
+      ]
+    },
+    {
+      "id": "protein_other",
+      "name": "Protein — Other",
+      "weight": 0.05,
+      "items": [
+        {
+          "slot_id": "PROT-01",
+          "subcategory": "beans",
+          "description": "Pinto beans, canned, 15 oz",
+          "brand": "Goya",
+          "pack_size": 15,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Bush's", "S&W", "Store brand"]
+        },
+        {
+          "slot_id": "PROT-02",
+          "subcategory": "tofu",
+          "description": "Firm tofu, 14 oz",
+          "brand": "House Foods Premium",
+          "pack_size": 14,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Nasoya", "Aloha brand (local)"],
+          "notes": "Staple protein reflecting Japanese, Chinese, Korean food traditions."
+        },
+        {
+          "slot_id": "PROT-03",
+          "subcategory": "nuts",
+          "description": "Dry roasted peanuts, 16 oz",
+          "brand": "Planters",
+          "pack_size": 16,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Store brand"]
+        },
+        {
+          "slot_id": "PROT-04",
+          "subcategory": "peanut_butter",
+          "description": "Creamy peanut butter, 16 oz",
+          "brand": "Jif",
+          "pack_size": 16,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Skippy", "Store brand"]
+        }
+      ]
+    },
+    {
+      "id": "fats_oils",
+      "name": "Fats & Oils",
+      "weight": 0.03,
+      "items": [
+        {
+          "slot_id": "FAT-01",
+          "subcategory": "cooking_oil",
+          "description": "Vegetable/soybean oil, 48 fl oz",
+          "brand": "Crisco Pure Vegetable Oil",
+          "pack_size": 48,
+          "pack_unit": "fl_oz",
+          "norm_unit": "fl_oz",
+          "upc": null,
+          "substitutions": ["Wesson", "Store brand"]
+        },
+        {
+          "slot_id": "FAT-02",
+          "subcategory": "cooking_oil",
+          "description": "Canola oil, 48 fl oz",
+          "brand": "Crisco Pure Canola Oil",
+          "pack_size": 48,
+          "pack_unit": "fl_oz",
+          "norm_unit": "fl_oz",
+          "upc": null,
+          "substitutions": ["Wesson", "Store brand"]
+        },
+        {
+          "slot_id": "FAT-03",
+          "subcategory": "margarine",
+          "description": "Margarine spread, 15 oz tub",
+          "brand": "Country Crock Original",
+          "pack_size": 15,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["I Can't Believe It's Not Butter", "Store brand"]
+        }
+      ]
+    },
+    {
+      "id": "beverages",
+      "name": "Beverages",
+      "weight": 0.08,
+      "items": [
+        {
+          "slot_id": "BEV-01",
+          "subcategory": "water",
+          "description": "Purified water, 40-pack 16.9 fl oz",
+          "brand": "Kirkland Signature (Costco)",
+          "pack_size": 676,
+          "pack_unit": "fl_oz",
+          "norm_unit": "fl_oz",
+          "upc": "096619756803",
+          "substitutions": ["Dasani 24-pk", "Aquafina 24-pk"],
+          "notes": "Costco sells 40-count (not 24). Some outer island areas rely on bottled water."
+        },
+        {
+          "slot_id": "BEV-02",
+          "subcategory": "water",
+          "description": "Purified water, 1 gallon",
+          "brand": "Arrowhead",
+          "pack_size": 128,
+          "pack_unit": "fl_oz",
+          "norm_unit": "fl_oz",
+          "upc": null,
+          "substitutions": ["Store brand gallon water"]
+        },
+        {
+          "slot_id": "BEV-03",
+          "subcategory": "coffee",
+          "description": "Ground coffee, medium roast, ~11 oz",
+          "brand": "Folgers Classic Roast",
+          "pack_size": 11.3,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Maxwell House"],
+          "notes": "Hawaii-grown Kona coffee is 5-10x price — not suitable for cost-of-living basket."
+        },
+        {
+          "slot_id": "BEV-04",
+          "subcategory": "soda",
+          "description": "Cola, 12-pack 12 fl oz cans",
+          "brand": "Coca-Cola Classic",
+          "pack_size": 144,
+          "pack_unit": "fl_oz",
+          "norm_unit": "fl_oz",
+          "upc": null,
+          "substitutions": ["Pepsi"],
+          "notes": "Hawaii has 5-cent container deposit per can."
+        },
+        {
+          "slot_id": "BEV-05",
+          "subcategory": "juice",
+          "description": "Apple juice, 64 fl oz",
+          "brand": "Mott's 100% Apple Juice",
+          "pack_size": 64,
+          "pack_unit": "fl_oz",
+          "norm_unit": "fl_oz",
+          "upc": null,
+          "substitutions": ["Tree Top", "Store brand"]
+        },
+        {
+          "slot_id": "BEV-06",
+          "subcategory": "tea",
+          "description": "Green tea bags, 20 ct",
+          "brand": "ITO EN Oi Ocha",
+          "pack_size": 20,
+          "pack_unit": "ct",
+          "norm_unit": "ct",
+          "upc": null,
+          "substitutions": ["Bigelow Green Tea 20 ct"],
+          "notes": "ITO EN has dominant Hawaii market share (Japanese tea brand)."
+        }
+      ]
+    },
+    {
+      "id": "condiments",
+      "name": "Condiments & Spices",
+      "weight": 0.05,
+      "items": [
+        {
+          "slot_id": "COND-01",
+          "subcategory": "soy_sauce",
+          "description": "Naturally brewed soy sauce, 15 fl oz",
+          "brand": "Kikkoman",
+          "pack_size": 15,
+          "pack_unit": "fl_oz",
+          "norm_unit": "fl_oz",
+          "upc": null,
+          "substitutions": ["Aloha Shoyu (local HI brand)"],
+          "notes": "Pantry staple across all Hawaii ethnicities."
+        },
+        {
+          "slot_id": "COND-02",
+          "subcategory": "ketchup",
+          "description": "Tomato ketchup, 20 oz squeeze",
+          "brand": "Heinz",
+          "pack_size": 20,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Hunt's", "Store brand"]
+        },
+        {
+          "slot_id": "COND-03",
+          "subcategory": "mayonnaise",
+          "description": "Real mayonnaise, 30 fl oz",
+          "brand": "Best Foods",
+          "pack_size": 30,
+          "pack_unit": "fl_oz",
+          "norm_unit": "fl_oz",
+          "upc": null,
+          "substitutions": ["Store brand"],
+          "notes": "Best Foods is the West Coast/Hawaii label for Hellmann's."
+        },
+        {
+          "slot_id": "COND-04",
+          "subcategory": "salt",
+          "description": "Iodized table salt, 26 oz",
+          "brand": "Morton",
+          "pack_size": 26,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Store brand"]
+        },
+        {
+          "slot_id": "COND-05",
+          "subcategory": "hot_sauce",
+          "description": "Hot pepper sauce, 5 fl oz",
+          "brand": "Tabasco Original Red Pepper",
+          "pack_size": 5,
+          "pack_unit": "fl_oz",
+          "norm_unit": "fl_oz",
+          "upc": null,
+          "substitutions": ["Frank's RedHot 5 fl oz"]
+        },
+        {
+          "slot_id": "COND-06",
+          "subcategory": "fermented",
+          "description": "Kimchi, 14 oz jar",
+          "brand": "Chongga / King's",
+          "pack_size": 14,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Any nationally distributed 14 oz kimchi"],
+          "notes": "Reflects large Korean-American population and widespread consumption."
+        }
+      ]
+    },
+    {
+      "id": "sugars_sweets",
+      "name": "Sugars & Sweets",
+      "weight": 0.02,
+      "items": [
+        {
+          "slot_id": "SWEET-01",
+          "subcategory": "sugar",
+          "description": "Granulated white sugar, 4 lb",
+          "brand": "C&H Pure Cane Sugar",
+          "pack_size": 64,
+          "pack_unit": "oz",
+          "norm_unit": "lb",
+          "upc": null,
+          "substitutions": ["Domino", "Store brand"],
+          "notes": "C&H has strong West Coast/Hawaii distribution. Hawaii was historically a sugar-producing state."
+        },
+        {
+          "slot_id": "SWEET-02",
+          "subcategory": "syrup",
+          "description": "Pancake syrup, 24 fl oz",
+          "brand": "Mrs. Butterworth's Original",
+          "pack_size": 24,
+          "pack_unit": "fl_oz",
+          "norm_unit": "fl_oz",
+          "upc": null,
+          "substitutions": ["Log Cabin", "Pearl Milling"]
+        },
+        {
+          "slot_id": "SWEET-03",
+          "subcategory": "jam",
+          "description": "Strawberry preserves, 18 oz",
+          "brand": "Smucker's",
+          "pack_size": 18,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Welch's", "Store brand"]
+        }
+      ]
+    },
+    {
+      "id": "snacks",
+      "name": "Snacks",
+      "weight": 0.03,
+      "items": [
+        {
+          "slot_id": "SNACK-01",
+          "subcategory": "chips",
+          "description": "Regular potato chips, 8 oz",
+          "brand": "Lay's Classic",
+          "pack_size": 8,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Store brand", "Kettle Brand"]
+        },
+        {
+          "slot_id": "SNACK-02",
+          "subcategory": "crackers",
+          "description": "Saltine crackers, 16 oz",
+          "brand": "Premium (Nabisco)",
+          "pack_size": 16,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Store brand saltines"]
+        },
+        {
+          "slot_id": "SNACK-03",
+          "subcategory": "rice_crackers",
+          "description": "Diamond Bakery Kakimochi (Hawaiian Cookies) 4.5 oz",
+          "brand": "Diamond Bakery",
+          "pack_size": 4.5,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": "073218350403",
+          "substitutions": ["Ka-Me Original Rice Crackers 3.5 oz (UPC 070844001013)"],
+          "notes": "Diamond Bakery is Oahu-based manufacturer with statewide distribution. Arare is ubiquitous in Hawaii."
+        }
+      ]
+    },
+    {
+      "id": "prepared",
+      "name": "Prepared / Convenience",
+      "weight": 0.03,
+      "items": [
+        {
+          "slot_id": "PREP-01",
+          "subcategory": "canned_soup",
+          "description": "Chicken noodle soup, condensed, 10.75 oz",
+          "brand": "Campbell's",
+          "pack_size": 10.75,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Store brand"]
+        },
+        {
+          "slot_id": "PREP-02",
+          "subcategory": "canned_meal",
+          "description": "Chili with beans, 15 oz",
+          "brand": "Hormel",
+          "pack_size": 15,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Nalley", "Store brand"]
+        },
+        {
+          "slot_id": "PREP-03",
+          "subcategory": "instant_noodles",
+          "description": "Instant ramen, soy sauce, 6-pack 3 oz",
+          "brand": "Maruchan",
+          "pack_size": 18,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Top Ramen (Nissin)"],
+          "notes": "Saimin culture — pantry staple statewide."
+        },
+        {
+          "slot_id": "PREP-04",
+          "subcategory": "frozen_meal",
+          "description": "Frozen dinner, ~10 oz",
+          "brand": "Banquet / Stouffer's",
+          "pack_size": 10,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Marie Callender's", "Hungry-Man"],
+          "notes": "Check freezer availability on outer islands."
+        },
+        {
+          "slot_id": "PREP-05",
+          "subcategory": "mac_cheese",
+          "description": "Macaroni and cheese dinner, 7.25 oz",
+          "brand": "Kraft Original",
+          "pack_size": 7.25,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Annie's", "Store brand"]
+        },
+        {
+          "slot_id": "PREP-06",
+          "subcategory": "canned_stew",
+          "description": "Beef stew, 15 oz",
+          "brand": "Dinty Moore",
+          "pack_size": 15,
+          "pack_unit": "oz",
+          "norm_unit": "oz",
+          "upc": null,
+          "substitutions": ["Store brand"],
+          "notes": "Shelf-stable protein — important for pantry stocking in remote areas."
+        }
+      ]
+    }
+  ],
+  "chains": {
+    "foodland": {
+      "name": "Foodland",
+      "counties": ["honolulu", "maui", "hawaii", "kauai"],
+      "store_brand": "Maika'i",
+      "role": "Primary comparison anchor — operates in all 4 counties"
+    },
+    "costco": {
+      "name": "Costco",
+      "counties": ["honolulu", "maui", "hawaii", "kauai"],
+      "store_brand": "Kirkland Signature",
+      "role": "Bulk pricing benchmark"
+    },
+    "times": {
+      "name": "Times Supermarket / Big Save",
+      "counties": ["honolulu", "maui", "kauai"],
+      "store_brand": "Best Value",
+      "role": "Kauai dominant chain (as Big Save)"
+    },
+    "safeway": {
+      "name": "Safeway",
+      "counties": ["honolulu", "maui", "hawaii"],
+      "store_brand": "Signature Select",
+      "role": "National chain reference"
+    },
+    "kta": {
+      "name": "KTA Super Stores",
+      "counties": ["hawaii"],
+      "store_brand": "Mountain Apple",
+      "role": "Big Island dominant (8 locations)"
+    },
+    "walmart": {
+      "name": "Walmart",
+      "counties": ["honolulu", "maui", "hawaii"],
+      "store_brand": "Great Value",
+      "role": "Low-price reference"
+    },
+    "don_quijote": {
+      "name": "Don Quijote",
+      "counties": ["honolulu"],
+      "store_brand": null,
+      "role": "Asian grocery specialist"
+    }
+  },
+  "substitution_protocol": {
+    "priority": [
+      "Same brand, different size (normalize per-unit price)",
+      "Specified alternate brand from substitutions list",
+      "Store brand equivalent"
+    ],
+    "rules": "Any substitution is flagged in data. Never treated as direct comparison without notation."
+  }
+}

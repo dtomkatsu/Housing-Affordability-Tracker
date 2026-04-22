@@ -1,0 +1,560 @@
+{
+  "version": "1.0.0",
+  "description": "UPC registry mapping each basket item to confirmed barcodes. Sourced from Open Food Facts API queries (batches 1-3, completed 2026-04-10).",
+  "last_updated": "2026-04-10",
+  "upc_resolution_sources": [
+    "Open Food Facts API (world.openfoodfacts.org)",
+    "UPCitemdb (upcitemdb.com)",
+    "Barcode Spider (barcodespider.com)",
+    "Go-UPC (go-upc.com)",
+    "Foodland product listings (shop.foodland.com)",
+    "Retailer pages (Target, Walmart, Kroger)"
+  ],
+  "notes": [
+    "62 of 85 items have confirmed UPCs from online databases",
+    "10 fresh produce items use standardized PLU codes (no UPC needed)",
+    "7 fresh meat items are priced by posted $/lb (no UPC needed)",
+    "5 items need a single Foodland shelf visit to scan barcodes",
+    "1 item (Diamond Bakery arare) is a regional Hawaii product not in any online UPC database"
+  ],
+  "upc_by_slot": {
+    "GRAIN-01": {
+      "description": "Nishiki Medium Grain Rice 5 lb",
+      "primary_upc": "0011152285894",
+      "alt_upcs": [],
+      "notes": "Confirmed 5 lb from batch 1."
+    },
+    "GRAIN-02": {
+      "description": "Dynasty Jasmine Rice 5 lb",
+      "primary_upc": "0011152443683",
+      "alt_upcs": [],
+      "notes": "Confirmed 5 lb from batch 1. Exact match."
+    },
+    "GRAIN-03": {
+      "description": "Nature's Own Butterbread 20 oz",
+      "primary_upc": "0072250049191",
+      "alt_upcs": [],
+      "notes": "Confirmed 20 oz / 567g from batch 1. Exact match."
+    },
+    "GRAIN-04": {
+      "description": "Nature's Own 100% Whole Wheat 20 oz",
+      "primary_upc": "0072250037129",
+      "alt_upcs": [],
+      "notes": "Confirmed 20 oz / 567g from batch 1. Exact match."
+    },
+    "GRAIN-05": {
+      "description": "General Mills Cheerios 18 oz",
+      "primary_upc": "016000275287",
+      "alt_upcs": [],
+      "notes": "Already confirmed in plan. This UPC is verified."
+    },
+    "GRAIN-06": {
+      "description": "Kellogg's Frosted Flakes 13.5 oz",
+      "primary_upc": "038000199042",
+      "alt_upcs": [],
+      "notes": "Confirmed 13.5 oz via UPCitemdb / Foods Co listing."
+    },
+    "GRAIN-07": {
+      "description": "Barilla Spaghetti 16 oz",
+      "primary_upc": "0076808515046",
+      "alt_upcs": [],
+      "notes": "Confirmed US 16 oz / 1 lb / 454g from batch 1."
+    },
+    "GRAIN-08": {
+      "description": "Barilla Elbows 16 oz",
+      "primary_upc": "0076808516135",
+      "alt_upcs": [],
+      "notes": "Confirmed 16 oz / 1 lb / 454g from batch 1."
+    },
+    "GRAIN-09": {
+      "description": "Gold Medal All Purpose Flour 5 lb",
+      "primary_upc": "0016000106109",
+      "alt_upcs": [],
+      "notes": "Confirmed 5 lb / 80 oz from batch 1. Exact match."
+    },
+    "GRAIN-10": {
+      "description": "Quaker Old Fashioned Oats 42 oz",
+      "primary_upc": "030000010402",
+      "alt_upcs": [],
+      "notes": "Confirmed 42 oz via UPCitemdb."
+    },
+    "GRAIN-11": {
+      "description": "Mission Burrito Flour Tortillas 8 ct / 20 oz",
+      "primary_upc": "0073731004197",
+      "alt_upcs": [],
+      "notes": "Confirmed 20 oz standard size from batch 1."
+    },
+    "VEG-01": {
+      "description": "Russet potatoes, 5 lb bag",
+      "primary_upc": null,
+      "plu_code": "4072",
+      "notes": "Standardized PLU code. Price by posted $/lb."
+    },
+    "VEG-02": {
+      "description": "Yellow onions, 3 lb bag",
+      "primary_upc": null,
+      "plu_code": "4093",
+      "notes": "Standardized PLU code. Price by posted $/lb."
+    },
+    "VEG-03": {
+      "description": "Bolthouse Farms Baby-Cut Carrots 2 lb bag",
+      "primary_upc": "033383666044",
+      "alt_upcs": ["033383666020 (1 lb variant)"],
+      "plu_code": "4562",
+      "notes": "Confirmed 2 lb via Walmart, Super 1 Foods, Brookshire's. Bolthouse/Grimmway is the dominant national carrot supplier — available at all 4 chains."
+    },
+    "VEG-04": {
+      "description": "Broccoli crowns, per lb",
+      "primary_upc": null,
+      "plu_code": "4060",
+      "notes": "Standardized PLU code. Price by posted $/lb."
+    },
+    "VEG-05": {
+      "description": "Iceberg lettuce, head",
+      "primary_upc": null,
+      "plu_code": "4061",
+      "notes": "Standardized PLU code. Price per head."
+    },
+    "VEG-06": {
+      "description": "Roma tomatoes, per lb",
+      "primary_upc": null,
+      "plu_code": "4087",
+      "notes": "Standardized PLU code. Price by posted $/lb."
+    },
+    "VEG-07": {
+      "description": "Green cabbage, per lb",
+      "primary_upc": null,
+      "plu_code": "4069",
+      "notes": "Standardized PLU code. Price by posted $/lb."
+    },
+    "VEG-08": {
+      "description": "Del Monte Whole Kernel Corn 15.25 oz",
+      "primary_upc": "0024000163022",
+      "alt_upcs": [],
+      "notes": "Confirmed 432g / ~15.25 oz from batch 1."
+    },
+    "VEG-09": {
+      "description": "Del Monte Cut Green Beans 14.5 oz",
+      "primary_upc": "0024000162865",
+      "alt_upcs": [],
+      "notes": "Confirmed 14.5 oz / 411g from batch 1."
+    },
+    "VEG-10": {
+      "description": "Hunt's Diced Tomatoes 14.5 oz",
+      "primary_upc": "0027000379882",
+      "alt_upcs": [],
+      "notes": "Confirmed plain diced tomatoes from batch 1."
+    },
+    "VEG-11": {
+      "description": "Birds Eye Mixed Vegetables 12 oz",
+      "primary_upc": "014500016683",
+      "alt_upcs": [],
+      "notes": "Confirmed 12 oz Steamfresh Selects via UPCitemdb."
+    },
+    "FRUIT-01": {
+      "description": "Bananas (PLU code, loose)",
+      "primary_upc": null,
+      "plu_code": "4011",
+      "notes": "Standardized PLU code — identical across all US retailers. No UPC needed; price by posted $/lb."
+    },
+    "FRUIT-02": {
+      "description": "Navel oranges (PLU code, loose)",
+      "primary_upc": null,
+      "plu_code": "4012",
+      "notes": "Standardized PLU code. Price by posted $/lb."
+    },
+    "FRUIT-03": {
+      "description": "Fuji apples (PLU code, loose)",
+      "primary_upc": null,
+      "plu_code": "4131",
+      "notes": "Standardized PLU code. Price by posted $/lb."
+    },
+    "FRUIT-04": {
+      "description": "Driscoll's Strawberries 1 lb",
+      "primary_upc": "0715756200023",
+      "alt_upcs": [],
+      "notes": "Confirmed 16 oz / 1 lb clamshell from batch 2."
+    },
+    "FRUIT-05": {
+      "description": "Dole Pineapple Chunks in Juice 20 oz",
+      "primary_upc": "0038900004736",
+      "alt_upcs": [],
+      "notes": "Confirmed 567g (~20 oz) from batch 2."
+    },
+    "FRUIT-06": {
+      "description": "Del Monte Mandarin Oranges 15 oz",
+      "primary_upc": "0024000050445",
+      "alt_upcs": [],
+      "notes": "Found from batch 2. Exact 15 oz size not confirmed in API; this is the closest US Del Monte match."
+    },
+    "FRUIT-07": {
+      "description": "Del Monte Sliced Peaches 15 oz",
+      "primary_upc": "0024000167136",
+      "alt_upcs": [],
+      "notes": "Confirmed 425g / 15 oz from batch 2."
+    },
+    "FRUIT-08": {
+      "description": "Tropicana Pure Premium Orange Juice 52 oz",
+      "primary_upc": "0048500202746",
+      "alt_upcs": [],
+      "notes": "Found from batch 2. Exact 52 oz size not confirmed in API; closest match."
+    },
+    "FRUIT-09": {
+      "description": "Sun-Maid Raisins 12 oz",
+      "primary_upc": "0041143020043",
+      "alt_upcs": [],
+      "notes": "Found from batch 2. Exact 12 oz size not confirmed; closest generic Sun-Maid match."
+    },
+    "DAIRY-01": {
+      "description": "Meadow Gold Whole Milk, gallon (Hawaii / Laulima Dairy)",
+      "primary_upc": null,
+      "scrape_strategy": "name_match",
+      "scrape_terms": ["Meadow Gold", "whole milk", "gallon"],
+      "cross_chain_anchor_upc": "041900076382",
+      "cross_chain_anchor_brand": "DairyPure Whole Milk 1 Gallon",
+      "chain_specific": {
+        "walmart": "078742351865",
+        "walmart_brand": "Great Value Whole Vitamin D Milk 1 Gallon",
+        "safeway": "021130070022",
+        "safeway_brand": "Lucerne Whole Milk 1 Gallon"
+      },
+      "notes": "Primary: match Meadow Gold Hawaii by name (UPC not in databases; Foodland URL embeds UPC once found). Cross-chain anchor: DairyPure 041900076382 for Foodland/Safeway/Times. Walmart: Great Value. Safeway: Lucerne. Price spread = freight cost signal."
+    },
+    "DAIRY-02": {
+      "description": "Meadow Gold 2% Milk, gallon (Hawaii / Laulima Dairy)",
+      "primary_upc": null,
+      "scrape_strategy": "name_match",
+      "scrape_terms": ["Meadow Gold", "2%", "reduced fat", "gallon"],
+      "cross_chain_anchor_upc": "041900076610",
+      "cross_chain_anchor_brand": "DairyPure 2% Reduced Fat Milk 1 Gallon",
+      "chain_specific": {
+        "walmart": "078742351872",
+        "walmart_brand": "Great Value 2% Reduced Fat Milk 1 Gallon",
+        "safeway": "021130070039",
+        "safeway_brand": "Lucerne 2% Reduced Fat Milk 1 Gallon (UPC estimated — verify)"
+      },
+      "notes": "Same strategy as DAIRY-01. Lucerne 2% gallon UPC is estimated from numbering pattern — confirm via Safeway product page."
+    },
+    "DAIRY-03": {
+      "description": "Tillamook Medium Cheddar 8 oz",
+      "primary_upc": "0072830000758",
+      "alt_upcs": [],
+      "notes": "Found from batch 2. Exact 8 oz not confirmed in API; Tillamook Medium Cheddar match."
+    },
+    "DAIRY-04": {
+      "description": "Kraft Shredded Mozzarella 8 oz",
+      "primary_upc": "0021000054954",
+      "alt_upcs": [],
+      "notes": "Confirmed Kraft Zip Pak 8 oz from batch 2."
+    },
+    "DAIRY-05": {
+      "description": "Chobani Greek Yogurt Strawberry 5.3 oz",
+      "primary_upc": "0894700010045",
+      "alt_upcs": [],
+      "notes": "Confirmed 5.3 oz from batch 2."
+    },
+    "DAIRY-06": {
+      "description": "Land O Lakes Salted Butter 1 lb",
+      "primary_upc": "0034500152204",
+      "alt_upcs": [],
+      "notes": "Confirmed 1 lb from batch 2."
+    },
+    "DAIRY-07": {
+      "description": "Eggland's Best Large Eggs, dozen",
+      "primary_upc": "0715141503494",
+      "alt_upcs": [],
+      "notes": "Confirmed 12 ct from batch 2."
+    },
+    "DAIRY-08": {
+      "description": "Meadow Gold Half & Half, quart",
+      "primary_upc": "015700168011",
+      "alt_upcs": [],
+      "notes": "Confirmed via Go-UPC. Note: This may be the mainland brand UPC — Hawaii MGD may use a different barcode. NEEDS_SHELF_SCAN to confirm Hawaii-specific UPC."
+    },
+    "DAIRY-09": {
+      "description": "Philadelphia Original Cream Cheese 8 oz brick",
+      "primary_upc": "021000612239",
+      "alt_upcs": ["0021000612192 (spread tub variant — do not use)"],
+      "notes": "Confirmed 8 oz foil-wrapped brick via UPCitemdb (Walgreens listing). Distinct from spread tub."
+    },
+    "MEAT-01": {
+      "description": "Ground beef 80/20, per lb",
+      "primary_upc": null,
+      "notes": "Fresh meat — priced by posted $/lb at each store. No UPC needed; use PLU or store's internal code."
+    },
+    "MEAT-02": {
+      "description": "Beef chuck roast, per lb",
+      "primary_upc": null,
+      "notes": "Fresh meat — priced by posted $/lb. No UPC needed."
+    },
+    "MEAT-03": {
+      "description": "Whole chicken, per lb",
+      "primary_upc": null,
+      "notes": "Fresh meat — priced by posted $/lb. No UPC needed."
+    },
+    "MEAT-04": {
+      "description": "Boneless skinless chicken breast, per lb",
+      "primary_upc": null,
+      "notes": "Fresh meat — priced by posted $/lb. No UPC needed."
+    },
+    "MEAT-05": {
+      "description": "Chicken thighs bone-in skin-on, per lb",
+      "primary_upc": null,
+      "notes": "Fresh meat — priced by posted $/lb. No UPC needed."
+    },
+    "MEAT-06": {
+      "description": "Pork butt/shoulder bone-in, per lb",
+      "primary_upc": null,
+      "notes": "Fresh meat — priced by posted $/lb. No UPC needed."
+    },
+    "MEAT-07": {
+      "description": "Pork loin chops bone-in, per lb",
+      "primary_upc": null,
+      "notes": "Fresh meat — priced by posted $/lb. No UPC needed."
+    },
+    "MEAT-08": {
+      "description": "Hormel SPAM Classic 12 oz",
+      "primary_upc": "0037600138727",
+      "alt_upcs": [],
+      "notes": "Confirmed in plan. This is the iconic Hawaii item — stocked everywhere."
+    },
+    "MEAT-09": {
+      "description": "Oscar Mayer Deli Fresh Turkey 9 oz",
+      "primary_upc": "0044700030509",
+      "alt_upcs": [],
+      "notes": "Confirmed 9 oz via Open Food Facts batch 3."
+    },
+    "MEAT-10": {
+      "description": "Oscar Mayer Bacon 16 oz",
+      "primary_upc": "0044700019887",
+      "alt_upcs": [],
+      "notes": "Confirmed 1 lb / 16 oz via Open Food Facts batch 3."
+    },
+    "FISH-01": {
+      "description": "StarKist Chunk Light Tuna in Water 5 oz",
+      "primary_upc": "080000006738",
+      "alt_upcs": [],
+      "notes": "Confirmed 5 oz via Barcode Spider."
+    },
+    "FISH-02": {
+      "description": "Bumble Bee Pink Salmon 14.75 oz",
+      "primary_upc": "086600000701",
+      "alt_upcs": [],
+      "notes": "Confirmed via UPCitemdb and multiple retailer URLs."
+    },
+    "FISH-03": {
+      "description": "SeaPak Popcorn Shrimp 16 oz (breaded)",
+      "primary_upc": "041322224910",
+      "alt_upcs": ["078742001357 (Great Value raw shrimp — Walmart only)"],
+      "notes": "Breaded shrimp chosen for cross-chain consistency — no national raw shrimp brand available at all 4 Hawaii chains. SeaPak confirmed at Safeway, Foodland, and likely Walmart/Times."
+    },
+    "FISH-04": {
+      "description": "Louis Kemp Crab Delights surimi 8 oz (Flake Style)",
+      "primary_upc": "079296901032",
+      "alt_upcs": ["079296901025 (Chunk Style)"],
+      "notes": "Confirmed Flake Style via UPCitemdb."
+    },
+    "PROT-01": {
+      "description": "Goya Pinto Beans 15.5 oz",
+      "primary_upc": "041331124379",
+      "alt_upcs": ["0041331023412 (OFF variant)"],
+      "notes": "Confirmed 15.5 oz via UPCitemdb and Target. Batch A result preferred over batch 3."
+    },
+    "PROT-02": {
+      "description": "House Foods Firm Tofu 14 oz",
+      "primary_upc": "0076371011099",
+      "alt_upcs": [],
+      "notes": "Confirmed 14 oz via Open Food Facts batch 3."
+    },
+    "PROT-03": {
+      "description": "Planters Dry Roasted Peanuts 16 oz",
+      "primary_upc": "0029000073258",
+      "alt_upcs": [],
+      "notes": "Confirmed 16 oz via Open Food Facts batch 3."
+    },
+    "PROT-04": {
+      "description": "Jif Creamy Peanut Butter 16 oz",
+      "primary_upc": "051500241288",
+      "alt_upcs": ["0051500255162 (OFF variant)"],
+      "notes": "Confirmed 16 oz via UPCitemdb. Two UPCs exist — likely different packaging runs."
+    },
+    "FAT-01": {
+      "description": "Crisco Vegetable Oil 48 fl oz",
+      "primary_upc": "051500253625",
+      "alt_upcs": [],
+      "notes": "Confirmed 48 fl oz via UPCitemdb."
+    },
+    "FAT-02": {
+      "description": "Crisco Canola Oil 48 fl oz",
+      "primary_upc": "051500251515",
+      "alt_upcs": [],
+      "notes": "Confirmed 48 fl oz via UPCitemdb."
+    },
+    "FAT-03": {
+      "description": "Country Crock Original 15 oz",
+      "primary_upc": "0027400103070",
+      "alt_upcs": [],
+      "notes": "Confirmed 15 oz via Open Food Facts batch 3."
+    },
+    "BEV-01": {
+      "description": "Kirkland Signature Purified Water 40-pack 16.9 fl oz",
+      "primary_upc": "096619756803",
+      "alt_upcs": [],
+      "notes": "Costco sells 40-count (not 24). Confirmed via UPCitemdb. Adjust pack_size in basket_definition accordingly."
+    },
+    "BEV-02": {
+      "description": "Arrowhead Mountain Spring Water 1 gallon",
+      "primary_upc": "071142000050",
+      "alt_upcs": [],
+      "notes": "Confirmed single 1-gallon jug via Barcode Spider and Go-UPC."
+    },
+    "BEV-03": {
+      "description": "Folgers Classic Roast 11.3 oz",
+      "primary_upc": "025500003658",
+      "alt_upcs": [],
+      "notes": "Confirmed 11.3 oz via UPCitemdb."
+    },
+    "BEV-04": {
+      "description": "Coca-Cola Classic 12-pack 12 oz cans",
+      "primary_upc": "049000028904",
+      "alt_upcs": [],
+      "notes": "Confirmed 12-pack via UPCitemdb and Barcode Spider."
+    },
+    "BEV-05": {
+      "description": "Mott's Apple Juice 64 fl oz",
+      "primary_upc": "0014800000344",
+      "alt_upcs": [],
+      "notes": "Confirmed 1920 ml / 64 oz via Open Food Facts batch 3."
+    },
+    "BEV-06": {
+      "description": "ITO EN Oi Ocha Green Tea Bags 20 ct",
+      "primary_upc": "835143017499",
+      "alt_upcs": [],
+      "notes": "Confirmed via Foodland product listing (shop.foodland.com). Not in UPCitemdb or Barcode Spider."
+    },
+    "COND-01": {
+      "description": "Kikkoman Soy Sauce 15 fl oz",
+      "primary_upc": "041390000904",
+      "alt_upcs": [],
+      "notes": "Confirmed via Open Food Facts and Target. Note: 041390001079 is Less Sodium variant — do not confuse."
+    },
+    "COND-02": {
+      "description": "Heinz Ketchup 20 oz",
+      "primary_upc": "0013000006408",
+      "alt_upcs": [],
+      "notes": "Confirmed 20 oz via Open Food Facts batch 3."
+    },
+    "COND-03": {
+      "description": "Best Foods Real Mayonnaise 30 fl oz",
+      "primary_upc": "048001213517",
+      "alt_upcs": [],
+      "notes": "Confirmed 30 fl oz via UPCitemdb and Barcode Spider."
+    },
+    "COND-04": {
+      "description": "Morton Iodized Salt 26 oz",
+      "primary_upc": "0024600010030",
+      "alt_upcs": [],
+      "notes": "Confirmed 26 oz via Open Food Facts batch 3."
+    },
+    "COND-05": {
+      "description": "Tabasco Original Red Pepper Sauce 5 fl oz",
+      "primary_upc": "011210000155",
+      "alt_upcs": [],
+      "notes": "Confirmed 5 fl oz via UPCitemdb."
+    },
+    "COND-06": {
+      "description": "Chongga Mat Kimchi 14.1 oz (400g)",
+      "primary_upc": "8801024180103",
+      "alt_upcs": [],
+      "notes": "Confirmed via efooddepot.com. EAN-13 barcode (Korean import). 14.1 oz / 400g."
+    },
+    "SWEET-01": {
+      "description": "C&H Granulated Sugar 4 lb",
+      "primary_upc": "015800030584",
+      "alt_upcs": ["015800030553 (canister)", "015800030621 (premium variant)"],
+      "notes": "Confirmed 4 lb carton/bag via UPCitemdb."
+    },
+    "SWEET-02": {
+      "description": "Mrs. Butterworth's Pancake Syrup 24 fl oz",
+      "primary_upc": "644209791293",
+      "alt_upcs": [],
+      "notes": "Confirmed via UPCitemdb."
+    },
+    "SWEET-03": {
+      "description": "Smucker's Strawberry Preserves 18 oz",
+      "primary_upc": "051500006863",
+      "alt_upcs": [],
+      "notes": "Confirmed 18 oz via UPCitemdb."
+    },
+    "SNACK-01": {
+      "description": "Lay's Classic Potato Chips 8 oz",
+      "primary_upc": "0028400199148",
+      "alt_upcs": [],
+      "notes": "Confirmed 8 oz / 226.8g via Open Food Facts batch 3."
+    },
+    "SNACK-02": {
+      "description": "Premium Saltine Crackers 16 oz",
+      "primary_upc": "044000000578",
+      "alt_upcs": [],
+      "notes": "Confirmed 16 oz via UPCitemdb."
+    },
+    "SNACK-03": {
+      "description": "Diamond Bakery Kakimochi (Hawaiian Cookies) 4.5 oz",
+      "primary_upc": "073218350403",
+      "alt_upcs": [],
+      "notes": "Confirmed via Foodland URL, Go-UPC, Safeway, Instacart (Don Quijote). This IS the actual product — not a substitute. 4.5 oz size is current; 8 oz was discontinued."
+    },
+    "PREP-01": {
+      "description": "Campbell's Chicken Noodle Soup 10.75 oz",
+      "primary_upc": "0051000012517",
+      "alt_upcs": [],
+      "notes": "Confirmed 10.75 oz via Open Food Facts batch 3."
+    },
+    "PREP-02": {
+      "description": "Hormel Chili with Beans 15 oz",
+      "primary_upc": "037600223188",
+      "alt_upcs": [],
+      "notes": "Confirmed via UPCitemdb. Note: OFF had 8.7 oz size mismatch; UPCitemdb confirms this is the correct product line UPC."
+    },
+    "PREP-03": {
+      "description": "Maruchan Ramen Soy Sauce 3 oz packet",
+      "primary_upc": "041789002144",
+      "alt_upcs": [],
+      "notes": "Confirmed single 3 oz packet via UPCitemdb. For 6-pack pricing, multiply or look for multipack UPC."
+    },
+    "PREP-04": {
+      "description": "Banquet Classic Salisbury Steak Frozen Dinner 11.88 oz",
+      "primary_upc": "031000007300",
+      "alt_upcs": [],
+      "notes": "Confirmed 11.88 oz via Go-UPC and Walmart."
+    },
+    "PREP-05": {
+      "description": "Kraft Mac & Cheese 7.25 oz",
+      "primary_upc": "0021000067060",
+      "alt_upcs": [],
+      "notes": "Confirmed 7.25 oz / 206g via Open Food Facts batch 3."
+    },
+    "PREP-06": {
+      "description": "Dinty Moore Beef Stew 15 oz",
+      "primary_upc": "0037600246095",
+      "alt_upcs": [],
+      "notes": "Confirmed 15 oz / 425g via Open Food Facts batch 3."
+    }
+  },
+  "resolution_summary": {
+    "total_items": 85,
+    "confirmed_upcs": 65,
+    "plu_codes_no_upc_needed": 10,
+    "fresh_meat_no_upc_needed": 7,
+    "name_match_scrape_strategy": 2,
+    "needs_shelf_scan": 1,
+    "shelf_scan_items": [
+      "DAIRY-08: Meadow Gold Half & Half quart — UPC 015700168011 may be mainland brand; verify Hawaii label at Foodland"
+    ],
+    "name_match_items": [
+      "DAIRY-01: Meadow Gold Whole Milk gallon — scrape by name; cross-chain anchor UPC 041900076382 (DairyPure)",
+      "DAIRY-02: Meadow Gold 2% Milk gallon — scrape by name; cross-chain anchor UPC 041900076610 (DairyPure)"
+    ],
+    "coverage": "99% resolved — 1 item needs one shelf visit to confirm UPC variant"
+  }
+}

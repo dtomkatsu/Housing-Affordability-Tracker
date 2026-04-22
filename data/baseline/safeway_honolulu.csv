@@ -1,0 +1,27 @@
+slot_id,product_name,price,size_qty,size_unit,is_substitution,substitution_note,date
+BEV-03,"Folgers Classic Roast, 25.9 oz",23.99,25.9,oz,false,,2026-04-21
+DAIRY-01,"Lucerne Whole Milk, 1 gallon",7.99,128.0,fl_oz,false,,2026-04-21
+DAIRY-03,Kraft Singles American Cheese Slices,7.99,16.0,oz,false,Assumed 16 oz (24-count) — size not confirmed,2026-04-21
+DAIRY-06,"Land O'Lakes Salted Butter, 1 lb",7.99,16.0,oz,false,,2026-04-21
+DAIRY-07,"Lucerne Farms Eggs, Large, 12 each",6.49,12.0,ct,false,,2026-04-21
+FAT-01,"Wesson Vegetable Oil, 40 oz",5.50,40.0,fl_oz,false,,2026-04-21
+FISH-01,"StarKist Chunk Light Tuna, 5 oz",1.99,5.0,oz,false,,2026-04-21
+FRUIT-01,"Bananas, 1 lb",0.49,1.0,lb,false,Safeway listed per 100g; treating as $/lb — verify,2026-04-21
+FRUIT-03,"Fuji Apple, 1 lb",3.49,1.0,lb,false,,2026-04-21
+FRUIT-05,"Dole Pineapple Chunks in Juice, 20 oz",4.99,20.0,oz,false,,2026-04-21
+FRUIT-08,"Tropicana No Pulp Orange Juice, 89 oz",9.99,89.0,fl_oz,false,,2026-04-21
+GRAIN-01,"Hinode Calrose Rice, 20 lb",23.99,20.0,lb,false,,2026-04-21
+GRAIN-03,"Oven Joy White Bread, 22 oz",4.99,22.0,oz,true,Oven Joy brand; substitution for store bread,2026-04-21
+GRAIN-05,"Cheerios, 18 oz",10.49,18.0,oz,false,,2026-04-21
+GRAIN-07,"Barilla Spaghetti, 16 oz",3.39,16.0,oz,false,,2026-04-21
+MEAT-01,"Ground beef 85/15, ~1 lb",10.99,1.0,lb,true,85/15 lean; substitution for 80/20,2026-04-21
+MEAT-04,"Boneless skinless chicken breast, 1 lb",3.99,1.0,lb,false,,2026-04-21
+MEAT-08,"SPAM Classic, 12 oz",3.79,12.0,oz,false,,2026-04-21
+PREP-01,"Campbell's Chicken Noodle Soup, 10.75 oz",3.00,10.75,oz,false,,2026-04-21
+PREP-03,"Maruchan Ramen Beef Flavor, 3 oz",0.99,3.0,oz,true,Beef flavor 3 oz; substitution for Soy Sauce 2.25 oz,2026-04-21
+PROT-04,"Jif Creamy Peanut Butter, 16 oz",4.49,16.0,oz,false,,2026-04-21
+SWEET-01,"C&H Granulated Sugar, 4 lb",5.99,4.0,lb,false,,2026-04-21
+VEG-01,"Russet potatoes, 5 lb bag",5.99,5.0,lb,false,,2026-04-21
+VEG-04,"O Organics Baby Spinach, 5 oz",6.99,5.0,oz,true,Organic spinach; substitution for conventional,2026-04-21
+VEG-06,"Red Roma tomatoes, 1 lb",3.99,1.0,lb,false,,2026-04-21
+VEG-08,"Del Monte Whole Kernel Corn, 15.25 oz",3.99,15.25,oz,false,,2026-04-21

@@ -1,0 +1,38 @@
+{
+  "description": "BLS CPI series IDs for Urban Hawaii (Honolulu metro) food subcategories. Published bimonthly.",
+  "base_period": "1982-84 = 100",
+  "api_endpoint": "https://api.bls.gov/publicAPI/v2/timeseries/data/",
+  "frequency": "bimonthly",
+  "categories": {
+    "cereals_bakery": {
+      "series_id": "CUUSA426SAF11",
+      "name": "Cereals and bakery products",
+      "basket_items": ["GRAIN-01", "GRAIN-05", "GRAIN-07"]
+    },
+    "meats_poultry_fish_eggs": {
+      "series_id": "CUUSA426SAF112",
+      "name": "Meats, poultry, fish, and eggs",
+      "basket_items": ["MEAT-01", "MEAT-04", "MEAT-08", "FISH-01", "DAIRY-07"]
+    },
+    "dairy": {
+      "series_id": "CUUSA426SAF113",
+      "name": "Dairy and related products",
+      "basket_items": ["DAIRY-01", "DAIRY-06"]
+    },
+    "fruits_vegetables": {
+      "series_id": "CUUSA426SAF114",
+      "name": "Fruits and vegetables",
+      "basket_items": ["VEG-01", "VEG-06", "VEG-08", "FRUIT-01", "FRUIT-05"]
+    },
+    "nonalcoholic_beverages": {
+      "series_id": "CUUSA426SASF",
+      "name": "Nonalcoholic beverages and beverage materials",
+      "basket_items": ["BEV-02", "BEV-03"]
+    },
+    "other_food_at_home": {
+      "series_id": "CUUSA426SAF116",
+      "name": "Other food at home",
+      "basket_items": ["PROT-04", "FAT-01", "COND-01", "SWEET-01", "SNACK-01", "PREP-01", "PREP-03", "PREP-05"]
+    }
+  }
+}

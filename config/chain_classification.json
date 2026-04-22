@@ -1,0 +1,121 @@
+{
+  "version": "1.0.0",
+  "description": "Chain classification rules for SNAP retailer data. Patterns matched case-insensitively against store names.",
+  "match_order": [
+    "costco", "sams_club", "walmart_super", "walmart",
+    "foodland", "foodland_farms", "sack_n_save",
+    "safeway", "times", "kta", "big_save",
+    "don_quijote", "target", "whole_foods", "down_to_earth"
+  ],
+  "chains": {
+    "costco": {
+      "name": "Costco",
+      "patterns": ["^COSTCO"],
+      "format": "warehouse_club",
+      "format_multiplier": 3.0
+    },
+    "sams_club": {
+      "name": "Sam's Club",
+      "patterns": ["^SAM'?S CLUB"],
+      "format": "warehouse_club",
+      "format_multiplier": 3.0
+    },
+    "walmart_super": {
+      "name": "Walmart Supercenter",
+      "patterns": ["WAL.?MART.+SUPER", "WALMART.+SUPER"],
+      "format": "supercenter",
+      "format_multiplier": 2.5
+    },
+    "walmart": {
+      "name": "Walmart",
+      "patterns": ["^WAL.?MART", "^WALMART"],
+      "format": "large_grocery",
+      "format_multiplier": 1.5,
+      "notes": "Non-Supercenter Walmart with grocery section"
+    },
+    "foodland": {
+      "name": "Foodland",
+      "patterns": ["^FOODLAND(?! FARMS)"],
+      "format": "supermarket",
+      "format_multiplier": 1.0
+    },
+    "foodland_farms": {
+      "name": "Foodland Farms",
+      "patterns": ["^FOODLAND FARMS"],
+      "format": "supermarket",
+      "format_multiplier": 1.2,
+      "notes": "Upscale Foodland format, slightly larger"
+    },
+    "sack_n_save": {
+      "name": "Sack N Save",
+      "patterns": ["^SACK.?N.?SAVE"],
+      "format": "supermarket",
+      "format_multiplier": 0.8,
+      "notes": "Foodland's discount banner, smaller format"
+    },
+    "safeway": {
+      "name": "Safeway",
+      "patterns": ["^SAFEWAY"],
+      "format": "supermarket",
+      "format_multiplier": 1.0
+    },
+    "times": {
+      "name": "Times Supermarkets",
+      "patterns": ["^TIMES SUPER"],
+      "format": "supermarket",
+      "format_multiplier": 1.0
+    },
+    "kta": {
+      "name": "KTA Super Stores",
+      "patterns": ["^KTA"],
+      "format": "supermarket",
+      "format_multiplier": 1.0
+    },
+    "big_save": {
+      "name": "Big Save",
+      "patterns": ["^BIG SAVE"],
+      "format": "small_format",
+      "format_multiplier": 0.5
+    },
+    "don_quijote": {
+      "name": "Don Quijote",
+      "patterns": ["^DON QUIJOTE", "^MARUKAI"],
+      "format": "non_grocery_with_grocery",
+      "format_multiplier": 0.7
+    },
+    "target": {
+      "name": "Target",
+      "patterns": ["^TARGET"],
+      "format": "non_grocery_with_grocery",
+      "format_multiplier": 0.7
+    },
+    "whole_foods": {
+      "name": "Whole Foods",
+      "patterns": ["^WHOLE FOODS"],
+      "format": "supermarket",
+      "format_multiplier": 1.0
+    },
+    "down_to_earth": {
+      "name": "Down to Earth",
+      "patterns": ["^DOWN TO EARTH"],
+      "format": "small_format",
+      "format_multiplier": 0.5
+    }
+  },
+  "other_format_multiplier": 0.3,
+  "snap_store_types_include": [
+    "Super Store",
+    "Supermarket",
+    "Grocery Store",
+    "Large Grocery Store",
+    "Medium Grocery Store",
+    "Small Grocery Store"
+  ],
+  "snap_store_types_exclude": [
+    "Convenience Store",
+    "Specialty Store",
+    "Farmers and Markets",
+    "Delivery Route",
+    "Military Commissary"
+  ]
+}

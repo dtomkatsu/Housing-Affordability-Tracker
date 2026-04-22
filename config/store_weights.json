@@ -1,0 +1,134 @@
+{
+  "version": "1.0.0",
+  "generated": "2026-04-12",
+  "methodology": "Estimated grocery market share per chain per county. Derived from USDA SNAP retailer counts weighted by store-format size multipliers, normalized per county.",
+  "data_sources": {
+    "snap_retailer_locator": "https://www.fns.usda.gov/snap/retailer-locator/data",
+    "census_cbp": "https://api.census.gov/data/2023/cbp"
+  },
+  "proxy_chains": {
+    "kta":         "foodland",
+    "big_save":    "walmart",
+    "times":       "safeway",
+    "sack_n_save": "walmart",
+    "foodland_farms": "foodland",
+    "don_quijote": "walmart",
+    "down_to_earth": "foodland"
+  },
+  "proxy_notes": {
+    "kta": "KTA Super Stores — Hawaii regional full-service supermarket, priced similarly to Foodland",
+    "big_save": "Big Save Markets — Kauai value-oriented chain, priced similarly to Walmart",
+    "times": "Times Supermarket — Oahu/Maui regional chain, priced similarly to Safeway",
+    "sack_n_save": "Sack-N-Save — discount format, priced similarly to Walmart",
+    "foodland_farms": "Foodland Farms — upscale Foodland banner, proxied to Foodland for conservatism",
+    "don_quijote": "Don Quijote — discount/variety format, proxied to Walmart",
+    "down_to_earth": "Down to Earth — organic/natural, proxied to Foodland as nearest full-service"
+  },
+  "weights": {
+    "hawaii": {
+      "costco": 0.0955,
+      "foodland": 0.0637,
+      "foodland_farms": 0.0382,
+      "kta": 0.1592,
+      "other": 0.3631,
+      "sack_n_save": 0.0764,
+      "safeway": 0.0637,
+      "target": 0.0446,
+      "walmart": 0.0955
+    },
+    "honolulu": {
+      "costco": 0.1095,
+      "don_quijote": 0.0192,
+      "down_to_earth": 0.0091,
+      "foodland": 0.1095,
+      "foodland_farms": 0.0438,
+      "other": 0.2573,
+      "sack_n_save": 0.0073,
+      "safeway": 0.1369,
+      "sams_club": 0.0547,
+      "target": 0.0383,
+      "times": 0.1186,
+      "walmart": 0.0684,
+      "whole_foods": 0.0274
+    },
+    "kauai": {
+      "big_save": 0.1572,
+      "costco": 0.1887,
+      "foodland": 0.0629,
+      "other": 0.2642,
+      "safeway": 0.1258,
+      "target": 0.044,
+      "times": 0.0629,
+      "walmart": 0.0943
+    },
+    "maui": {
+      "costco": 0.1087,
+      "foodland": 0.1449,
+      "foodland_farms": 0.0435,
+      "other": 0.3696,
+      "safeway": 0.1449,
+      "target": 0.0254,
+      "times": 0.0725,
+      "walmart": 0.0543,
+      "whole_foods": 0.0362
+    }
+  },
+  "diagnostics": {
+    "raw_counts": {
+      "maui": {
+        "other": 34,
+        "foodland": 4,
+        "safeway": 4,
+        "walmart": 1,
+        "costco": 1,
+        "whole_foods": 1,
+        "times": 2,
+        "foodland_farms": 1,
+        "target": 1
+      },
+      "honolulu": {
+        "other": 94,
+        "sack_n_save": 1,
+        "foodland": 12,
+        "safeway": 15,
+        "walmart": 5,
+        "don_quijote": 3,
+        "foodland_farms": 4,
+        "sams_club": 2,
+        "target": 6,
+        "costco": 4,
+        "whole_foods": 3,
+        "times": 13,
+        "down_to_earth": 2
+      },
+      "hawaii": {
+        "other": 38,
+        "sack_n_save": 3,
+        "kta": 5,
+        "walmart": 2,
+        "foodland_farms": 1,
+        "foodland": 2,
+        "target": 2,
+        "costco": 1,
+        "safeway": 2
+      },
+      "kauai": {
+        "safeway": 2,
+        "other": 14,
+        "walmart": 1,
+        "foodland": 1,
+        "costco": 1,
+        "times": 1,
+        "big_save": 5,
+        "target": 1
+      }
+    },
+    "census_cbp_employment": {
+      "hawaii": 2253,
+      "honolulu": 6515,
+      "kauai": 881,
+      "maui": 2046
+    },
+    "census_cbp_year": 2023
+  }
+}

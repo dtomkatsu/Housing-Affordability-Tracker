@@ -1,0 +1,40 @@
+{
+  "counties": {
+    "honolulu": {"geoid": "15003", "name": "Honolulu"},
+    "maui": {"geoid": "15009", "name": "Maui"},
+    "hawaii": {"geoid": "15001", "name": "Hawaii"},
+    "kauai": {"geoid": "15007", "name": "Kauai"}
+  },
+  "chains": {
+    "foodland": {
+      "name": "Foodland",
+      "stores": [
+        {"store_id": "foodland-honolulu", "name": "Ala Moana", "county": "honolulu", "zip": "96814"},
+        {"store_id": "foodland-maui", "name": "Kahului", "county": "maui", "zip": "96732"},
+        {"store_id": "foodland-hawaii", "name": "Mauna Lani", "county": "hawaii", "zip": "96743"},
+        {"store_id": "foodland-kauai", "name": "Princeville", "county": "kauai", "zip": "96722"}
+      ],
+      "notes": "Honolulu store priced in-store; neighbor islands priced via Instacart with calibration adjustment."
+    },
+    "safeway": {
+      "name": "Safeway",
+      "stores": [
+        {"store_id": "safeway-honolulu", "name": "S. Beretania", "county": "honolulu", "zip": "96814"},
+        {"store_id": "safeway-maui", "name": "Wailuku", "county": "maui", "zip": "96793"},
+        {"store_id": "safeway-kona", "name": "Kailua-Kona", "county": "hawaii", "zip": "96740"},
+        {"store_id": "safeway-hilo", "name": "Hilo", "county": "hawaii", "zip": "96720"},
+        {"store_id": "safeway-kauai", "name": "Lihue", "county": "kauai", "zip": "96766"}
+      ]
+    },
+    "walmart": {
+      "name": "Walmart",
+      "stores": [
+        {"store_id": "walmart-honolulu", "name": "Keeaumoku", "county": "honolulu", "zip": "96814"},
+        {"store_id": "walmart-maui", "name": "Kahului", "county": "maui", "zip": "96732"},
+        {"store_id": "walmart-kona", "name": "Kailua-Kona", "county": "hawaii", "zip": "96740"},
+        {"store_id": "walmart-hilo", "name": "Hilo", "county": "hawaii", "zip": "96720"},
+        {"store_id": "walmart-kauai", "name": "Lihue", "county": "kauai", "zip": "96766"}
+      ]
+    }
+  }
+}

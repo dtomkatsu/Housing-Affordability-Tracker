@@ -1,0 +1,365 @@
+slot_id,chain,store_id,county,geoid,date,product_name,price,size_qty,size_unit,per_unit_price,is_substitution,substitution_note
+BEV-03,foodland,foodland-hawaii,hawaii,15001,2026-04-10,"Folgers Classic Roast, 25.9 oz",26.39,25.9,oz,1.0189,False,estimated from Instacart; deflated by Honolulu markup ratio
+DAIRY-01,foodland,foodland-hawaii,hawaii,15001,2026-04-10,"Sunhearth Milk, 1 gallon",7.99,128.0,fl_oz,0.0624,False,estimated from Instacart; deflated by Honolulu markup ratio
+DAIRY-03,foodland,foodland-hawaii,hawaii,15001,2026-04-10,Kraft SIngles American Cheese Slices,5.45,12.0,oz,0.4542,False,estimated from Instacart; deflated by Honolulu markup ratio
+DAIRY-06,foodland,foodland-hawaii,hawaii,15001,2026-04-10,"Land O'Lakes Salted Butter, 1 lb",9.55,16.0,oz,0.5969,False,estimated from Instacart; deflated by Honolulu markup ratio
+DAIRY-07,foodland,foodland-hawaii,hawaii,15001,2026-04-10,"Farm Pack Mainland Eggs, Large, 12 each",9.46,12.0,ct,0.7883,False,estimated from Instacart; deflated by Honolulu markup ratio
+FAT-01,foodland,foodland-hawaii,hawaii,15001,2026-04-10,"Wesson Vegetable Oil, 40 oz",10.35,40.0,fl_oz,0.2587,False,estimated from Instacart; deflated by Honolulu markup ratio
+FISH-01,foodland,foodland-hawaii,hawaii,15001,2026-04-10,"StarKist Chunk Light Tuna, 5 oz",1.95,5.0,oz,0.39,False,estimated from Instacart; deflated by Honolulu markup ratio
+FRUIT-01,foodland,foodland-hawaii,hawaii,15001,2026-04-10,"Bananas, 1 lb",1.54,1.0,lb,1.54,False,estimated from Instacart; deflated by Honolulu markup ratio
+FRUIT-03,foodland,foodland-hawaii,hawaii,15001,2026-04-10,"Fuji Apple, 1 lb",2.68,1.0,lb,2.68,False,estimated from Instacart; deflated by Honolulu markup ratio
+FRUIT-05,foodland,foodland-hawaii,hawaii,15001,2026-04-10,"Dole Pineapple Chunks in Juice, 20 oz",3.87,20.0,oz,0.1935,False,estimated from Instacart; deflated by Honolulu markup ratio
+FRUIT-08,foodland,foodland-hawaii,hawaii,15001,2026-04-10,"Tropicana No Pulp Orange Juice, 89 oz",13.2,89.0,fl_oz,0.1483,False,estimated from Instacart; deflated by Honolulu markup ratio
+GRAIN-01,foodland,foodland-hawaii,hawaii,15001,2026-04-10,"Hinode Calrose Rice, 20 lb",21.37,20.0,lb,1.0685,False,estimated from Instacart; deflated by Honolulu markup ratio
+GRAIN-03,foodland,foodland-hawaii,hawaii,15001,2026-04-10,"Health and Harvest Bread, White, 22 oz",5.66,22.0,oz,0.2573,False,estimated from Instacart; deflated by Honolulu markup ratio
+GRAIN-05,foodland,foodland-hawaii,hawaii,15001,2026-04-10,"Cheerios, 12 oz",9.39,12.0,oz,0.7825,False,estimated from Instacart; deflated by Honolulu markup ratio
+GRAIN-07,foodland,foodland-hawaii,hawaii,15001,2026-04-10,"Barilla Spaghetti, 16 oz",3.49,16.0,oz,0.2181,False,estimated from Instacart; deflated by Honolulu markup ratio
+MEAT-01,foodland,foodland-hawaii,hawaii,15001,2026-04-10,"Ground beef 80/20, ~1 lb",7.99,1.0,lb,7.99,False,estimated from Instacart; deflated by Honolulu markup ratio
+MEAT-04,foodland,foodland-hawaii,hawaii,15001,2026-04-10,"Boneless skinless chicken breast, 1 lb",5.79,1.0,lb,5.79,False,estimated from Instacart; deflated by Honolulu markup ratio
+MEAT-08,foodland,foodland-hawaii,hawaii,15001,2026-04-10,"SPAM Classic, 12 oz",4.06,12.0,oz,0.3383,False,estimated from Instacart; deflated by Honolulu markup ratio
+PREP-01,foodland,foodland-hawaii,hawaii,15001,2026-04-10,"Campbell's Chicken Noodle Soup, 10.75 oz",2.79,10.75,oz,0.2595,False,estimated from Instacart; deflated by Honolulu markup ratio
+PREP-03,foodland,foodland-hawaii,hawaii,15001,2026-04-10,"Maruchan Ramen Soy Sauce, 2.25 oz",1.05,2.25,oz,0.4667,False,estimated from Instacart; deflated by Honolulu markup ratio
+PROT-04,foodland,foodland-hawaii,hawaii,15001,2026-04-10,"Jif Creamy Peanut Butter, 16 oz",5.03,16.0,oz,0.3144,False,estimated from Instacart; deflated by Honolulu markup ratio
+SWEET-01,foodland,foodland-hawaii,hawaii,15001,2026-04-10,"C&H Granulated Sugar, 4 lb",8.96,4.0,lb,2.24,False,estimated from Instacart; deflated by Honolulu markup ratio
+VEG-01,foodland,foodland-hawaii,hawaii,15001,2026-04-10,"Russet potatoes, 5 lb bag",5.79,5.0,lb,1.158,False,estimated from Instacart; deflated by Honolulu markup ratio
+VEG-04,foodland,foodland-hawaii,hawaii,15001,2026-04-10,"Taylor Farms Baby Spinach, 6 oz",6.03,6.0,oz,1.005,False,estimated from Instacart; deflated by Honolulu markup ratio
+VEG-06,foodland,foodland-hawaii,hawaii,15001,2026-04-10,"Roma tomatoes, 1 lb",4.29,1.0,lb,4.29,False,estimated from Instacart; deflated by Honolulu markup ratio
+VEG-08,foodland,foodland-hawaii,hawaii,15001,2026-04-10,"Del Monte Whole Kernel Corn, 15.25 oz",2.69,15.25,oz,0.1764,False,estimated from Instacart; deflated by Honolulu markup ratio
+BEV-03,foodland,foodland-honolulu,honolulu,15003,2026-04-10,"Folgers Classic Roast, 25.9 oz",24.99,25.9,oz,0.9649,False,
+DAIRY-01,foodland,foodland-honolulu,honolulu,15003,2026-04-10,"Sunhearth Milk, 1 gallon",7.99,128.0,fl_oz,0.0624,False,
+DAIRY-03,foodland,foodland-honolulu,honolulu,15003,2026-04-10,Kraft SIngles American Cheese Slices,5.19,12.0,oz,0.4325,False,
+DAIRY-06,foodland,foodland-honolulu,honolulu,15003,2026-04-10,"Land O'Lakes Salted Butter, 1 lb",8.99,16.0,oz,0.5619,False,
+DAIRY-07,foodland,foodland-honolulu,honolulu,15003,2026-04-10,"Farm Pack Mainland Eggs, Large, 12 each",8.99,12.0,ct,0.7492,False,
+FAT-01,foodland,foodland-honolulu,honolulu,15003,2026-04-10,"Wesson Vegetable Oil, 40 oz",9.69,40.0,fl_oz,0.2422,False,
+FISH-01,foodland,foodland-honolulu,honolulu,15003,2026-04-10,"StarKist Chunk Light Tuna, 5 oz",1.89,5.0,oz,0.378,False,
+FRUIT-01,foodland,foodland-honolulu,honolulu,15003,2026-04-10,"Bananas, 1 lb",1.39,1.0,lb,1.39,False,
+FRUIT-03,foodland,foodland-honolulu,honolulu,15003,2026-04-10,"Fuji Apple, 1 lb",2.49,1.0,lb,2.49,False,
+FRUIT-05,foodland,foodland-honolulu,honolulu,15003,2026-04-10,"Dole Pineapple Chunks in Juice, 20 oz",3.49,20.0,oz,0.1745,False,
+FRUIT-08,foodland,foodland-honolulu,honolulu,15003,2026-04-10,"Tropicana No Pulp Orange Juice, 89 oz",12.49,89.0,fl_oz,0.1403,False,
+GRAIN-01,foodland,foodland-honolulu,honolulu,15003,2026-04-10,"Hinode Calrose Rice, 20 lb",18.99,20.0,lb,0.9495,False,
+GRAIN-03,foodland,foodland-honolulu,honolulu,15003,2026-04-10,"Health and Harvest Bread, White, 22 oz",5.19,22.0,oz,0.2359,False,
+GRAIN-05,foodland,foodland-honolulu,honolulu,15003,2026-04-10,"Cheerios, 12 oz",8.99,12.0,oz,0.7492,False,
+GRAIN-07,foodland,foodland-honolulu,honolulu,15003,2026-04-10,"Barilla Spaghetti, 16 oz",3.49,16.0,oz,0.2181,False,
+MEAT-01,foodland,foodland-honolulu,honolulu,15003,2026-04-10,"Ground beef 80/20, ~1 lb",7.99,1.0,lb,7.99,False,
+MEAT-04,foodland,foodland-honolulu,honolulu,15003,2026-04-10,"Boneless skinless chicken breast, 1 lb",5.79,1.0,lb,5.79,False,
+MEAT-08,foodland,foodland-honolulu,honolulu,15003,2026-04-10,"SPAM Classic, 12 oz",3.79,12.0,oz,0.3158,False,
+PREP-01,foodland,foodland-honolulu,honolulu,15003,2026-04-10,"Campbell's Chicken Noodle Soup, 10.75 oz",2.79,10.75,oz,0.2595,False,
+PREP-03,foodland,foodland-honolulu,honolulu,15003,2026-04-10,"Maruchan Ramen Soy Sauce, 2.25 oz",0.99,2.25,oz,0.44,False,
+PROT-04,foodland,foodland-honolulu,honolulu,15003,2026-04-10,"Jif Creamy Peanut Butter, 16 oz",4.79,16.0,oz,0.2994,False,
+SWEET-01,foodland,foodland-honolulu,honolulu,15003,2026-04-10,"C&H Granulated Sugar, 4 lb",8.39,4.0,lb,2.0975,False,
+VEG-01,foodland,foodland-honolulu,honolulu,15003,2026-04-10,"Russet potatoes, 5 lb bag",5.79,5.0,lb,1.158,False,
+VEG-04,foodland,foodland-honolulu,honolulu,15003,2026-04-10,"Taylor Farms Baby Spinach, 6 oz",5.79,6.0,oz,0.965,False,
+VEG-06,foodland,foodland-honolulu,honolulu,15003,2026-04-10,"Roma tomatoes, 1 lb",4.29,1.0,lb,4.29,False,
+VEG-08,foodland,foodland-honolulu,honolulu,15003,2026-04-10,"Del Monte Whole Kernel Corn, 15.25 oz",2.69,15.25,oz,0.1764,False,
+BEV-03,foodland,foodland-kauai,kauai,15007,2026-04-10,"Folgers Classic Roast, 25.9 oz",26.39,25.9,oz,1.0189,False,estimated from Instacart; deflated by Honolulu markup ratio
+DAIRY-01,foodland,foodland-kauai,kauai,15007,2026-04-10,"Sunhearth Milk, 1 gallon",7.99,128.0,fl_oz,0.0624,False,estimated from Instacart; deflated by Honolulu markup ratio
+DAIRY-03,foodland,foodland-kauai,kauai,15007,2026-04-10,Kraft SIngles American Cheese Slices,5.45,12.0,oz,0.4542,False,estimated from Instacart; deflated by Honolulu markup ratio
+DAIRY-06,foodland,foodland-kauai,kauai,15007,2026-04-10,"Land O'Lakes Salted Butter, 1 lb",9.55,16.0,oz,0.5969,False,estimated from Instacart; deflated by Honolulu markup ratio
+DAIRY-07,foodland,foodland-kauai,kauai,15007,2026-04-10,"Farm Pack Mainland Eggs, Large, 12 each",9.46,12.0,ct,0.7883,False,estimated from Instacart; deflated by Honolulu markup ratio
+FAT-01,foodland,foodland-kauai,kauai,15007,2026-04-10,"Wesson Vegetable Oil, 40 oz",10.35,40.0,fl_oz,0.2587,False,estimated from Instacart; deflated by Honolulu markup ratio
+FISH-01,foodland,foodland-kauai,kauai,15007,2026-04-10,"StarKist Chunk Light Tuna, 5 oz",1.95,5.0,oz,0.39,False,estimated from Instacart; deflated by Honolulu markup ratio
+FRUIT-01,foodland,foodland-kauai,kauai,15007,2026-04-10,"Bananas, 1 lb",1.54,1.0,lb,1.54,False,estimated from Instacart; deflated by Honolulu markup ratio
+FRUIT-03,foodland,foodland-kauai,kauai,15007,2026-04-10,"Fuji Apple, 1 lb",2.68,1.0,lb,2.68,False,estimated from Instacart; deflated by Honolulu markup ratio
+FRUIT-05,foodland,foodland-kauai,kauai,15007,2026-04-10,"Dole Pineapple Chunks in Juice, 20 oz",3.87,20.0,oz,0.1935,False,estimated from Instacart; deflated by Honolulu markup ratio
+FRUIT-08,foodland,foodland-kauai,kauai,15007,2026-04-10,"Tropicana No Pulp Orange Juice, 89 oz",13.2,89.0,fl_oz,0.1483,False,estimated from Instacart; deflated by Honolulu markup ratio
+GRAIN-01,foodland,foodland-kauai,kauai,15007,2026-04-10,"Hinode Calrose Rice, 20 lb",21.37,20.0,lb,1.0685,False,estimated from Instacart; deflated by Honolulu markup ratio
+GRAIN-03,foodland,foodland-kauai,kauai,15007,2026-04-10,"Health and Harvest Bread, White, 22 oz",5.66,22.0,oz,0.2573,False,estimated from Instacart; deflated by Honolulu markup ratio
+GRAIN-05,foodland,foodland-kauai,kauai,15007,2026-04-10,"Cheerios, 12 oz",9.39,12.0,oz,0.7825,False,estimated from Instacart; deflated by Honolulu markup ratio
+GRAIN-07,foodland,foodland-kauai,kauai,15007,2026-04-10,"Barilla Spaghetti, 16 oz",3.49,16.0,oz,0.2181,False,estimated from Instacart; deflated by Honolulu markup ratio
+MEAT-01,foodland,foodland-kauai,kauai,15007,2026-04-10,"Ground beef 80/20, ~1 lb",7.99,1.0,lb,7.99,False,estimated from Instacart; deflated by Honolulu markup ratio
+MEAT-04,foodland,foodland-kauai,kauai,15007,2026-04-10,"Boneless skinless chicken breast, 1 lb",5.79,1.0,lb,5.79,False,estimated from Instacart; deflated by Honolulu markup ratio
+MEAT-08,foodland,foodland-kauai,kauai,15007,2026-04-10,"SPAM Classic, 12 oz",4.06,12.0,oz,0.3383,False,estimated from Instacart; deflated by Honolulu markup ratio
+PREP-01,foodland,foodland-kauai,kauai,15007,2026-04-10,"Campbell's Chicken Noodle Soup, 10.75 oz",2.79,10.75,oz,0.2595,False,estimated from Instacart; deflated by Honolulu markup ratio
+PREP-03,foodland,foodland-kauai,kauai,15007,2026-04-10,"Maruchan Ramen Soy Sauce, 2.25 oz",1.05,2.25,oz,0.4667,False,estimated from Instacart; deflated by Honolulu markup ratio
+PROT-04,foodland,foodland-kauai,kauai,15007,2026-04-10,"Jif Creamy Peanut Butter, 16 oz",5.03,16.0,oz,0.3144,False,estimated from Instacart; deflated by Honolulu markup ratio
+SWEET-01,foodland,foodland-kauai,kauai,15007,2026-04-10,"C&H Granulated Sugar, 4 lb",8.96,4.0,lb,2.24,False,estimated from Instacart; deflated by Honolulu markup ratio
+VEG-01,foodland,foodland-kauai,kauai,15007,2026-04-10,"Russet potatoes, 5 lb bag",5.79,5.0,lb,1.158,False,estimated from Instacart; deflated by Honolulu markup ratio
+VEG-04,foodland,foodland-kauai,kauai,15007,2026-04-10,"Taylor Farms Baby Spinach, 6 oz",6.03,6.0,oz,1.005,False,estimated from Instacart; deflated by Honolulu markup ratio
+VEG-06,foodland,foodland-kauai,kauai,15007,2026-04-10,"Roma tomatoes, 1 lb",4.29,1.0,lb,4.29,False,estimated from Instacart; deflated by Honolulu markup ratio
+VEG-08,foodland,foodland-kauai,kauai,15007,2026-04-10,"Del Monte Whole Kernel Corn, 15.25 oz",2.69,15.25,oz,0.1764,False,estimated from Instacart; deflated by Honolulu markup ratio
+BEV-03,foodland,foodland-maui,maui,15009,2026-04-10,"Folgers Classic Roast, 25.9 oz",26.39,25.9,oz,1.0189,False,estimated from Instacart; deflated by Honolulu markup ratio
+DAIRY-01,foodland,foodland-maui,maui,15009,2026-04-10,"Sunhearth Milk, 1 gallon",7.99,128.0,fl_oz,0.0624,False,estimated from Instacart; deflated by Honolulu markup ratio
+DAIRY-03,foodland,foodland-maui,maui,15009,2026-04-10,Kraft SIngles American Cheese Slices,5.45,12.0,oz,0.4542,False,estimated from Instacart; deflated by Honolulu markup ratio
+DAIRY-06,foodland,foodland-maui,maui,15009,2026-04-10,"Land O'Lakes Salted Butter, 1 lb",9.55,16.0,oz,0.5969,False,estimated from Instacart; deflated by Honolulu markup ratio
+DAIRY-07,foodland,foodland-maui,maui,15009,2026-04-10,"Farm Pack Mainland Eggs, Large, 12 each",9.46,12.0,ct,0.7883,False,estimated from Instacart; deflated by Honolulu markup ratio
+FAT-01,foodland,foodland-maui,maui,15009,2026-04-10,"Wesson Vegetable Oil, 40 oz",10.35,40.0,fl_oz,0.2587,False,estimated from Instacart; deflated by Honolulu markup ratio
+FISH-01,foodland,foodland-maui,maui,15009,2026-04-10,"StarKist Chunk Light Tuna, 5 oz",1.95,5.0,oz,0.39,False,estimated from Instacart; deflated by Honolulu markup ratio
+FRUIT-01,foodland,foodland-maui,maui,15009,2026-04-10,"Bananas, 1 lb",1.54,1.0,lb,1.54,False,estimated from Instacart; deflated by Honolulu markup ratio
+FRUIT-03,foodland,foodland-maui,maui,15009,2026-04-10,"Fuji Apple, 1 lb",2.68,1.0,lb,2.68,False,estimated from Instacart; deflated by Honolulu markup ratio
+FRUIT-05,foodland,foodland-maui,maui,15009,2026-04-10,"Dole Pineapple Chunks in Juice, 20 oz",3.87,20.0,oz,0.1935,False,estimated from Instacart; deflated by Honolulu markup ratio
+FRUIT-08,foodland,foodland-maui,maui,15009,2026-04-10,"Tropicana No Pulp Orange Juice, 89 oz",13.2,89.0,fl_oz,0.1483,False,estimated from Instacart; deflated by Honolulu markup ratio
+GRAIN-01,foodland,foodland-maui,maui,15009,2026-04-10,"Hinode Calrose Rice, 20 lb",21.37,20.0,lb,1.0685,False,estimated from Instacart; deflated by Honolulu markup ratio
+GRAIN-03,foodland,foodland-maui,maui,15009,2026-04-10,"Health and Harvest Bread, White, 22 oz",5.66,22.0,oz,0.2573,False,estimated from Instacart; deflated by Honolulu markup ratio
+GRAIN-05,foodland,foodland-maui,maui,15009,2026-04-10,"Cheerios, 12 oz",9.39,12.0,oz,0.7825,False,estimated from Instacart; deflated by Honolulu markup ratio
+GRAIN-07,foodland,foodland-maui,maui,15009,2026-04-10,"Barilla Spaghetti, 16 oz",3.49,16.0,oz,0.2181,False,estimated from Instacart; deflated by Honolulu markup ratio
+MEAT-01,foodland,foodland-maui,maui,15009,2026-04-10,"Ground beef 80/20, ~1 lb",7.99,1.0,lb,7.99,False,estimated from Instacart; deflated by Honolulu markup ratio
+MEAT-04,foodland,foodland-maui,maui,15009,2026-04-10,"Boneless skinless chicken breast, 1 lb",5.79,1.0,lb,5.79,False,estimated from Instacart; deflated by Honolulu markup ratio
+MEAT-08,foodland,foodland-maui,maui,15009,2026-04-10,"SPAM Classic, 12 oz",4.06,12.0,oz,0.3383,False,estimated from Instacart; deflated by Honolulu markup ratio
+PREP-01,foodland,foodland-maui,maui,15009,2026-04-10,"Campbell's Chicken Noodle Soup, 10.75 oz",2.79,10.75,oz,0.2595,False,estimated from Instacart; deflated by Honolulu markup ratio
+PREP-03,foodland,foodland-maui,maui,15009,2026-04-10,"Maruchan Ramen Soy Sauce, 2.25 oz",1.05,2.25,oz,0.4667,False,estimated from Instacart; deflated by Honolulu markup ratio
+PROT-04,foodland,foodland-maui,maui,15009,2026-04-10,"Jif Creamy Peanut Butter, 16 oz",5.03,16.0,oz,0.3144,False,estimated from Instacart; deflated by Honolulu markup ratio
+SWEET-01,foodland,foodland-maui,maui,15009,2026-04-10,"C&H Granulated Sugar, 4 lb",8.96,4.0,lb,2.24,False,estimated from Instacart; deflated by Honolulu markup ratio
+VEG-01,foodland,foodland-maui,maui,15009,2026-04-10,"Russet potatoes, 5 lb bag",5.79,5.0,lb,1.158,False,estimated from Instacart; deflated by Honolulu markup ratio
+VEG-04,foodland,foodland-maui,maui,15009,2026-04-10,"Taylor Farms Baby Spinach, 6 oz",6.03,6.0,oz,1.005,False,estimated from Instacart; deflated by Honolulu markup ratio
+VEG-06,foodland,foodland-maui,maui,15009,2026-04-10,"Roma tomatoes, 1 lb",4.29,1.0,lb,4.29,False,estimated from Instacart; deflated by Honolulu markup ratio
+VEG-08,foodland,foodland-maui,maui,15009,2026-04-10,"Del Monte Whole Kernel Corn, 15.25 oz",2.69,15.25,oz,0.1764,False,estimated from Instacart; deflated by Honolulu markup ratio
+BEV-03,safeway,safeway-hilo,hawaii,15001,2026-04-21,"Folgers Classic Roast, 25.9 oz",23.99,25.9,oz,0.9263,False,
+BEV-03,safeway,safeway-kona,hawaii,15001,2026-04-21,"Folgers Classic Roast, 25.9 oz",23.99,25.9,oz,0.9263,False,
+DAIRY-01,safeway,safeway-hilo,hawaii,15001,2026-04-21,"Lucerne Whole Milk, 1 gallon",7.99,128.0,fl_oz,0.0624,False,
+DAIRY-01,safeway,safeway-kona,hawaii,15001,2026-04-21,"Lucerne Whole Milk, 1 gallon",7.99,128.0,fl_oz,0.0624,False,
+DAIRY-03,safeway,safeway-hilo,hawaii,15001,2026-04-21,Kraft Singles American Cheese Slices,7.99,16.0,oz,0.4994,False,Assumed 16 oz (24-count) — size not confirmed
+DAIRY-03,safeway,safeway-kona,hawaii,15001,2026-04-21,Kraft Singles American Cheese Slices,7.99,16.0,oz,0.4994,False,Assumed 16 oz (24-count) — size not confirmed
+DAIRY-06,safeway,safeway-hilo,hawaii,15001,2026-04-21,"Land O'Lakes Salted Butter, 1 lb",7.99,16.0,oz,0.4994,False,
+DAIRY-06,safeway,safeway-kona,hawaii,15001,2026-04-21,"Land O'Lakes Salted Butter, 1 lb",7.99,16.0,oz,0.4994,False,
+DAIRY-07,safeway,safeway-hilo,hawaii,15001,2026-04-21,"Lucerne Farms Eggs, Large, 12 each",6.99,12.0,ct,0.5825,False,
+DAIRY-07,safeway,safeway-kona,hawaii,15001,2026-04-21,"Lucerne Farms Eggs, Large, 12 each",6.99,12.0,ct,0.5825,False,
+FAT-01,safeway,safeway-hilo,hawaii,15001,2026-04-21,"Wesson Vegetable Oil, 40 oz",5.5,40.0,fl_oz,0.1375,False,
+FAT-01,safeway,safeway-kona,hawaii,15001,2026-04-21,"Wesson Vegetable Oil, 40 oz",5.5,40.0,fl_oz,0.1375,False,
+FISH-01,safeway,safeway-hilo,hawaii,15001,2026-04-21,"StarKist Chunk Light Tuna, 5 oz",1.99,5.0,oz,0.398,False,
+FISH-01,safeway,safeway-kona,hawaii,15001,2026-04-21,"StarKist Chunk Light Tuna, 5 oz",1.99,5.0,oz,0.398,False,
+FRUIT-01,safeway,safeway-hilo,hawaii,15001,2026-04-21,"Bananas, 1 lb",1.49,1.0,lb,1.49,False,Safeway listed per 100g; treating as $/lb — verify
+FRUIT-01,safeway,safeway-kona,hawaii,15001,2026-04-21,"Bananas, 1 lb",1.49,1.0,lb,1.49,False,Safeway listed per 100g; treating as $/lb — verify
+FRUIT-03,safeway,safeway-hilo,hawaii,15001,2026-04-21,"Fuji Apple, 1 lb",3.99,1.0,lb,3.99,False,
+FRUIT-03,safeway,safeway-kona,hawaii,15001,2026-04-21,"Fuji Apple, 1 lb",3.99,1.0,lb,3.99,False,
+FRUIT-05,safeway,safeway-hilo,hawaii,15001,2026-04-21,"Dole Pineapple Chunks in Juice, 20 oz",4.99,20.0,oz,0.2495,False,
+FRUIT-05,safeway,safeway-kona,hawaii,15001,2026-04-21,"Dole Pineapple Chunks in Juice, 20 oz",4.99,20.0,oz,0.2495,False,
+FRUIT-08,safeway,safeway-hilo,hawaii,15001,2026-04-21,"Tropicana No Pulp Orange Juice, 89 oz",9.99,89.0,fl_oz,0.1122,False,
+FRUIT-08,safeway,safeway-kona,hawaii,15001,2026-04-21,"Tropicana No Pulp Orange Juice, 89 oz",9.99,89.0,fl_oz,0.1122,False,
+GRAIN-01,safeway,safeway-hilo,hawaii,15001,2026-04-21,"Hinode Calrose Rice, 20 lb",25.99,20.0,lb,1.2995,False,
+GRAIN-01,safeway,safeway-kona,hawaii,15001,2026-04-21,"Hinode Calrose Rice, 20 lb",25.99,20.0,lb,1.2995,False,
+GRAIN-03,safeway,safeway-hilo,hawaii,15001,2026-04-21,"Oven Joy White Bread, 22 oz",5.49,22.0,oz,0.2495,True,Oven Joy brand; substitution for store bread
+GRAIN-03,safeway,safeway-kona,hawaii,15001,2026-04-21,"Oven Joy White Bread, 22 oz",5.49,22.0,oz,0.2495,True,Oven Joy brand; substitution for store bread
+GRAIN-05,safeway,safeway-hilo,hawaii,15001,2026-04-21,"Cheerios, 18 oz",10.79,18.0,oz,0.5994,False,
+GRAIN-05,safeway,safeway-kona,hawaii,15001,2026-04-21,"Cheerios, 18 oz",10.79,18.0,oz,0.5994,False,
+GRAIN-07,safeway,safeway-hilo,hawaii,15001,2026-04-21,"Barilla Spaghetti, 16 oz",3.49,16.0,oz,0.2181,False,
+GRAIN-07,safeway,safeway-kona,hawaii,15001,2026-04-21,"Barilla Spaghetti, 16 oz",3.49,16.0,oz,0.2181,False,
+MEAT-01,safeway,safeway-hilo,hawaii,15001,2026-04-21,"Ground beef 85/15, ~1 lb",10.99,1.0,lb,10.99,True,85/15 lean; substitution for 80/20
+MEAT-01,safeway,safeway-kona,hawaii,15001,2026-04-21,"Ground beef 85/15, ~1 lb",10.99,1.0,lb,10.99,True,85/15 lean; substitution for 80/20
+MEAT-04,safeway,safeway-hilo,hawaii,15001,2026-04-21,"Boneless skinless chicken breast, 1 lb",3.99,1.0,lb,3.99,False,
+MEAT-04,safeway,safeway-kona,hawaii,15001,2026-04-21,"Boneless skinless chicken breast, 1 lb",3.99,1.0,lb,3.99,False,
+MEAT-08,safeway,safeway-hilo,hawaii,15001,2026-04-21,"SPAM Classic, 12 oz",3.99,12.0,oz,0.3325,False,
+MEAT-08,safeway,safeway-kona,hawaii,15001,2026-04-21,"SPAM Classic, 12 oz",3.99,12.0,oz,0.3325,False,
+PREP-01,safeway,safeway-hilo,hawaii,15001,2026-04-21,"Campbell's Chicken Noodle Soup, 10.75 oz",3.0,10.75,oz,0.2791,False,
+PREP-01,safeway,safeway-kona,hawaii,15001,2026-04-21,"Campbell's Chicken Noodle Soup, 10.75 oz",3.0,10.75,oz,0.2791,False,
+PREP-03,safeway,safeway-hilo,hawaii,15001,2026-04-21,"Maruchan Ramen Beef Flavor, 3 oz",0.99,3.0,oz,0.33,True,Beef flavor 3 oz; substitution for Soy Sauce 2.25 oz
+PREP-03,safeway,safeway-kona,hawaii,15001,2026-04-21,"Maruchan Ramen Beef Flavor, 3 oz",0.99,3.0,oz,0.33,True,Beef flavor 3 oz; substitution for Soy Sauce 2.25 oz
+PROT-04,safeway,safeway-hilo,hawaii,15001,2026-04-21,"Jif Creamy Peanut Butter, 16 oz",4.49,16.0,oz,0.2806,False,
+PROT-04,safeway,safeway-kona,hawaii,15001,2026-04-21,"Jif Creamy Peanut Butter, 16 oz",4.49,16.0,oz,0.2806,False,
+SWEET-01,safeway,safeway-hilo,hawaii,15001,2026-04-21,"C&H Granulated Sugar, 4 lb",5.99,4.0,lb,1.4975,False,
+SWEET-01,safeway,safeway-kona,hawaii,15001,2026-04-21,"C&H Granulated Sugar, 4 lb",5.99,4.0,lb,1.4975,False,
+VEG-01,safeway,safeway-hilo,hawaii,15001,2026-04-21,"Russet potatoes, 5 lb bag",5.99,5.0,lb,1.198,False,
+VEG-01,safeway,safeway-kona,hawaii,15001,2026-04-21,"Russet potatoes, 5 lb bag",5.99,5.0,lb,1.198,False,
+VEG-04,safeway,safeway-hilo,hawaii,15001,2026-04-21,"O Organics Baby Spinach, 5 oz",6.99,5.0,oz,1.398,True,Organic spinach; substitution for conventional
+VEG-04,safeway,safeway-kona,hawaii,15001,2026-04-21,"O Organics Baby Spinach, 5 oz",6.99,5.0,oz,1.398,True,Organic spinach; substitution for conventional
+VEG-06,safeway,safeway-hilo,hawaii,15001,2026-04-21,"Red Roma tomatoes, 1 lb",4.99,1.0,lb,4.99,False,
+VEG-06,safeway,safeway-kona,hawaii,15001,2026-04-21,"Red Roma tomatoes, 1 lb",4.99,1.0,lb,4.99,False,
+VEG-08,safeway,safeway-hilo,hawaii,15001,2026-04-21,"Del Monte Whole Kernel Corn, 15.25 oz",3.99,15.25,oz,0.2616,False,
+VEG-08,safeway,safeway-kona,hawaii,15001,2026-04-21,"Del Monte Whole Kernel Corn, 15.25 oz",3.99,15.25,oz,0.2616,False,
+BEV-03,safeway,safeway-honolulu,honolulu,15003,2026-04-21,"Folgers Classic Roast, 25.9 oz",23.99,25.9,oz,0.9263,False,
+DAIRY-01,safeway,safeway-honolulu,honolulu,15003,2026-04-21,"Lucerne Whole Milk, 1 gallon",7.99,128.0,fl_oz,0.0624,False,
+DAIRY-03,safeway,safeway-honolulu,honolulu,15003,2026-04-21,Kraft Singles American Cheese Slices,7.99,16.0,oz,0.4994,False,Assumed 16 oz (24-count) — size not confirmed
+DAIRY-06,safeway,safeway-honolulu,honolulu,15003,2026-04-21,"Land O'Lakes Salted Butter, 1 lb",7.99,16.0,oz,0.4994,False,
+DAIRY-07,safeway,safeway-honolulu,honolulu,15003,2026-04-21,"Lucerne Farms Eggs, Large, 12 each",6.49,12.0,ct,0.5408,False,
+FAT-01,safeway,safeway-honolulu,honolulu,15003,2026-04-21,"Wesson Vegetable Oil, 40 oz",5.5,40.0,fl_oz,0.1375,False,
+FISH-01,safeway,safeway-honolulu,honolulu,15003,2026-04-21,"StarKist Chunk Light Tuna, 5 oz",1.99,5.0,oz,0.398,False,
+FRUIT-01,safeway,safeway-honolulu,honolulu,15003,2026-04-21,"Bananas, 1 lb",0.49,1.0,lb,0.49,False,Safeway listed per 100g; treating as $/lb — verify
+FRUIT-03,safeway,safeway-honolulu,honolulu,15003,2026-04-21,"Fuji Apple, 1 lb",3.49,1.0,lb,3.49,False,
+FRUIT-05,safeway,safeway-honolulu,honolulu,15003,2026-04-21,"Dole Pineapple Chunks in Juice, 20 oz",4.99,20.0,oz,0.2495,False,
+FRUIT-08,safeway,safeway-honolulu,honolulu,15003,2026-04-21,"Tropicana No Pulp Orange Juice, 89 oz",9.99,89.0,fl_oz,0.1122,False,
+GRAIN-01,safeway,safeway-honolulu,honolulu,15003,2026-04-21,"Hinode Calrose Rice, 20 lb",23.99,20.0,lb,1.1995,False,
+GRAIN-03,safeway,safeway-honolulu,honolulu,15003,2026-04-21,"Oven Joy White Bread, 22 oz",4.99,22.0,oz,0.2268,True,Oven Joy brand; substitution for store bread
+GRAIN-05,safeway,safeway-honolulu,honolulu,15003,2026-04-21,"Cheerios, 18 oz",10.49,18.0,oz,0.5828,False,
+GRAIN-07,safeway,safeway-honolulu,honolulu,15003,2026-04-21,"Barilla Spaghetti, 16 oz",3.39,16.0,oz,0.2119,False,
+MEAT-01,safeway,safeway-honolulu,honolulu,15003,2026-04-21,"Ground beef 85/15, ~1 lb",10.99,1.0,lb,10.99,True,85/15 lean; substitution for 80/20
+MEAT-04,safeway,safeway-honolulu,honolulu,15003,2026-04-21,"Boneless skinless chicken breast, 1 lb",3.99,1.0,lb,3.99,False,
+MEAT-08,safeway,safeway-honolulu,honolulu,15003,2026-04-21,"SPAM Classic, 12 oz",3.79,12.0,oz,0.3158,False,
+PREP-01,safeway,safeway-honolulu,honolulu,15003,2026-04-21,"Campbell's Chicken Noodle Soup, 10.75 oz",3.0,10.75,oz,0.2791,False,
+PREP-03,safeway,safeway-honolulu,honolulu,15003,2026-04-21,"Maruchan Ramen Beef Flavor, 3 oz",0.99,3.0,oz,0.33,True,Beef flavor 3 oz; substitution for Soy Sauce 2.25 oz
+PROT-04,safeway,safeway-honolulu,honolulu,15003,2026-04-21,"Jif Creamy Peanut Butter, 16 oz",4.49,16.0,oz,0.2806,False,
+SWEET-01,safeway,safeway-honolulu,honolulu,15003,2026-04-21,"C&H Granulated Sugar, 4 lb",5.99,4.0,lb,1.4975,False,
+VEG-01,safeway,safeway-honolulu,honolulu,15003,2026-04-21,"Russet potatoes, 5 lb bag",5.99,5.0,lb,1.198,False,
+VEG-04,safeway,safeway-honolulu,honolulu,15003,2026-04-21,"O Organics Baby Spinach, 5 oz",6.99,5.0,oz,1.398,True,Organic spinach; substitution for conventional
+VEG-06,safeway,safeway-honolulu,honolulu,15003,2026-04-21,"Red Roma tomatoes, 1 lb",3.99,1.0,lb,3.99,False,
+VEG-08,safeway,safeway-honolulu,honolulu,15003,2026-04-21,"Del Monte Whole Kernel Corn, 15.25 oz",3.99,15.25,oz,0.2616,False,
+BEV-03,safeway,safeway-kauai,kauai,15007,2026-04-21,"Folgers Classic Roast, 25.9 oz",23.99,25.9,oz,0.9263,False,
+DAIRY-01,safeway,safeway-kauai,kauai,15007,2026-04-21,"Lucerne Whole Milk, 1 gallon",7.99,128.0,fl_oz,0.0624,False,
+DAIRY-03,safeway,safeway-kauai,kauai,15007,2026-04-21,Kraft Singles American Cheese Slices,7.99,16.0,oz,0.4994,False,Assumed 16 oz (24-count) — size not confirmed
+DAIRY-06,safeway,safeway-kauai,kauai,15007,2026-04-21,"Land O'Lakes Salted Butter, 1 lb",7.99,16.0,oz,0.4994,False,
+DAIRY-07,safeway,safeway-kauai,kauai,15007,2026-04-21,"Lucerne Farms Eggs, Large, 12 each",6.99,12.0,ct,0.5825,False,
+FAT-01,safeway,safeway-kauai,kauai,15007,2026-04-21,"Wesson Vegetable Oil, 40 oz",5.5,40.0,fl_oz,0.1375,False,
+FISH-01,safeway,safeway-kauai,kauai,15007,2026-04-21,"StarKist Chunk Light Tuna, 5 oz",1.99,5.0,oz,0.398,False,
+FRUIT-01,safeway,safeway-kauai,kauai,15007,2026-04-21,"Bananas, 1 lb",1.49,1.0,lb,1.49,False,Safeway listed per 100g; treating as $/lb — verify
+FRUIT-03,safeway,safeway-kauai,kauai,15007,2026-04-21,"Fuji Apple, 1 lb",3.99,1.0,lb,3.99,False,
+FRUIT-05,safeway,safeway-kauai,kauai,15007,2026-04-21,"Dole Pineapple Chunks in Juice, 20 oz",4.99,20.0,oz,0.2495,False,
+FRUIT-08,safeway,safeway-kauai,kauai,15007,2026-04-21,"Tropicana No Pulp Orange Juice, 89 oz",9.99,89.0,fl_oz,0.1122,False,
+GRAIN-01,safeway,safeway-kauai,kauai,15007,2026-04-21,"Hinode Calrose Rice, 20 lb",25.99,20.0,lb,1.2995,False,
+GRAIN-03,safeway,safeway-kauai,kauai,15007,2026-04-21,"Oven Joy White Bread, 22 oz",5.49,22.0,oz,0.2495,True,Oven Joy brand; substitution for store bread
+GRAIN-05,safeway,safeway-kauai,kauai,15007,2026-04-21,"Cheerios, 18 oz",10.79,18.0,oz,0.5994,False,
+GRAIN-07,safeway,safeway-kauai,kauai,15007,2026-04-21,"Barilla Spaghetti, 16 oz",3.49,16.0,oz,0.2181,False,
+MEAT-01,safeway,safeway-kauai,kauai,15007,2026-04-21,"Ground beef 85/15, ~1 lb",10.99,1.0,lb,10.99,True,85/15 lean; substitution for 80/20
+MEAT-04,safeway,safeway-kauai,kauai,15007,2026-04-21,"Boneless skinless chicken breast, 1 lb",3.99,1.0,lb,3.99,False,
+MEAT-08,safeway,safeway-kauai,kauai,15007,2026-04-21,"SPAM Classic, 12 oz",3.99,12.0,oz,0.3325,False,
+PREP-01,safeway,safeway-kauai,kauai,15007,2026-04-21,"Campbell's Chicken Noodle Soup, 10.75 oz",3.0,10.75,oz,0.2791,False,
+PREP-03,safeway,safeway-kauai,kauai,15007,2026-04-21,"Maruchan Ramen Beef Flavor, 3 oz",0.99,3.0,oz,0.33,True,Beef flavor 3 oz; substitution for Soy Sauce 2.25 oz
+PROT-04,safeway,safeway-kauai,kauai,15007,2026-04-21,"Jif Creamy Peanut Butter, 16 oz",4.49,16.0,oz,0.2806,False,
+SWEET-01,safeway,safeway-kauai,kauai,15007,2026-04-21,"C&H Granulated Sugar, 4 lb",5.99,4.0,lb,1.4975,False,
+VEG-01,safeway,safeway-kauai,kauai,15007,2026-04-21,"Russet potatoes, 5 lb bag",5.99,5.0,lb,1.198,False,
+VEG-04,safeway,safeway-kauai,kauai,15007,2026-04-21,"O Organics Baby Spinach, 5 oz",6.99,5.0,oz,1.398,True,Organic spinach; substitution for conventional
+VEG-06,safeway,safeway-kauai,kauai,15007,2026-04-21,"Red Roma tomatoes, 1 lb",4.99,1.0,lb,4.99,False,
+VEG-08,safeway,safeway-kauai,kauai,15007,2026-04-21,"Del Monte Whole Kernel Corn, 15.25 oz",3.99,15.25,oz,0.2616,False,
+BEV-03,safeway,safeway-maui,maui,15009,2026-04-21,"Folgers Classic Roast, 25.9 oz",23.99,25.9,oz,0.9263,False,
+DAIRY-01,safeway,safeway-maui,maui,15009,2026-04-21,"Lucerne Whole Milk, 1 gallon",7.99,128.0,fl_oz,0.0624,False,
+DAIRY-03,safeway,safeway-maui,maui,15009,2026-04-21,Kraft Singles American Cheese Slices,7.99,16.0,oz,0.4994,False,Assumed 16 oz (24-count) — size not confirmed
+DAIRY-06,safeway,safeway-maui,maui,15009,2026-04-21,"Land O'Lakes Salted Butter, 1 lb",7.99,16.0,oz,0.4994,False,
+DAIRY-07,safeway,safeway-maui,maui,15009,2026-04-21,"Lucerne Farms Eggs, Large, 12 each",6.99,12.0,ct,0.5825,False,
+FAT-01,safeway,safeway-maui,maui,15009,2026-04-21,"Wesson Vegetable Oil, 40 oz",5.5,40.0,fl_oz,0.1375,False,
+FISH-01,safeway,safeway-maui,maui,15009,2026-04-21,"StarKist Chunk Light Tuna, 5 oz",1.99,5.0,oz,0.398,False,
+FRUIT-01,safeway,safeway-maui,maui,15009,2026-04-21,"Bananas, 1 lb",1.49,1.0,lb,1.49,False,Safeway listed per 100g; treating as $/lb — verify
+FRUIT-03,safeway,safeway-maui,maui,15009,2026-04-21,"Fuji Apple, 1 lb",3.99,1.0,lb,3.99,False,
+FRUIT-05,safeway,safeway-maui,maui,15009,2026-04-21,"Dole Pineapple Chunks in Juice, 20 oz",4.99,20.0,oz,0.2495,False,
+FRUIT-08,safeway,safeway-maui,maui,15009,2026-04-21,"Tropicana No Pulp Orange Juice, 89 oz",9.99,89.0,fl_oz,0.1122,False,
+GRAIN-01,safeway,safeway-maui,maui,15009,2026-04-21,"Hinode Calrose Rice, 20 lb",25.99,20.0,lb,1.2995,False,
+GRAIN-03,safeway,safeway-maui,maui,15009,2026-04-21,"Oven Joy White Bread, 22 oz",5.49,22.0,oz,0.2495,True,Oven Joy brand; substitution for store bread
+GRAIN-05,safeway,safeway-maui,maui,15009,2026-04-21,"Cheerios, 18 oz",10.79,18.0,oz,0.5994,False,
+GRAIN-07,safeway,safeway-maui,maui,15009,2026-04-21,"Barilla Spaghetti, 16 oz",3.49,16.0,oz,0.2181,False,
+MEAT-01,safeway,safeway-maui,maui,15009,2026-04-21,"Ground beef 85/15, ~1 lb",10.99,1.0,lb,10.99,True,85/15 lean; substitution for 80/20
+MEAT-04,safeway,safeway-maui,maui,15009,2026-04-21,"Boneless skinless chicken breast, 1 lb",3.99,1.0,lb,3.99,False,
+MEAT-08,safeway,safeway-maui,maui,15009,2026-04-21,"SPAM Classic, 12 oz",3.99,12.0,oz,0.3325,False,
+PREP-01,safeway,safeway-maui,maui,15009,2026-04-21,"Campbell's Chicken Noodle Soup, 10.75 oz",3.0,10.75,oz,0.2791,False,
+PREP-03,safeway,safeway-maui,maui,15009,2026-04-21,"Maruchan Ramen Beef Flavor, 3 oz",0.99,3.0,oz,0.33,True,Beef flavor 3 oz; substitution for Soy Sauce 2.25 oz
+PROT-04,safeway,safeway-maui,maui,15009,2026-04-21,"Jif Creamy Peanut Butter, 16 oz",4.49,16.0,oz,0.2806,False,
+SWEET-01,safeway,safeway-maui,maui,15009,2026-04-21,"C&H Granulated Sugar, 4 lb",5.99,4.0,lb,1.4975,False,
+VEG-01,safeway,safeway-maui,maui,15009,2026-04-21,"Russet potatoes, 5 lb bag",5.99,5.0,lb,1.198,False,
+VEG-04,safeway,safeway-maui,maui,15009,2026-04-21,"O Organics Baby Spinach, 5 oz",6.99,5.0,oz,1.398,True,Organic spinach; substitution for conventional
+VEG-06,safeway,safeway-maui,maui,15009,2026-04-21,"Red Roma tomatoes, 1 lb",4.99,1.0,lb,4.99,False,
+VEG-08,safeway,safeway-maui,maui,15009,2026-04-21,"Del Monte Whole Kernel Corn, 15.25 oz",3.99,15.25,oz,0.2616,False,
+BEV-03,walmart,walmart-hilo,hawaii,15001,2026-04-21,"Folgers Classic Roast, 25.9 oz",20.38,25.9,oz,0.7869,False,
+BEV-03,walmart,walmart-kona,hawaii,15001,2026-04-21,"Folgers Classic Roast, 25.9 oz",20.38,25.9,oz,0.7869,False,
+DAIRY-01,walmart,walmart-hilo,hawaii,15001,2026-04-21,"Great Value Whole Milk, 1 gallon",6.08,128.0,fl_oz,0.0475,False,
+DAIRY-01,walmart,walmart-kona,hawaii,15001,2026-04-21,"Great Value Whole Milk, 1 gallon",6.08,128.0,fl_oz,0.0475,False,
+DAIRY-03,walmart,walmart-hilo,hawaii,15001,2026-04-21,Kraft Singles American Cheese Slices,4.63,12.0,oz,0.3858,False,Size not labeled; assumed 12 oz (16-count)
+DAIRY-03,walmart,walmart-kona,hawaii,15001,2026-04-21,Kraft Singles American Cheese Slices,4.63,12.0,oz,0.3858,False,Size not labeled; assumed 12 oz (16-count)
+DAIRY-06,walmart,walmart-hilo,hawaii,15001,2026-04-21,"Land O'Lakes Salted Butter, 1 lb",5.34,16.0,oz,0.3337,False,
+DAIRY-06,walmart,walmart-kona,hawaii,15001,2026-04-21,"Land O'Lakes Salted Butter, 1 lb",5.34,16.0,oz,0.3337,False,
+DAIRY-07,walmart,walmart-hilo,hawaii,15001,2026-04-21,"Great Value Eggs, Large, 12 each",3.74,12.0,ct,0.3117,False,
+DAIRY-07,walmart,walmart-kona,hawaii,15001,2026-04-21,"Great Value Eggs, Large, 12 each",3.74,12.0,ct,0.3117,False,
+FAT-01,walmart,walmart-hilo,hawaii,15001,2026-04-21,"Wesson Vegetable Oil, 40 oz",5.5,40.0,fl_oz,0.1375,False,
+FAT-01,walmart,walmart-kona,hawaii,15001,2026-04-21,"Wesson Vegetable Oil, 40 oz",5.5,40.0,fl_oz,0.1375,False,
+FISH-01,walmart,walmart-hilo,hawaii,15001,2026-04-21,"StarKist Chunk Light Tuna, 5 oz",1.13,5.0,oz,0.226,False,
+FISH-01,walmart,walmart-kona,hawaii,15001,2026-04-21,"StarKist Chunk Light Tuna, 5 oz",1.13,5.0,oz,0.226,False,
+FRUIT-01,walmart,walmart-hilo,hawaii,15001,2026-04-21,"Bananas, 1 lb",1.18,1.0,lb,1.18,False,
+FRUIT-01,walmart,walmart-kona,hawaii,15001,2026-04-21,"Bananas, 1 lb",1.18,1.0,lb,1.18,False,
+FRUIT-03,walmart,walmart-hilo,hawaii,15001,2026-04-21,"Fuji Apple, 1 lb",1.87,1.0,lb,1.87,False,
+FRUIT-03,walmart,walmart-kona,hawaii,15001,2026-04-21,"Fuji Apple, 1 lb",1.87,1.0,lb,1.87,False,
+FRUIT-05,walmart,walmart-hilo,hawaii,15001,2026-04-21,"Dole Pineapple Chunks in Juice, 20 oz",2.92,20.0,oz,0.146,False,
+FRUIT-05,walmart,walmart-kona,hawaii,15001,2026-04-21,"Dole Pineapple Chunks in Juice, 20 oz",2.92,20.0,oz,0.146,False,
+FRUIT-08,walmart,walmart-hilo,hawaii,15001,2026-04-21,"Tropicana No Pulp Orange Juice, 89 oz",9.92,89.0,fl_oz,0.1115,False,
+FRUIT-08,walmart,walmart-kona,hawaii,15001,2026-04-21,"Tropicana No Pulp Orange Juice, 89 oz",9.92,89.0,fl_oz,0.1115,False,
+GRAIN-01,walmart,walmart-hilo,hawaii,15001,2026-04-21,"Hinode Calrose Rice, 20 lb",17.98,20.0,lb,0.899,False,
+GRAIN-01,walmart,walmart-kona,hawaii,15001,2026-04-21,"Hinode Calrose Rice, 20 lb",17.98,20.0,lb,0.899,False,
+GRAIN-03,walmart,walmart-hilo,hawaii,15001,2026-04-21,"Oven Joy White Bread, 22 oz",5.78,22.0,oz,0.2627,True,Oven Joy brand; substitution for store bread
+GRAIN-03,walmart,walmart-kona,hawaii,15001,2026-04-21,"Oven Joy White Bread, 22 oz",5.78,22.0,oz,0.2627,True,Oven Joy brand; substitution for store bread
+GRAIN-05,walmart,walmart-hilo,hawaii,15001,2026-04-21,"Cheerios, 18 oz",5.82,18.0,oz,0.3233,False,
+GRAIN-05,walmart,walmart-kona,hawaii,15001,2026-04-21,"Cheerios, 18 oz",5.82,18.0,oz,0.3233,False,
+GRAIN-07,walmart,walmart-hilo,hawaii,15001,2026-04-21,"Barilla Spaghetti, 16 oz",2.22,16.0,oz,0.1388,False,
+GRAIN-07,walmart,walmart-kona,hawaii,15001,2026-04-21,"Barilla Spaghetti, 16 oz",2.22,16.0,oz,0.1388,False,
+MEAT-01,walmart,walmart-hilo,hawaii,15001,2026-04-21,"Ground beef 85/15, ~1 lb",7.73,1.0,lb,7.73,True,85/15 lean; substitution for 80/20
+MEAT-01,walmart,walmart-kona,hawaii,15001,2026-04-21,"Ground beef 85/15, ~1 lb",7.73,1.0,lb,7.73,True,85/15 lean; substitution for 80/20
+MEAT-04,walmart,walmart-hilo,hawaii,15001,2026-04-21,"Great Value chicken breast, 5 lb",15.12,5.0,lb,3.024,False,
+MEAT-04,walmart,walmart-kona,hawaii,15001,2026-04-21,"Great Value chicken breast, 5 lb",15.12,5.0,lb,3.024,False,
+MEAT-08,walmart,walmart-hilo,hawaii,15001,2026-04-21,"SPAM Classic, 12 oz",3.68,12.0,oz,0.3067,False,
+MEAT-08,walmart,walmart-kona,hawaii,15001,2026-04-21,"SPAM Classic, 12 oz",3.68,12.0,oz,0.3067,False,
+PREP-01,walmart,walmart-hilo,hawaii,15001,2026-04-21,"Campbell's Chicken Noodle Soup, 10.75 oz",5.37,10.75,oz,0.4995,False,
+PREP-01,walmart,walmart-kona,hawaii,15001,2026-04-21,"Campbell's Chicken Noodle Soup, 10.75 oz",5.37,10.75,oz,0.4995,False,
+PREP-03,walmart,walmart-hilo,hawaii,15001,2026-04-21,"Maruchan Ramen Beef Flavor, 3 oz",0.58,3.0,oz,0.1933,True,Beef flavor 3 oz; substitution for Soy Sauce 2.25 oz
+PREP-03,walmart,walmart-kona,hawaii,15001,2026-04-21,"Maruchan Ramen Beef Flavor, 3 oz",0.58,3.0,oz,0.1933,True,Beef flavor 3 oz; substitution for Soy Sauce 2.25 oz
+PROT-04,walmart,walmart-hilo,hawaii,15001,2026-04-21,"Jif Creamy Peanut Butter, 16 oz",3.78,16.0,oz,0.2362,False,
+PROT-04,walmart,walmart-kona,hawaii,15001,2026-04-21,"Jif Creamy Peanut Butter, 16 oz",3.78,16.0,oz,0.2362,False,
+SWEET-01,walmart,walmart-hilo,hawaii,15001,2026-04-21,"C&H Granulated Sugar, 4 lb",3.46,4.0,lb,0.865,False,
+SWEET-01,walmart,walmart-kona,hawaii,15001,2026-04-21,"C&H Granulated Sugar, 4 lb",3.46,4.0,lb,0.865,False,
+VEG-01,walmart,walmart-hilo,hawaii,15001,2026-04-21,"Russet potatoes, 5 lb bag",4.76,5.0,lb,0.952,False,
+VEG-01,walmart,walmart-kona,hawaii,15001,2026-04-21,"Russet potatoes, 5 lb bag",4.76,5.0,lb,0.952,False,
+VEG-04,walmart,walmart-hilo,hawaii,15001,2026-04-21,"Marketside Baby Spinach, 5 oz",2.76,5.0,oz,0.552,False,5 oz package (vs 6 oz at Foodland)
+VEG-04,walmart,walmart-kona,hawaii,15001,2026-04-21,"Marketside Baby Spinach, 5 oz",2.76,5.0,oz,0.552,False,5 oz package (vs 6 oz at Foodland)
+VEG-06,walmart,walmart-hilo,hawaii,15001,2026-04-21,"Red Roma tomatoes, 1 lb",2.08,1.0,lb,2.08,False,
+VEG-06,walmart,walmart-kona,hawaii,15001,2026-04-21,"Red Roma tomatoes, 1 lb",2.08,1.0,lb,2.08,False,
+VEG-08,walmart,walmart-hilo,hawaii,15001,2026-04-21,"Del Monte Whole Kernel Corn, 15.25 oz",2.17,15.25,oz,0.1423,False,
+VEG-08,walmart,walmart-kona,hawaii,15001,2026-04-21,"Del Monte Whole Kernel Corn, 15.25 oz",2.17,15.25,oz,0.1423,False,
+BEV-03,walmart,walmart-honolulu,honolulu,15003,2026-04-21,"Folgers Classic Roast, 25.9 oz",20.38,25.9,oz,0.7869,False,
+DAIRY-01,walmart,walmart-honolulu,honolulu,15003,2026-04-21,"Great Value Whole Milk, 1 gallon",6.08,128.0,fl_oz,0.0475,False,
+DAIRY-03,walmart,walmart-honolulu,honolulu,15003,2026-04-21,Kraft Singles American Cheese Slices,4.63,12.0,oz,0.3858,False,Size not labeled; assumed 12 oz (16-count)
+DAIRY-06,walmart,walmart-honolulu,honolulu,15003,2026-04-21,"Land O'Lakes Salted Butter, 1 lb",5.34,16.0,oz,0.3337,False,
+DAIRY-07,walmart,walmart-honolulu,honolulu,15003,2026-04-21,"Great Value Eggs, Large, 12 each",3.74,12.0,ct,0.3117,False,
+FAT-01,walmart,walmart-honolulu,honolulu,15003,2026-04-21,"Wesson Vegetable Oil, 40 oz",5.5,40.0,fl_oz,0.1375,False,
+FISH-01,walmart,walmart-honolulu,honolulu,15003,2026-04-21,"StarKist Chunk Light Tuna, 5 oz",1.13,5.0,oz,0.226,False,
+FRUIT-01,walmart,walmart-honolulu,honolulu,15003,2026-04-21,"Bananas, 1 lb",1.08,1.0,lb,1.08,False,
+FRUIT-03,walmart,walmart-honolulu,honolulu,15003,2026-04-21,"Fuji Apple, 1 lb",1.87,1.0,lb,1.87,False,
+FRUIT-05,walmart,walmart-honolulu,honolulu,15003,2026-04-21,"Dole Pineapple Chunks in Juice, 20 oz",2.92,20.0,oz,0.146,False,
+FRUIT-08,walmart,walmart-honolulu,honolulu,15003,2026-04-21,"Tropicana No Pulp Orange Juice, 89 oz",9.92,89.0,fl_oz,0.1115,False,
+GRAIN-01,walmart,walmart-honolulu,honolulu,15003,2026-04-21,"Hinode Calrose Rice, 20 lb",17.98,20.0,lb,0.899,False,
+GRAIN-03,walmart,walmart-honolulu,honolulu,15003,2026-04-21,"Oven Joy White Bread, 22 oz",5.78,22.0,oz,0.2627,True,Oven Joy brand; substitution for store bread
+GRAIN-05,walmart,walmart-honolulu,honolulu,15003,2026-04-21,"Cheerios, 18 oz",5.82,18.0,oz,0.3233,False,
+GRAIN-07,walmart,walmart-honolulu,honolulu,15003,2026-04-21,"Barilla Spaghetti, 16 oz",2.22,16.0,oz,0.1388,False,
+MEAT-01,walmart,walmart-honolulu,honolulu,15003,2026-04-21,"Ground beef 85/15, ~1 lb",7.73,1.0,lb,7.73,True,85/15 lean; substitution for 80/20
+MEAT-04,walmart,walmart-honolulu,honolulu,15003,2026-04-21,"Great Value chicken breast, 5 lb",15.12,5.0,lb,3.024,False,
+MEAT-08,walmart,walmart-honolulu,honolulu,15003,2026-04-21,"SPAM Classic, 12 oz",3.68,12.0,oz,0.3067,False,
+PREP-01,walmart,walmart-honolulu,honolulu,15003,2026-04-21,"Campbell's Chicken Noodle Soup, 10.75 oz",5.37,10.75,oz,0.4995,False,
+PREP-03,walmart,walmart-honolulu,honolulu,15003,2026-04-21,"Maruchan Ramen Beef Flavor, 3 oz",0.58,3.0,oz,0.1933,True,Beef flavor 3 oz; substitution for Soy Sauce 2.25 oz
+PROT-04,walmart,walmart-honolulu,honolulu,15003,2026-04-21,"Jif Creamy Peanut Butter, 16 oz",3.78,16.0,oz,0.2362,False,
+SWEET-01,walmart,walmart-honolulu,honolulu,15003,2026-04-21,"C&H Granulated Sugar, 4 lb",3.46,4.0,lb,0.865,False,
+VEG-01,walmart,walmart-honolulu,honolulu,15003,2026-04-21,"Russet potatoes, 5 lb bag",4.76,5.0,lb,0.952,False,
+VEG-04,walmart,walmart-honolulu,honolulu,15003,2026-04-21,"Marketside Baby Spinach, 5 oz",2.76,5.0,oz,0.552,False,5 oz package (vs 6 oz at Foodland)
+VEG-06,walmart,walmart-honolulu,honolulu,15003,2026-04-21,"Red Roma tomatoes, 1 lb",2.08,1.0,lb,2.08,False,
+VEG-08,walmart,walmart-honolulu,honolulu,15003,2026-04-21,"Del Monte Whole Kernel Corn, 15.25 oz",2.17,15.25,oz,0.1423,False,
+BEV-03,walmart,walmart-kauai,kauai,15007,2026-04-21,"Folgers Classic Roast, 25.9 oz",20.38,25.9,oz,0.7869,False,
+DAIRY-01,walmart,walmart-kauai,kauai,15007,2026-04-21,"Great Value Whole Milk, 1 gallon",6.08,128.0,fl_oz,0.0475,False,
+DAIRY-03,walmart,walmart-kauai,kauai,15007,2026-04-21,Kraft Singles American Cheese Slices,4.63,12.0,oz,0.3858,False,Size not labeled; assumed 12 oz (16-count)
+DAIRY-06,walmart,walmart-kauai,kauai,15007,2026-04-21,"Land O'Lakes Salted Butter, 1 lb",5.34,16.0,oz,0.3337,False,
+DAIRY-07,walmart,walmart-kauai,kauai,15007,2026-04-21,"Great Value Eggs, Large, 12 each",3.74,12.0,ct,0.3117,False,
+FAT-01,walmart,walmart-kauai,kauai,15007,2026-04-21,"Wesson Vegetable Oil, 40 oz",5.5,40.0,fl_oz,0.1375,False,
+FISH-01,walmart,walmart-kauai,kauai,15007,2026-04-21,"StarKist Chunk Light Tuna, 5 oz",1.13,5.0,oz,0.226,False,
+FRUIT-01,walmart,walmart-kauai,kauai,15007,2026-04-21,"Bananas, 1 lb",1.18,1.0,lb,1.18,False,
+FRUIT-03,walmart,walmart-kauai,kauai,15007,2026-04-21,"Fuji Apple, 1 lb",1.87,1.0,lb,1.87,False,
+FRUIT-05,walmart,walmart-kauai,kauai,15007,2026-04-21,"Dole Pineapple Chunks in Juice, 20 oz",2.92,20.0,oz,0.146,False,
+FRUIT-08,walmart,walmart-kauai,kauai,15007,2026-04-21,"Tropicana No Pulp Orange Juice, 89 oz",9.92,89.0,fl_oz,0.1115,False,
+GRAIN-01,walmart,walmart-kauai,kauai,15007,2026-04-21,"Hinode Calrose Rice, 20 lb",17.98,20.0,lb,0.899,False,
+GRAIN-03,walmart,walmart-kauai,kauai,15007,2026-04-21,"Oven Joy White Bread, 22 oz",5.78,22.0,oz,0.2627,True,Oven Joy brand; substitution for store bread
+GRAIN-05,walmart,walmart-kauai,kauai,15007,2026-04-21,"Cheerios, 18 oz",5.82,18.0,oz,0.3233,False,
+GRAIN-07,walmart,walmart-kauai,kauai,15007,2026-04-21,"Barilla Spaghetti, 16 oz",2.22,16.0,oz,0.1388,False,
+MEAT-01,walmart,walmart-kauai,kauai,15007,2026-04-21,"Ground beef 85/15, ~1 lb",7.73,1.0,lb,7.73,True,85/15 lean; substitution for 80/20
+MEAT-04,walmart,walmart-kauai,kauai,15007,2026-04-21,"Great Value chicken breast, 5 lb",15.12,5.0,lb,3.024,False,
+MEAT-08,walmart,walmart-kauai,kauai,15007,2026-04-21,"SPAM Classic, 12 oz",3.68,12.0,oz,0.3067,False,
+PREP-01,walmart,walmart-kauai,kauai,15007,2026-04-21,"Campbell's Chicken Noodle Soup, 10.75 oz",5.37,10.75,oz,0.4995,False,
+PREP-03,walmart,walmart-kauai,kauai,15007,2026-04-21,"Maruchan Ramen Beef Flavor, 3 oz",0.58,3.0,oz,0.1933,True,Beef flavor 3 oz; substitution for Soy Sauce 2.25 oz
+PROT-04,walmart,walmart-kauai,kauai,15007,2026-04-21,"Jif Creamy Peanut Butter, 16 oz",3.78,16.0,oz,0.2362,False,
+SWEET-01,walmart,walmart-kauai,kauai,15007,2026-04-21,"C&H Granulated Sugar, 4 lb",3.46,4.0,lb,0.865,False,
+VEG-01,walmart,walmart-kauai,kauai,15007,2026-04-21,"Russet potatoes, 5 lb bag",4.76,5.0,lb,0.952,False,
+VEG-04,walmart,walmart-kauai,kauai,15007,2026-04-21,"Marketside Baby Spinach, 5 oz",2.76,5.0,oz,0.552,False,5 oz package (vs 6 oz at Foodland)
+VEG-06,walmart,walmart-kauai,kauai,15007,2026-04-21,"Red Roma tomatoes, 1 lb",2.08,1.0,lb,2.08,False,
+VEG-08,walmart,walmart-kauai,kauai,15007,2026-04-21,"Del Monte Whole Kernel Corn, 15.25 oz",2.17,15.25,oz,0.1423,False,
+BEV-03,walmart,walmart-maui,maui,15009,2026-04-21,"Folgers Classic Roast, 25.9 oz",20.38,25.9,oz,0.7869,False,
+DAIRY-01,walmart,walmart-maui,maui,15009,2026-04-21,"Great Value Whole Milk, 1 gallon",6.08,128.0,fl_oz,0.0475,False,
+DAIRY-03,walmart,walmart-maui,maui,15009,2026-04-21,Kraft Singles American Cheese Slices,4.63,12.0,oz,0.3858,False,Size not labeled; assumed 12 oz (16-count)
+DAIRY-06,walmart,walmart-maui,maui,15009,2026-04-21,"Land O'Lakes Salted Butter, 1 lb",5.34,16.0,oz,0.3337,False,
+DAIRY-07,walmart,walmart-maui,maui,15009,2026-04-21,"Great Value Eggs, Large, 12 each",3.74,12.0,ct,0.3117,False,
+FAT-01,walmart,walmart-maui,maui,15009,2026-04-21,"Wesson Vegetable Oil, 40 oz",5.5,40.0,fl_oz,0.1375,False,
+FISH-01,walmart,walmart-maui,maui,15009,2026-04-21,"StarKist Chunk Light Tuna, 5 oz",1.13,5.0,oz,0.226,False,
+FRUIT-01,walmart,walmart-maui,maui,15009,2026-04-21,"Bananas, 1 lb",1.18,1.0,lb,1.18,False,
+FRUIT-03,walmart,walmart-maui,maui,15009,2026-04-21,"Fuji Apple, 1 lb",1.87,1.0,lb,1.87,False,
+FRUIT-05,walmart,walmart-maui,maui,15009,2026-04-21,"Dole Pineapple Chunks in Juice, 20 oz",2.92,20.0,oz,0.146,False,
+FRUIT-08,walmart,walmart-maui,maui,15009,2026-04-21,"Tropicana No Pulp Orange Juice, 89 oz",9.92,89.0,fl_oz,0.1115,False,
+GRAIN-01,walmart,walmart-maui,maui,15009,2026-04-21,"Hinode Calrose Rice, 20 lb",17.98,20.0,lb,0.899,False,
+GRAIN-03,walmart,walmart-maui,maui,15009,2026-04-21,"Oven Joy White Bread, 22 oz",5.78,22.0,oz,0.2627,True,Oven Joy brand; substitution for store bread
+GRAIN-05,walmart,walmart-maui,maui,15009,2026-04-21,"Cheerios, 18 oz",5.82,18.0,oz,0.3233,False,
+GRAIN-07,walmart,walmart-maui,maui,15009,2026-04-21,"Barilla Spaghetti, 16 oz",2.22,16.0,oz,0.1388,False,
+MEAT-01,walmart,walmart-maui,maui,15009,2026-04-21,"Ground beef 85/15, ~1 lb",7.73,1.0,lb,7.73,True,85/15 lean; substitution for 80/20
+MEAT-04,walmart,walmart-maui,maui,15009,2026-04-21,"Great Value chicken breast, 5 lb",15.12,5.0,lb,3.024,False,
+MEAT-08,walmart,walmart-maui,maui,15009,2026-04-21,"SPAM Classic, 12 oz",3.68,12.0,oz,0.3067,False,
+PREP-01,walmart,walmart-maui,maui,15009,2026-04-21,"Campbell's Chicken Noodle Soup, 10.75 oz",5.37,10.75,oz,0.4995,False,
+PREP-03,walmart,walmart-maui,maui,15009,2026-04-21,"Maruchan Ramen Beef Flavor, 3 oz",0.58,3.0,oz,0.1933,True,Beef flavor 3 oz; substitution for Soy Sauce 2.25 oz
+PROT-04,walmart,walmart-maui,maui,15009,2026-04-21,"Jif Creamy Peanut Butter, 16 oz",3.78,16.0,oz,0.2362,False,
+SWEET-01,walmart,walmart-maui,maui,15009,2026-04-21,"C&H Granulated Sugar, 4 lb",3.46,4.0,lb,0.865,False,
+VEG-01,walmart,walmart-maui,maui,15009,2026-04-21,"Russet potatoes, 5 lb bag",4.76,5.0,lb,0.952,False,
+VEG-04,walmart,walmart-maui,maui,15009,2026-04-21,"Marketside Baby Spinach, 5 oz",2.76,5.0,oz,0.552,False,5 oz package (vs 6 oz at Foodland)
+VEG-06,walmart,walmart-maui,maui,15009,2026-04-21,"Red Roma tomatoes, 1 lb",2.08,1.0,lb,2.08,False,
+VEG-08,walmart,walmart-maui,maui,15009,2026-04-21,"Del Monte Whole Kernel Corn, 15.25 oz",2.17,15.25,oz,0.1423,False,

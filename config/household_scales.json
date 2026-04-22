@@ -1,0 +1,51 @@
+{
+  "description": "USDA Thrifty Food Plan household scaling factors (Jan 2025). The basket total represents a 4-person reference family. All prices are member/loyalty prices (Foodland Maika'i, Safeway Club Card, Costco membership prices). GET tax (4.5% statewide Hawaii) applied at checkout per county.",
+  "source": "USDA Food Plans: Cost of Food Reports, January 2025. Prices: Foodland.com, Safeway.com, Costco.com with member pricing.",
+  "get_tax_rate": 0.045,
+  "get_tax_note": "Hawaii General Excise Tax of 4.5% is uniformly applied at checkout across all counties. This represents the final effective price paid by consumers.",
+  "reference_family": {
+    "description": "2 adults (19-50) + 2 children (6-8 and 9-11)",
+    "monthly_cost": 994
+  },
+  "individual_shares": {
+    "adult_male_19_50": {"monthly_cost": 309, "share_of_reference": 0.311},
+    "adult_female_19_50": {"monthly_cost": 247, "share_of_reference": 0.248},
+    "child_6_8": {"monthly_cost": 218, "share_of_reference": 0.219},
+    "child_9_11": {"monthly_cost": 220, "share_of_reference": 0.221}
+  },
+  "household_size_multipliers": {
+    "1": 1.20,
+    "2": 1.10,
+    "3": 1.05,
+    "4": 1.00,
+    "5": 0.95,
+    "6": 0.95,
+    "7_plus": 0.90
+  },
+  "household_types": {
+    "single_adult_male": {
+      "label": "Single adult (male, 19-50)",
+      "members": ["adult_male_19_50"],
+      "size_multiplier_key": "1",
+      "effective_factor": 0.373
+    },
+    "single_adult_female": {
+      "label": "Single adult (female, 19-50)",
+      "members": ["adult_female_19_50"],
+      "size_multiplier_key": "1",
+      "effective_factor": 0.298
+    },
+    "single_parent_one_child": {
+      "label": "Single parent + 1 child (6-8)",
+      "members": ["adult_female_19_50", "child_6_8"],
+      "size_multiplier_key": "2",
+      "effective_factor": 0.514
+    },
+    "two_adults_two_children": {
+      "label": "Two adults + two children",
+      "members": ["adult_male_19_50", "adult_female_19_50", "child_6_8", "child_9_11"],
+      "size_multiplier_key": "4",
+      "effective_factor": 1.000
+    }
+  }
+}

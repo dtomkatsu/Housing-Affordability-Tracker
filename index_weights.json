@@ -1,0 +1,74 @@
+{
+  "version": "1.0.0",
+  "description": "Category weights for Hawaii county-level grocery price index. Adjusted from national USDA Thrifty Food Plan to reflect Hawaii consumption patterns.",
+  "last_updated": "2026-04-09",
+  "baseline": "USDA Thrifty Food Plan 2023",
+  "weights": {
+    "grains": {
+      "national_tfp": 0.14,
+      "hawaii_adjusted": 0.16,
+      "adjustment_reason": "Rice-heavy diet — Hawaii per-capita rice consumption is 2-3x mainland average"
+    },
+    "vegetables": {
+      "national_tfp": 0.12,
+      "hawaii_adjusted": 0.12,
+      "adjustment_reason": "No change"
+    },
+    "fruits": {
+      "national_tfp": 0.08,
+      "hawaii_adjusted": 0.08,
+      "adjustment_reason": "No change"
+    },
+    "dairy": {
+      "national_tfp": 0.12,
+      "hawaii_adjusted": 0.10,
+      "adjustment_reason": "Lower dairy consumption in Asian-influenced diets"
+    },
+    "protein_meat": {
+      "national_tfp": 0.18,
+      "hawaii_adjusted": 0.19,
+      "adjustment_reason": "SPAM and pork prominence in local diet"
+    },
+    "protein_seafood": {
+      "national_tfp": 0.04,
+      "hawaii_adjusted": 0.06,
+      "adjustment_reason": "Higher seafood consumption — island geography and cultural preference"
+    },
+    "protein_other": {
+      "national_tfp": 0.04,
+      "hawaii_adjusted": 0.05,
+      "adjustment_reason": "Tofu and beans as staple proteins in local diet"
+    },
+    "fats_oils": {
+      "national_tfp": 0.03,
+      "hawaii_adjusted": 0.03,
+      "adjustment_reason": "No change"
+    },
+    "beverages": {
+      "national_tfp": 0.07,
+      "hawaii_adjusted": 0.08,
+      "adjustment_reason": "Bottled water importance in some areas"
+    },
+    "condiments": {
+      "national_tfp": 0.04,
+      "hawaii_adjusted": 0.05,
+      "adjustment_reason": "Soy sauce, kimchi, and condiment-heavy cooking culture"
+    },
+    "sugars_sweets": {
+      "national_tfp": 0.03,
+      "hawaii_adjusted": 0.02,
+      "adjustment_reason": "Slightly lower share"
+    },
+    "snacks": {
+      "national_tfp": 0.04,
+      "hawaii_adjusted": 0.03,
+      "adjustment_reason": "Slightly lower share"
+    },
+    "prepared": {
+      "national_tfp": 0.07,
+      "hawaii_adjusted": 0.03,
+      "adjustment_reason": "Less frozen meal reliance — more home cooking with rice base"
+    }
+  },
+  "review_schedule": "Annual — compare against latest USDA TFP and Hawaii Consumer Expenditure Survey data"
+}

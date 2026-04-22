@@ -1,0 +1,27 @@
+slot_id,product_name,price,size_qty,size_unit,is_substitution,substitution_note,date
+BEV-03,"Folgers Classic Roast, 25.9 oz",20.38,25.9,oz,false,,2026-04-21
+DAIRY-01,"Great Value Whole Milk, 1 gallon",6.08,128.0,fl_oz,false,,2026-04-21
+DAIRY-03,Kraft Singles American Cheese Slices,4.63,12.0,oz,false,Size not labeled; assumed 12 oz (16-count),2026-04-21
+DAIRY-06,"Land O'Lakes Salted Butter, 1 lb",5.34,16.0,oz,false,,2026-04-21
+DAIRY-07,"Great Value Eggs, Large, 12 each",3.74,12.0,ct,false,,2026-04-21
+FAT-01,"Wesson Vegetable Oil, 40 oz",5.50,40.0,fl_oz,false,,2026-04-21
+FISH-01,"StarKist Chunk Light Tuna, 5 oz",1.13,5.0,oz,false,,2026-04-21
+FRUIT-01,"Bananas, 1 lb",1.18,1.0,lb,false,,2026-04-21
+FRUIT-03,"Fuji Apple, 1 lb",1.87,1.0,lb,false,,2026-04-21
+FRUIT-05,"Dole Pineapple Chunks in Juice, 20 oz",2.92,20.0,oz,false,,2026-04-21
+FRUIT-08,"Tropicana No Pulp Orange Juice, 89 oz",9.92,89.0,fl_oz,false,,2026-04-21
+GRAIN-01,"Hinode Calrose Rice, 20 lb",17.98,20.0,lb,false,,2026-04-21
+GRAIN-03,"Oven Joy White Bread, 22 oz",5.78,22.0,oz,true,Oven Joy brand; substitution for store bread,2026-04-21
+GRAIN-05,"Cheerios, 18 oz",5.82,18.0,oz,false,,2026-04-21
+GRAIN-07,"Barilla Spaghetti, 16 oz",2.22,16.0,oz,false,,2026-04-21
+MEAT-01,"Ground beef 85/15, ~1 lb",7.73,1.0,lb,true,85/15 lean; substitution for 80/20,2026-04-21
+MEAT-04,"Great Value chicken breast, 5 lb",15.12,5.0,lb,false,,2026-04-21
+MEAT-08,"SPAM Classic, 12 oz",3.68,12.0,oz,false,,2026-04-21
+PREP-01,"Campbell's Chicken Noodle Soup, 10.75 oz",5.37,10.75,oz,false,,2026-04-21
+PREP-03,"Maruchan Ramen Beef Flavor, 3 oz",0.58,3.0,oz,true,Beef flavor 3 oz; substitution for Soy Sauce 2.25 oz,2026-04-21
+PROT-04,"Jif Creamy Peanut Butter, 16 oz",3.78,16.0,oz,false,,2026-04-21
+SWEET-01,"C&H Granulated Sugar, 4 lb",3.46,4.0,lb,false,,2026-04-21
+VEG-01,"Russet potatoes, 5 lb bag",4.76,5.0,lb,false,,2026-04-21
+VEG-04,"Marketside Baby Spinach, 5 oz",2.76,5.0,oz,false,5 oz package (vs 6 oz at Foodland),2026-04-21
+VEG-06,"Red Roma tomatoes, 1 lb",2.08,1.0,lb,false,,2026-04-21
+VEG-08,"Del Monte Whole Kernel Corn, 15.25 oz",2.17,15.25,oz,false,,2026-04-21
