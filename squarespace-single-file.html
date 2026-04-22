@@ -1024,18 +1024,66 @@
     box-shadow: 0 1px 2px rgba(7, 56, 74, 0.04), 0 4px 14px rgba(7, 56, 74, 0.05);
   }
 
+  /* Header row: eyebrow on the left, coverage status chip on the right. Two
+     focal points give the card symmetric visual weight at the top. */
+  .afford-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+
   .afford-banner-label {
     font-size: 12px;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--ocean-700);
-    margin-bottom: 10px;
+    margin-bottom: 0;
     font-weight: 600;
   }
   .afford-banner-label .afford-loc {
     color: var(--text-mid);
     font-weight: 500;
     margin-left: 4px;
+  }
+
+  /* Coverage chip: what % of the county's median SFH the household's
+     affordable price actually buys. Colored as a traffic signal —
+     <70% coral (far short), 70-99% amber (close), ≥100% seafoam (ok). */
+  .afford-coverage-chip {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 6px 13px;
+    border-radius: 999px;
+    font-weight: 600;
+    white-space: nowrap;
+    background: var(--coral-100);
+    border: 1px solid var(--coral-500);
+    color: var(--coral-500);
+  }
+  .afford-coverage-chip.mid {
+    background: #fdf0e1;
+    border-color: var(--coral-300);
+    color: #a25528;
+  }
+  .afford-coverage-chip.ok {
+    background: var(--seafoam-100);
+    border-color: var(--seafoam-500);
+    color: var(--seafoam-700);
+  }
+  .afford-coverage-chip-num {
+    font-size: 15px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .afford-coverage-chip-lbl {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
 
   /* R1: hero in ocean-900 (dark navy) for authority. Seafoam stays on the
@@ -1861,8 +1909,19 @@ function updateAfford() {
     `;
   }
 
+  // Coverage: what fraction of the county's median SFH the household can
+  // actually afford. Thresholds match classic affordability conventions.
+  const coveragePct = Math.round((affordPrice / d.sfhPrice) * 100);
+  const covCls = coveragePct >= 100 ? 'ok' : (coveragePct >= 70 ? 'mid' : '');
+
   document.getElementById('afford-banner').innerHTML = `
-    <div class="afford-banner-label">Max affordable home price <span class="afford-loc">· ${fullLbl[currentCounty]}</span></div>
+    <div class="afford-header">
+      <div class="afford-banner-label">Max affordable home price <span class="afford-loc">· ${fullLbl[currentCounty]}</span></div>
+      <div class="afford-coverage-chip ${covCls}">
+        <span class="afford-coverage-chip-num">${coveragePct}%</span>
+        <span class="afford-coverage-chip-lbl">of median SFH</span>
+      </div>
+    </div>
     <div class="afford-price">${fmt(affordPrice)}</div>
     <div class="afford-assumptions">
       <span class="afford-assumption-chip"><b>${fmt(d.income)}</b> income</span>
