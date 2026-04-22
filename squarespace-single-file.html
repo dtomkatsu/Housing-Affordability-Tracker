@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hawaiʻi Housing Affordability Tracker</title>
+<title>Hawaiʻi Cost of Living Tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -45,54 +45,268 @@
   header {
     background: var(--ocean);
     color: white;
-    padding: 2.5rem 2rem 2rem;
+    padding: 1.1rem 0 2.6rem;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
   }
 
+  /* Shallow modernized arc at the base of the header */
   header::after {
     content: '';
     position: absolute;
     bottom: -1px;
     left: 0; right: 0;
-    height: 24px;
+    height: 22px;
     background: var(--bg);
-    clip-path: ellipse(55% 100% at 50% 100%);
+    clip-path: ellipse(130% 100% at 50% 100%);
+    pointer-events: none;
   }
+
+  .brand-bar {
+    max-width: 900px;
+    margin: 0 auto 1.75rem;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    font-weight: 500;
+  }
+  .brand-bar .brand-mark { color: rgba(255,255,255,0.7); }
+  .brand-bar .brand-tag { color: rgba(255,255,255,0.45); }
 
   .header-inner {
     max-width: 900px;
     margin: 0 auto;
+    padding: 0 2rem;
   }
 
-  .header-eyebrow {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.55);
-    margin-bottom: 0.5rem;
+  .title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    flex-wrap: wrap;
   }
+  .title-block { min-width: 0; flex: 1 1 auto; }
 
   header h1 {
     font-family: 'DM Serif Display', serif !important;
-    font-size: 2.2rem;
+    font-size: 2.5rem;
     font-weight: 400;
-    line-height: 1.2;
+    line-height: 1.02;
     color: white;
-    margin-bottom: 0.5rem;
-  }
-
-  header h1 em {
-    font-style: italic;
-    color: rgba(255,255,255,0.75);
+    letter-spacing: -0.012em;
+    margin: 0;
   }
 
   .header-meta {
+    font-size: 13px;
+    color: rgba(255,255,255,0.58);
+    margin-top: 10px;
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .header-inflation-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 3px 10px 3px 11px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 999px;
+    font-size: 11.5px;
+    letter-spacing: 0.04em;
+    cursor: help;
+  }
+  .header-inflation-lbl {
+    color: rgba(255,255,255,0.7);
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    font-size: 10.5px;
+  }
+  .header-inflation-val { font-weight: 600; letter-spacing: 0.02em; }
+  .header-inflation-val.is-hi  { color: #ff9a88; }
+  .header-inflation-val.is-mid { color: #ffc99a; }
+  .header-inflation-val.is-low { color: #a6e8c0; }
+
+  /* County selector in hero */
+  .county-select-wrap { position: relative; flex-shrink: 0; }
+  .county-select {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px 10px 18px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.28);
+    background: rgba(255,255,255,0.1);
+    color: white;
+    font-family: 'DM Sans', sans-serif !important;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    line-height: 1;
+  }
+  .county-select:hover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.45); }
+  .county-select.is-open {
+    background: white;
+    color: var(--ocean);
+    border-color: white;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.18);
+  }
+  .county-select-lbl {
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.72;
+    font-weight: 500;
+  }
+  .county-select-name {
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+  .county-select .caret {
+    width: 8px; height: 8px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg) translate(-1px, -2px);
+    transition: transform 0.15s;
+    opacity: 0.8;
+  }
+  .county-select.is-open .caret { transform: rotate(-135deg) translate(-1px, -2px); }
+  .county-popover {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    min-width: 200px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 6px;
+    box-shadow: 0 16px 36px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.06);
+    z-index: 60;
+    display: none;
+  }
+  .county-popover.is-open { display: block; }
+  .county-popover-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px 14px;
+    border: none;
+    background: transparent;
+    border-radius: 10px;
     font-size: 15px;
-    color: rgba(255,255,255,0.55);
-    margin-top: 0.4rem;
+    color: var(--text);
+    cursor: pointer;
+    font-family: inherit;
+    letter-spacing: 0.005em;
+  }
+  .county-popover-item:hover { background: var(--sky); color: var(--ocean); }
+  .county-popover-item.is-active { background: var(--ocean); color: white; font-weight: 500; }
+
+  /* Summary strip (white KPI row between hero and tabs) */
+  .summary-strip {
+    background: white;
+    border-bottom: 1px solid var(--border);
+  }
+  .summary-strip-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    padding: 18px 2rem;
+  }
+  .kpi {
+    padding: 2px 20px;
+    border-left: 1px solid var(--border);
+    min-width: 0;
+  }
+  .kpi:first-child { border-left: none; padding-left: 0; }
+  .kpi:last-child { padding-right: 0; }
+  .kpi-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 20px;
+  }
+  .kpi-label {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-lt);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /* Segmented toggle (used inside KPI tiles that have two views) */
+  .kpi-seg {
+    display: inline-flex;
+    background: var(--sand);
+    border-radius: 999px;
+    padding: 2px;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+  .kpi-seg-opt {
+    border: none;
+    background: transparent;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--text-lt);
+    cursor: pointer;
+    font-family: inherit;
+    line-height: 1.3;
+    transition: background 0.12s, color 0.12s, box-shadow 0.12s;
+  }
+  .kpi-seg-opt:hover:not(.is-active) { color: var(--ocean); }
+  .kpi-seg-opt.is-active {
+    background: white;
+    color: var(--ocean);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  }
+  .kpi-value {
+    font-family: 'DM Serif Display', serif !important;
+    font-size: 1.55rem;
+    color: var(--ocean);
+    line-height: 1.1;
+    margin-top: 8px;
+    letter-spacing: -0.01em;
+  }
+  .kpi-sub {
+    font-size: 12px;
+    color: var(--text-lt);
+    margin-top: 4px;
+    line-height: 1.35;
+  }
+
+  @media (max-width: 640px) {
+    header { padding: 1rem 0 2.2rem; }
+    .brand-bar { margin-bottom: 1.25rem; padding: 0 1.25rem; }
+    .header-inner { padding: 0 1.25rem; }
+    header h1 { font-size: 1.95rem; }
+    .title-row { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .county-select-wrap { align-self: stretch; }
+    .county-select { width: 100%; justify-content: space-between; }
+    .county-popover { left: 0; right: 0; }
+    .summary-strip-inner { grid-template-columns: repeat(2, minmax(0,1fr)); row-gap: 18px; padding: 16px 1.25rem; }
+    .kpi { padding: 0 12px; }
+    .kpi:nth-child(3) { border-left: none; padding-left: 0; }
+    .kpi:nth-child(2), .kpi:nth-child(4) { padding-right: 0; }
+    .kpi-value { font-size: 1.35rem; }
   }
 
   main {
@@ -109,6 +323,139 @@
     color: var(--text-lt);
     margin: 2.5rem 0 0.75rem;
   }
+
+  /* Top-level (primary) tabs — Housing / Goods & Services */
+  .top-tabs {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 0 0 1.5rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .top-tab {
+    flex: 1 1 0;
+    min-width: 180px;
+    padding: 14px 22px;
+    font-family: 'DM Serif Display', serif !important;
+    font-size: 20px;
+    font-weight: 400;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: white;
+    color: var(--text-mid);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    letter-spacing: 0.01em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    line-height: 1.15;
+  }
+  .top-tab .top-tab-sub {
+    display: block;
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-lt);
+    margin-top: 4px;
+  }
+  .top-tab-inner { display: flex; flex-direction: column; align-items: center; }
+  .top-tab:hover { border-color: var(--ocean-mid); color: var(--ocean); }
+  .top-tab:hover .top-tab-sub { color: var(--ocean-mid); }
+  .top-tab.active {
+    background: var(--ocean);
+    border-color: var(--ocean);
+    color: white;
+    box-shadow: 0 4px 16px rgba(10, 79, 110, 0.18);
+  }
+  .top-tab.active .top-tab-sub { color: rgba(255,255,255,0.72); }
+
+  .pane { display: none; }
+  .pane.is-active { display: block; }
+
+  /* Coming-soon placeholder cards on Goods pane */
+  .coming-soon-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .coming-soon-card {
+    background: var(--sand);
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+    padding: 18px 14px;
+    text-align: center;
+    color: var(--text-lt);
+  }
+  .coming-soon-icon { font-size: 28px; margin-bottom: 8px; display: block; opacity: 0.6; }
+  .coming-soon-label {
+    font-family: 'DM Serif Display', serif !important;
+    font-size: 1.05rem;
+    color: var(--text-mid);
+    margin-bottom: 4px;
+  }
+  .coming-soon-tag {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-lt);
+    font-weight: 500;
+  }
+
+  /* Category bars on Goods pane */
+  .cat-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .cat-bar-lbl { font-size: 14px; color: var(--text-mid); width: 130px; flex-shrink: 0; }
+  .cat-bar-bg { flex: 1 1 40px; min-width: 40px; height: 20px; background: var(--sand); border-radius: 4px; position: relative; overflow: hidden; }
+  .cat-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--ocean-mid), var(--ocean)); }
+  .cat-bar-val { font-size: 13px; color: var(--text-mid); width: 58px; text-align: right; flex-shrink: 0; }
+
+  /* Top items table on Goods pane */
+  .top-items-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .top-items-table th { text-align: left; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-lt); font-weight: 500; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+  .top-items-table td { padding: 9px 10px; border-bottom: 1px solid var(--sand); color: var(--text-mid); }
+  .top-items-table td:nth-child(2), .top-items-table td:nth-child(3) { text-align: right; font-variant-numeric: tabular-nums; }
+  .top-items-table tr:last-child td { border-bottom: none; }
+
+  .hh-toggle { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .hh-toggle-btn {
+    padding: 6px 14px;
+    font-size: 13px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: white;
+    color: var(--text-mid);
+    cursor: pointer;
+  }
+  .hh-toggle-btn.active { background: var(--ocean); color: white; border-color: var(--ocean); }
+
+  /* Gas price live card (replaces Transportation coming-soon) */
+  .gas-live-card {
+    background: linear-gradient(135deg, var(--amber-lt) 0%, white 70%);
+    border: 1px solid #e8c9a0;
+    border-radius: 12px;
+    padding: 18px 14px;
+    text-align: center;
+    cursor: default;
+  }
+  .gas-live-card .coming-soon-icon { opacity: 1; }
+  .gas-price-big {
+    font-family: 'DM Serif Display', serif !important;
+    font-size: 1.55rem;
+    font-weight: 400;
+    color: var(--amber);
+    line-height: 1.1;
+    margin: 6px 0 2px;
+  }
+  .gas-price-meta { font-size: 12px; color: var(--text-lt); margin-bottom: 4px; }
+  .gas-price-mom { font-size: 12px; font-weight: 500; }
+  .gas-mom-up   { color: var(--coral); }
+  .gas-mom-down { color: var(--green); }
+  .gas-mom-flat { color: var(--text-lt); }
 
   .county-tabs {
     display: flex;
@@ -144,6 +491,123 @@
     border-radius: 16px;
     padding: 20px 22px;
     margin-bottom: 1.25rem;
+  }
+
+  /* Editorial narrative card (prose + coverage bar + status chips) */
+  .narrative-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px 24px;
+    margin-bottom: 1.25rem;
+  }
+  .narrative-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-lt);
+    font-weight: 600;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .narrative-eyebrow::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border) 0%, transparent 100%);
+  }
+  .narrative-prose {
+    font-size: 16.5px;
+    color: var(--text-mid);
+    line-height: 1.55;
+    margin-bottom: 20px;
+  }
+  .narrative-prose strong { color: var(--text); font-weight: 600; }
+
+  .narrative-gap {
+    margin-bottom: 16px;
+  }
+  .narrative-gap-lbl {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 13px;
+    color: var(--text-lt);
+    margin-bottom: 7px;
+    gap: 12px;
+  }
+  .narrative-gap-lbl .pct { color: var(--ocean); font-weight: 600; }
+  .narrative-gap-val {
+    color: var(--coral);
+    font-weight: 500;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .narrative-gap-val.is-ok { color: var(--green); }
+
+  .narrative-bar {
+    height: 9px;
+    background: var(--sand);
+    border-radius: 999px;
+    overflow: hidden;
+    display: flex;
+  }
+  .narrative-bar-income {
+    background: linear-gradient(90deg, var(--ocean-mid), var(--ocean));
+    height: 100%;
+    transition: width 0.45s cubic-bezier(.4,0,.2,1);
+    border-radius: 999px 0 0 999px;
+  }
+  .narrative-bar-income.is-full { border-radius: 999px; }
+  .narrative-bar-gap {
+    background: repeating-linear-gradient(
+      45deg,
+      rgba(201,79,58,0.22) 0,
+      rgba(201,79,58,0.22) 5px,
+      rgba(201,79,58,0.08) 5px,
+      rgba(201,79,58,0.08) 10px
+    );
+    height: 100%;
+    transition: width 0.45s cubic-bezier(.4,0,.2,1);
+  }
+  .narrative-bar-income.is-affordable {
+    background: linear-gradient(90deg, #5aa97a, var(--green));
+  }
+
+  .narrative-chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    padding: 5px 12px 5px 10px;
+    border-radius: 999px;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+  .chip::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: currentColor;
+    flex-shrink: 0;
+  }
+  .chip--coral { background: var(--coral-lt); color: var(--coral); }
+  .chip--amber { background: var(--amber-lt); color: var(--amber); }
+  .chip--green { background: var(--green-lt); color: var(--green); }
+
+  @media (max-width: 520px) {
+    .narrative-card { padding: 18px 18px; }
+    .narrative-prose { font-size: 15.5px; }
+    .narrative-gap-lbl { flex-direction: column; gap: 3px; align-items: flex-start; }
   }
 
   .card-title {
@@ -194,6 +658,291 @@
   .mcard--income .mcard-accent { background: #059669; }
   .mcard--idx-sfh .mcard-accent { background: #475569; }
   .mcard--idx-condo .mcard-accent { background: #64748b; }
+
+  /* ——— Housing paired cards (v2): price + affordability merged ——— */
+  .housing-pair-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: 16px;
+    margin-bottom: 0;
+  }
+  .mcard-v2 {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .mcard-v2::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .mcard-v2--sfh::before       { background: var(--ocean); }
+  .mcard-v2--condo::before     { background: var(--ocean-mid); }
+  .mcard-v2--groceries::before { background: var(--green); }
+  .mcard-v2--gas::before       { background: var(--amber); }
+  .mcard-v2--groceries .mcard-v2-price { color: var(--green); }
+  .mcard-v2--groceries .mcard-v2-idx-val { color: var(--green); }
+  .mcard-v2--gas .mcard-v2-price { color: var(--amber); }
+  .mcard-v2--gas .mcard-v2-idx-val { color: var(--amber); }
+
+  /* Gas YoY bar (signed: –$1 to +$1, centered zero) */
+  .mcard-v2-yoy-bar {
+    position: relative;
+    height: 8px;
+    background: var(--sand);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+  .mcard-v2-yoy-bar::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: -2px;
+    bottom: -2px;
+    width: 1px;
+    background: rgba(0,0,0,0.2);
+  }
+  .mcard-v2-yoy-fill {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    transition: all 0.45s cubic-bezier(.4,0,.2,1);
+    border-radius: 999px;
+  }
+  .mcard-v2-yoy-fill.is-up   { background: linear-gradient(90deg, var(--amber), var(--coral)); }
+  .mcard-v2-yoy-fill.is-down { background: linear-gradient(90deg, var(--green), #5aa97a); }
+  .mcard-v2-yoy-fill.is-flat { background: var(--text-lt); }
+
+  /* CPI sub-badge on .mcard-v2 (top-right, under date) */
+  .mcard-v2-cpi {
+    font-size: 10.5px;
+    color: var(--text-lt);
+    letter-spacing: 0.02em;
+    margin-top: 2px;
+    text-align: right;
+    font-weight: 500;
+  }
+  .mcard-v2-cpi .cpi-arrow { font-weight: 600; margin-right: 2px; }
+  .mcard-v2-cpi.is-up   .cpi-arrow { color: var(--coral); }
+  .mcard-v2-cpi.is-down .cpi-arrow { color: var(--green); }
+
+  /* Compact household calculator output */
+  .hh-compact-out {
+    font-size: 15px;
+    color: var(--text-mid);
+    padding: 14px 16px;
+    background: var(--green-lt);
+    border-radius: 10px;
+    margin-top: 12px;
+    line-height: 1.55;
+  }
+  .hh-compact-out b {
+    font-family: 'DM Serif Display', serif !important;
+    font-size: 1.15rem;
+    color: var(--green);
+    font-weight: 400;
+    margin: 0 2px;
+  }
+
+  /* Collapsible methodology disclosure */
+  .goods-detail {
+    margin-top: 24px;
+    border-top: 1px solid var(--border);
+    padding-top: 18px;
+  }
+  .goods-detail > summary {
+    cursor: pointer;
+    list-style: none;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-mid);
+    padding: 6px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    user-select: none;
+  }
+  .goods-detail > summary::-webkit-details-marker { display: none; }
+  .goods-detail > summary::before {
+    content: '▸';
+    font-size: 14px;
+    transition: transform 0.2s;
+    color: var(--text-lt);
+  }
+  .goods-detail[open] > summary::before { transform: rotate(90deg); }
+  .goods-detail > summary:hover { color: var(--ocean); }
+  .goods-detail-body { margin-top: 16px; display: flex; flex-direction: column; gap: 20px; }
+
+  .mcard-v2-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .mcard-v2-title {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--text-lt);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .mcard-v2-date {
+    font-size: 11px;
+    color: var(--text-lt);
+    opacity: 0.7;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .mcard-v2-price {
+    font-family: 'DM Serif Display', serif !important;
+    font-size: 2.4rem;
+    font-weight: 400;
+    color: var(--ocean);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin-bottom: 14px;
+  }
+  .mcard-v2-idx-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 7px;
+  }
+  .mcard-v2-idx-lbl {
+    font-size: 12px;
+    color: var(--text-mid);
+    letter-spacing: 0.02em;
+  }
+  .mcard-v2-idx-val {
+    font-family: 'DM Serif Display', serif !important;
+    font-size: 1.35rem;
+    font-weight: 400;
+    color: var(--ocean);
+    line-height: 1;
+  }
+  .mcard-v2-idx-val .tot {
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 0.72rem;
+    color: var(--text-lt);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    margin-left: 2px;
+  }
+  .mcard-v2-bar {
+    height: 8px;
+    background: var(--sand);
+    border-radius: 999px;
+    overflow: hidden;
+    display: flex;
+    margin-bottom: 14px;
+  }
+  .mcard-v2-bar-income {
+    background: linear-gradient(90deg, var(--ocean-mid), var(--ocean));
+    height: 100%;
+    transition: width 0.45s cubic-bezier(.4,0,.2,1);
+    border-radius: 999px 0 0 999px;
+  }
+  .mcard-v2-bar-income.is-full { border-radius: 999px; }
+  .mcard-v2-bar-income.is-affordable {
+    background: linear-gradient(90deg, #5aa97a, var(--green));
+  }
+  .mcard-v2-bar-gap {
+    background: repeating-linear-gradient(
+      45deg,
+      rgba(201,79,58,0.22) 0,
+      rgba(201,79,58,0.22) 5px,
+      rgba(201,79,58,0.08) 5px,
+      rgba(201,79,58,0.08) 10px
+    );
+    height: 100%;
+    transition: width 0.45s cubic-bezier(.4,0,.2,1);
+  }
+  .mcard-v2-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .mcard-v2-mortgage {
+    font-size: 12.5px;
+    color: var(--text-mid);
+    letter-spacing: 0.01em;
+  }
+  .mcard-v2-mortgage b {
+    color: var(--text-dk);
+    font-weight: 600;
+  }
+  .affordability-note {
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--text-lt);
+    font-style: italic;
+    line-height: 1.45;
+    padding-left: 2px;
+  }
+
+  /* ——— Mini affordability bar in Home KPI summary tile ——— */
+  .kpi-idx-mini {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .kpi-idx-bar {
+    height: 5px;
+    background: var(--sand);
+    border-radius: 999px;
+    overflow: hidden;
+    display: flex;
+  }
+  .kpi-idx-bar-income {
+    background: linear-gradient(90deg, var(--ocean-mid), var(--ocean));
+    height: 100%;
+    transition: width 0.4s cubic-bezier(.4,0,.2,1);
+    border-radius: 999px 0 0 999px;
+  }
+  .kpi-idx-bar-income.is-full { border-radius: 999px; }
+  .kpi-idx-bar-income.is-affordable {
+    background: linear-gradient(90deg, #5aa97a, var(--green));
+  }
+  .kpi-idx-bar-gap {
+    background: repeating-linear-gradient(
+      45deg,
+      rgba(201,79,58,0.22) 0,
+      rgba(201,79,58,0.22) 4px,
+      rgba(201,79,58,0.08) 4px,
+      rgba(201,79,58,0.08) 8px
+    );
+    height: 100%;
+    transition: width 0.4s cubic-bezier(.4,0,.2,1);
+  }
+  .kpi-idx-text {
+    font-size: 11px;
+    color: var(--text-mid);
+    letter-spacing: 0.02em;
+    line-height: 1.3;
+  }
+  .kpi-idx-text .kpi-idx-verdict {
+    font-weight: 600;
+  }
+  .kpi-idx-text .kpi-idx-verdict.is-coral { color: var(--coral); }
+  .kpi-idx-text .kpi-idx-verdict.is-amber { color: var(--amber); }
+  .kpi-idx-text .kpi-idx-verdict.is-green { color: var(--green); }
+
+  @media (max-width: 640px) {
+    .housing-pair-grid { grid-template-columns: 1fr; }
+    .mcard-v2-price { font-size: 2.1rem; }
+  }
 
   .mlabel { font-size: 13px; color: var(--text-lt); margin-bottom: 8px; line-height: 1.3; letter-spacing: 0.03em; text-transform: uppercase; font-weight: 500; }
   .mvalue { 
@@ -579,40 +1328,184 @@
     .calc-grid { grid-template-columns: 1fr 1fr; }
     .slider-label { width: 100px; }
     .treemap-container { grid-template-columns: repeat(3, 1fr); }
+    .top-tab { font-size: 17px; padding: 12px 14px; min-width: 140px; }
+    .coming-soon-grid { grid-template-columns: repeat(2, 1fr); }
+    .cat-bar-lbl { width: 100px; font-size: 13px; }
   }
 </style>
 </head>
 <body>
 
 <header>
+  <div class="brand-bar">
+    <span class="brand-mark">Hawaiʻi Appleseed</span>
+    <span class="brand-tag">Cost of Living Tracker</span>
+  </div>
   <div class="header-inner">
-    <div class="header-eyebrow">Hawaiʻi Appleseed Center for Law &amp; Economic Justice</div>
-    <h1>Hawaiʻi Housing<br><em>Affordability Tracker</em></h1>
-    <div class="header-meta">Q1 2026 &nbsp;·&nbsp; 20% down payment &nbsp;·&nbsp; 30% housing-to-income threshold &nbsp;·&nbsp; 80% LTV</div>
+    <div class="title-row">
+      <div class="title-block">
+        <h1>Hawaiʻi Cost of Living Tracker</h1>
+        <div class="header-meta" id="header-meta">
+          <span>Q1 2026 &nbsp;·&nbsp; Updated Apr 2026</span>
+          <span class="header-inflation-chip" id="header-inflation-chip" title="Honolulu all-items CPI · BLS" hidden>
+            <span class="header-inflation-lbl">Hawaiʻi inflation</span>
+            <span class="header-inflation-val" id="header-inflation-val">—</span>
+          </span>
+        </div>
+      </div>
+      <div class="county-select-wrap">
+        <button class="county-select" id="county-select-btn" aria-haspopup="listbox" aria-expanded="false" onclick="toggleCountyPopover(event)">
+          <span class="county-select-lbl">Viewing</span>
+          <span class="county-select-name" id="county-select-name">Statewide</span>
+          <span class="caret" aria-hidden="true"></span>
+        </button>
+        <div class="county-popover" id="county-popover" role="listbox">
+          <button class="county-popover-item is-active" data-county="State"    onclick="selectCounty('State')">Statewide</button>
+          <button class="county-popover-item"           data-county="Honolulu" onclick="selectCounty('Honolulu')">Honolulu</button>
+          <button class="county-popover-item"           data-county="Maui"     onclick="selectCounty('Maui')">Maui</button>
+          <button class="county-popover-item"           data-county="Hawaii"   onclick="selectCounty('Hawaii')">Hawaiʻi</button>
+          <button class="county-popover-item"           data-county="Kauai"    onclick="selectCounty('Kauai')">Kauaʻi</button>
+        </div>
+      </div>
+    </div>
   </div>
 </header>
 
+<section class="summary-strip" aria-label="At-a-glance cost of living summary">
+  <div class="summary-strip-inner">
+    <div class="kpi" id="kpi-home">
+      <div class="kpi-label-row">
+        <div style="display:flex;align-items:center;gap:7px;">
+          <!-- House line art, ocean-tinted -->
+          <svg width="18" height="23" viewBox="0 0 44 52" fill="none" overflow="visible" style="color:var(--ocean);flex-shrink:0;" aria-hidden="true">
+            <!-- Pitched roof -->
+            <path d="M3 24 L22 7 L41 24" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- Chimney -->
+            <path d="M31 11 L31 16 L35 16 L35 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- Walls + base -->
+            <path d="M8 22 L8 46 L36 46 L36 22" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- Door -->
+            <path d="M19 46 L19 33 L26 33 L26 46" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- Door knob -->
+            <circle cx="24" cy="40" r="0.8" fill="currentColor"/>
+            <!-- Left window -->
+            <rect x="11" y="28" width="5" height="5" stroke="currentColor" stroke-width="1.4"/>
+            <!-- Right window -->
+            <rect x="28" y="28" width="5" height="5" stroke="currentColor" stroke-width="1.4"/>
+          </svg>
+          <div class="kpi-seg" role="tablist" aria-label="Home or rent">
+            <button class="kpi-seg-opt is-active" role="tab" aria-selected="true"  data-view="home" onclick="setHomeView('home')">Home</button>
+            <button class="kpi-seg-opt"           role="tab" aria-selected="false" data-view="rent" onclick="setHomeView('rent')">Rent</button>
+          </div>
+        </div>
+      </div>
+      <div class="kpi-value" id="kpi-home-value">—</div>
+      <div class="kpi-sub" id="kpi-home-sub">—</div>
+      <div class="kpi-idx-mini" id="kpi-home-idx-mini">
+        <div class="kpi-idx-bar">
+          <div class="kpi-idx-bar-income" id="kpi-home-idx-fill" style="width:0%"></div>
+          <div class="kpi-idx-bar-gap" id="kpi-home-idx-gap" style="width:0%"></div>
+        </div>
+        <div class="kpi-idx-text" id="kpi-home-idx-text">—</div>
+      </div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label-row">
+        <div style="display:flex;align-items:center;gap:7px;">
+          <!-- Grocery paper bag line art, green-tinted -->
+          <svg width="18" height="23" viewBox="0 0 44 52" fill="none" overflow="visible" style="color:var(--green);flex-shrink:0;" aria-hidden="true">
+            <!-- Bag body (slight trapezoid, wider at top) -->
+            <path d="M9 17 L12 47 L32 47 L35 17 Z" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/>
+            <!-- Fold crease across top -->
+            <line x1="10" y1="23" x2="34" y2="23" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            <!-- Left handle arch -->
+            <path d="M13 17 Q13 9 17 9 Q21 9 21 17" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+            <!-- Right handle arch -->
+            <path d="M23 17 Q23 9 27 9 Q31 9 31 17" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+            <!-- Small produce hint peeking (leaf) -->
+            <path d="M18 30 Q22 26 26 30" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.6"/>
+          </svg>
+          <div class="kpi-label">Groceries</div>
+        </div>
+      </div>
+      <div class="kpi-value" id="kpi-groc-value">—</div>
+      <div class="kpi-sub" id="kpi-groc-sub">Family of 4 · weekly</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label-row">
+        <div style="display:flex;align-items:center;gap:7px;">
+          <!-- Jerry can line art, amber-tinted -->
+          <svg width="18" height="23" viewBox="0 0 44 52" fill="none" overflow="visible" style="color:var(--amber);flex-shrink:0;" aria-hidden="true">
+            <!-- Main body -->
+            <rect x="10" y="14" width="32" height="36" rx="4" stroke="currentColor" stroke-width="2.4"/>
+            <!-- Handle arch -->
+            <path d="M17 14 L17 9 Q17 5 26 5 Q35 5 35 9 L35 14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+            <!-- Diagonal spout -->
+            <path d="M10 20 L3 13 L7 8 L14 15" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <!-- Threaded nozzle cap -->
+            <rect x="1" y="5" width="8" height="6" rx="2" stroke="currentColor" stroke-width="2"/>
+            <!-- X-rib: 4 lines from body corners → center panel corners -->
+            <line x1="10" y1="14" x2="19" y2="24" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            <line x1="42" y1="14" x2="33" y2="24" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            <line x1="10" y1="50" x2="19" y2="40" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            <line x1="42" y1="50" x2="33" y2="40" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            <!-- Center recessed panel -->
+            <rect x="19" y="24" width="14" height="16" rx="2" stroke="currentColor" stroke-width="1.4"/>
+          </svg>
+          <div class="kpi-label">Gas</div>
+        </div>
+      </div>
+      <div class="kpi-value" id="kpi-gas-value">—</div>
+      <div class="kpi-sub" id="kpi-gas-sub">Regular unleaded · /gal</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label-row">
+        <div style="display:flex;align-items:center;gap:7px;">
+          <!-- Dollar coin line art, ocean-mid-tinted -->
+          <svg width="18" height="23" viewBox="0 0 44 52" fill="none" overflow="visible" style="color:var(--ocean-mid);flex-shrink:0;" aria-hidden="true">
+            <!-- Outer coin ring -->
+            <circle cx="22" cy="26" r="17" stroke="currentColor" stroke-width="2.4"/>
+            <!-- Inner coin ring -->
+            <circle cx="22" cy="26" r="13.5" stroke="currentColor" stroke-width="1.2" opacity="0.45"/>
+            <!-- $ vertical bar -->
+            <line x1="22" y1="15" x2="22" y2="37" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+            <!-- $ S-curve (top half + bottom half) -->
+            <path d="M28 19.5 C28 17 25.5 17 22 17 L19 17 C16.5 17 16 19 16 20.5 C16 23 18 24 22 24 C26 24 28 25.5 28 28.5 C28 31.5 26 33 22 33 L19 33 C17 33 16 32.5 16 31" stroke="currentColor" stroke-width="2.1" fill="none" stroke-linecap="round"/>
+          </svg>
+          <div class="kpi-label">Median income</div>
+        </div>
+      </div>
+      <div class="kpi-value" id="kpi-income-value">—</div>
+      <div class="kpi-sub" id="kpi-income-sub">4-person · HUD FY 2025</div>
+    </div>
+  </div>
+</section>
+
 <main>
-  <div class="section-label">Select county</div>
-  <div class="county-tabs">
-    <button class="county-tab active" onclick="selectCounty('State')">Statewide</button>
-    <button class="county-tab" onclick="selectCounty('Honolulu')">Honolulu</button>
-    <button class="county-tab" onclick="selectCounty('Maui')">Maui</button>
-    <button class="county-tab" onclick="selectCounty('Hawaii')">Hawaiʻi</button>
-    <button class="county-tab" onclick="selectCounty('Kauai')">Kauaʻi</button>
+  <div class="top-tabs" role="tablist">
+    <button class="top-tab active" role="tab" aria-selected="true" onclick="selectPane('housing')">
+      <div class="top-tab-inner">
+        <span>Housing</span>
+        <span class="top-tab-sub">Homes · Rent · Construction</span>
+      </div>
+    </button>
+    <button class="top-tab" role="tab" aria-selected="false" onclick="selectPane('goods')">
+      <div class="top-tab-inner">
+        <span>Goods</span>
+        <span class="top-tab-sub">Groceries &middot; Gas</span>
+      </div>
+    </button>
   </div>
 
-  <div id="county-narrative" style="font-size:17px;color:var(--text-mid);line-height:1.55;margin-bottom:1.25rem;padding:14px 18px;background:white;border:1px solid var(--border);border-left:3px solid var(--ocean-mid);border-radius:0 12px 12px 0;"></div>
+  <section id="pane-housing" class="pane is-active" role="tabpanel">
+  <div id="county-narrative" class="narrative-card"></div>
 
   <div class="afford-banner" id="afford-banner"></div>
 
   <div class="metrics-container">
-    <div class="metrics-container-title">Key metrics</div>
-    <div class="metric-grid" id="metric-grid"></div>
-  </div>
-  <div class="metrics-container">
-    <div class="metrics-container-title">Affordability indices</div>
-    <div class="metric-grid-2" id="metric-grid-2"></div>
+    <div class="metrics-container-title">Housing market &amp; affordability</div>
+    <div class="housing-pair-grid" id="housing-pair-grid"></div>
+    <div class="affordability-note">Affordability index: 100 = typical Hawaiʻi household can afford the median home at current mortgage rates.</div>
   </div>
 
   <div class="section-label">Affordability calculator</div>
@@ -702,10 +1595,56 @@
     <strong style="color:var(--text);">Note on construction cost indices</strong><br>
     The cost indices track the <em>low end</em> of each published RLB cost range (e.g., $310/sf for multifamily, not $520/sf), rebased to Q1 2020 = 100. Using the low end understates actual cost growth for higher-complexity projects, so the increases shown — +51% multifamily, +19% single-family, +81% ground parking — should be read as a floor, not a ceiling.
   </div>
+  </section><!-- /#pane-housing -->
+
+  <section id="pane-goods" class="pane" role="tabpanel">
+    <div id="goods-narrative" class="narrative-card"></div>
+
+    <div class="metrics-container">
+      <div class="metrics-container-title">Groceries &amp; gas &middot; {{county}}</div>
+      <div class="housing-pair-grid" id="goods-pair-grid"></div>
+      <div class="affordability-note">Groceries are family-of-4 post-tax (4.5% GET). Gas is current AAA Hawaiʻi regular unleaded average.</div>
+    </div>
+
+    <div class="card" style="margin-top:22px;">
+      <div class="card-title">Goods cost across counties</div>
+      <div class="card-sub">Groceries as share of median 4-person income &nbsp;·&nbsp; gas relative to statewide average</div>
+      <div id="goods-county-compare"></div>
+    </div>
+
+    <div class="calc-section" style="margin-top:22px;">
+      <div class="card-title" style="margin-bottom:10px;">Grocery cost by household size</div>
+      <div class="hh-toggle" id="goods-hh-toggle"></div>
+      <div class="hh-compact-out" id="goods-hh-out"></div>
+    </div>
+
+    <details class="goods-detail" id="goods-detail-disclosure">
+      <summary>Basket breakdown &amp; methodology</summary>
+      <div class="goods-detail-body">
+        <div class="card">
+          <div class="card-title">Spending by category</div>
+          <div class="card-sub">USDA Thrifty Food Plan categories &nbsp;·&nbsp; Hawaiʻi-adjusted weights</div>
+          <div id="goods-category-bars"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Highest-priced basket items</div>
+          <div class="card-sub">Per-unit price in <span id="goods-items-county-label">Statewide</span> &nbsp;·&nbsp; vs. Honolulu</div>
+          <div style="overflow-x:auto;"><table class="top-items-table"><thead><tr><th>Item</th><th>Price</th><th>vs. Honolulu</th></tr></thead><tbody id="goods-top-items"></tbody></table></div>
+        </div>
+        <div class="note-box" style="border-left-color:var(--green);margin-bottom:0;">
+          <strong style="color:var(--text);">Methodology</strong><br>
+          Grocery prices are collected from member/loyalty pricing at Foodland (Maikaʻi), Safeway (Club Card), Costco, Walmart, Target, and Don Quijote, then combined using per-county market-share weights derived from USDA SNAP retailer data. All prices include Hawaiʻi's 4.5% General Excise Tax (GET). The basket covers 85 items across 13 USDA Thrifty Food Plan categories, adjusted for Hawaiʻi consumption patterns (rice-heavier, more seafood, more SPAM/pork, less frozen prepared meals).
+          <br><br>
+          <strong style="color:var(--text);">Data sources</strong><br>
+          Hawaiʻi Grocery Price Tracker · USDA Thrifty Food Plan 2023 · Hawaiʻi GET (4.5%) · U.S. Census Bureau County Business Patterns. Gas prices via <a href="https://gasprices.aaa.com/?state=HI" style="color:var(--green);" target="_blank">AAA Hawaiʻi</a> — updated daily, scraped monthly. Household-scaling factors follow the USDA four-person reference family normalization.
+        </div>
+      </div>
+    </details>
+  </section><!-- /#pane-goods -->
 </main>
 
 <footer>
-  Sources: UHERO 2025 Hawaiʻi Housing Factbook; RLB Quarterly Cost Report Q1 2026; Hawaiʻi Board of Realtors; U.S. Census ACS 5-Year Estimates; Freddie Mac PMMS; DBEDT Quarterly Statistical &amp; Economic Report.
+  Sources: UHERO 2025 Hawaiʻi Housing Factbook; RLB Quarterly Cost Report Q1 2026; Hawaiʻi Board of Realtors; U.S. Census ACS 5-Year Estimates; Freddie Mac PMMS; DBEDT QSER; Hawaiʻi Grocery Price Tracker; USDA Thrifty Food Plan 2023; HUD State Income Limits FY 2025.
   <br>Produced by Hawaiʻi Appleseed Center for Law &amp; Economic Justice &nbsp;·&nbsp; <a href="https://hiappleseed.org" style="color:var(--ocean-mid);">hiappleseed.org</a>
 </footer>
 
@@ -872,59 +1811,102 @@ function selectCounty(county) {
   if (nEl) {
     const d2 = countyData[county];
     const rate2 = parseFloat(document.getElementById('rate-slider').value);
-    const affordSFH = calcAffordPrice(d2.income, rate2);
-    const sfhNeed = Math.max(0, Math.round(d2.sfhPrice - affordSFH));
-    const loc = county === 'State' ? 'Hawaiʻi statewide' : 'in ' + fullLbl[county];
     const incomeNeeded = Math.round(d2.income + d2.sfhGap);
-    nEl.innerHTML = `<strong style="color:var(--text);">${fullLbl[county]}:</strong> The median 4-person household earns <strong>${fmt(d2.income)}/yr</strong> but needs <strong>${fmt(incomeNeeded)}/yr</strong> to afford the median single-family home at ${rate2.toFixed(2)}% — an income gap of <strong style="color:${d2.sfhGap > 50000 ? 'var(--coral)' : d2.sfhGap > 20000 ? 'var(--amber)' : 'var(--green)'};">${fmt(d2.sfhGap)}</strong>. The median condo is ${d2.condoIdx >= 100 ? '<strong style="color:var(--green);">within reach</strong>' : d2.condoGap === 0 ? '<strong style="color:var(--green);">affordable</strong>' : 'also out of reach by <strong style="color:var(--amber);">' + fmt(d2.condoGap) + '</strong>'} at median income.`;
+    const coverage = Math.max(0, Math.min(d2.income / incomeNeeded, 1));
+    const incomePct = Math.round(coverage * 100);
+    const gapPct = 100 - incomePct;
+    const affordable = d2.sfhGap <= 0;
+
+    // Condo status chip
+    let condoChip;
+    if (d2.condoIdx >= 100 || d2.condoGap <= 0) {
+      condoChip = `<span class="chip chip--green">Condo within reach at median income</span>`;
+    } else {
+      const chipCls = d2.condoGap > 50000 ? 'chip--coral' : 'chip--amber';
+      condoChip = `<span class="chip ${chipCls}">Condo also out of reach &minus;${fmt(d2.condoGap)}</span>`;
+    }
+
+    // Right-side gap value
+    const gapValHtml = affordable
+      ? `<span class="narrative-gap-val is-ok">&#10003; Affordable at median income</span>`
+      : `<span class="narrative-gap-val">${fmt(d2.sfhGap)} short</span>`;
+
+    const eyebrowLbl = county === 'State' ? 'Statewide affordability' : `${fullLbl[county]} &middot; Affordability`;
+
+    nEl.innerHTML = `
+      <div class="narrative-eyebrow">${eyebrowLbl}</div>
+      <div class="narrative-prose">
+        The median 4-person household earns <strong>${fmt(d2.income)}</strong> but needs
+        <strong>${fmt(incomeNeeded)}</strong> to afford the median single-family home at ${rate2.toFixed(2)}%.
+      </div>
+      <div class="narrative-gap">
+        <div class="narrative-gap-lbl">
+          <span>Income covers <span class="pct">${incomePct}%</span> of what's needed</span>
+          ${gapValHtml}
+        </div>
+        <div class="narrative-bar">
+          <div class="narrative-bar-income${affordable ? ' is-affordable is-full' : ''}" style="width:${incomePct}%"></div>
+          <div class="narrative-bar-gap" style="width:${gapPct}%"></div>
+        </div>
+      </div>
+      <div class="narrative-chips">
+        ${condoChip}
+      </div>
+    `;
   }
-  document.querySelectorAll('.county-tab').forEach(b => {
-    b.classList.toggle('active', b.textContent.trim() === fullLbl[county]);
+  // Sync the hero county selector (button label + popover state + close popover)
+  const nameEl = document.getElementById('county-select-name');
+  if (nameEl) nameEl.textContent = fullLbl[county];
+  document.querySelectorAll('.county-popover-item').forEach(b => {
+    b.classList.toggle('is-active', b.getAttribute('data-county') === county);
   });
+  closeCountyPopover();
+  renderSummaryStrip();
   const d = countyData[county];
   document.getElementById('income-slider').value = d.income;
   updateAfford();
   updateCalc();
   renderPaymentIncomeChart();
 
-  const sfhBg = d.sfhIdx < 55 ? 'background:linear-gradient(135deg,#fff5f5 0%,white 60%);border-color:#f5c6c0;' : d.sfhIdx < 80 ? 'background:linear-gradient(135deg,#fff8f0 0%,white 60%);border-color:#f5ddc0;' : 'background:linear-gradient(135deg,#f0fdf5 0%,white 60%);border-color:#b7e4c7;';
-  const condoBg = d.condoIdx < 55 ? 'background:linear-gradient(135deg,#fff5f5 0%,white 60%);border-color:#f5c6c0;' : d.condoIdx < 80 ? 'background:linear-gradient(135deg,#fff8f0 0%,white 60%);border-color:#f5ddc0;' : 'background:linear-gradient(135deg,#f0fdf5 0%,white 60%);border-color:#b7e4c7;';
-  document.getElementById('metric-grid').innerHTML = `
-    <div class="mcard mcard--sfh" style="${sfhBg}">
-      <div class="mcard-accent"></div>
-      <div class="mlabel">Median SFH price</div>
-      <div class="mvalue">${fmtM(d.sfhPrice)}</div>
-      <div class="msub">${fmt(d.sfhPrice)} &nbsp;·&nbsp; Feb 2026</div>
-    </div>
-    <div class="mcard mcard--condo" style="${condoBg}">
-      <div class="mcard-accent"></div>
-      <div class="mlabel">Median condo price</div>
-      <div class="mvalue">${fmtM(d.condoPrice)}</div>
-      <div class="msub">${fmt(d.condoPrice)} &nbsp;·&nbsp; Feb 2026</div>
-    </div>
-    <div class="mcard mcard--income">
-      <div class="mcard-accent"></div>
-      <div class="mlabel">Median family income (4-person)</div>
-      <div class="mvalue">${fmtM(d.income)}</div>
-      <div class="msub">${fmt(d.income)} &nbsp;·&nbsp; HUD FY 2025</div>
-    </div>
-  `;
-  const sfhIdxColor = d.sfhIdx < 55 ? '#c94f3a' : d.sfhIdx < 80 ? '#b5622a' : '#2d6a4f';
-  const condoIdxColor = d.condoIdx < 55 ? '#c94f3a' : d.condoIdx < 80 ? '#b5622a' : '#2d6a4f';
-  document.getElementById('metric-grid-2').innerHTML = `
-    <div class="mcard mcard--idx-sfh" style="text-align:center;">
-      <div class="mcard-accent" style="background:${sfhIdxColor};"></div>
-      <div class="mlabel" style="text-align:left;">SFH affordability index</div>
-      ${gaugeArc(d.sfhIdx, sfhIdxColor)}
-      <div class="msub" style="text-align:center;margin-top:4px;">100 = affordable at median income &nbsp;·&nbsp; P&I: ${fmt(d.sfhMortgage)}/mo</div>
-    </div>
-    <div class="mcard mcard--idx-condo" style="text-align:center;">
-      <div class="mcard-accent" style="background:${condoIdxColor};"></div>
-      <div class="mlabel" style="text-align:left;">Condo affordability index</div>
-      ${gaugeArc(d.condoIdx, condoIdxColor)}
-      <div class="msub" style="text-align:center;margin-top:4px;">100 = affordable at median income &nbsp;·&nbsp; P&I: ${fmt(d.condoMortgage)}/mo</div>
-    </div>
-  `;
+  // —— Housing paired cards (v2): price + affordability index merged ——
+  const verdict = (idx) => idx >= 100 ? { cls:'chip--green', lbl:'Within reach' }
+                         : idx >= 80  ? { cls:'chip--green', lbl:'Near reach' }
+                         : idx >= 55  ? { cls:'chip--amber', lbl:'Stretched' }
+                         :              { cls:'chip--coral', lbl:'Cost-burdened' };
+  const mcardV2 = (kind, label, price, idx, mortgage, dateStr) => {
+    const v = verdict(idx);
+    // Bar widths: income covers idx% of what's needed to afford the home.
+    // When idx >= 100 → full green income bar, no gap.
+    const incomePct = Math.min(idx, 100);
+    const gapPct    = Math.max(0, 100 - incomePct);
+    const incomeFull = idx >= 100;
+    const incomeCls  = 'mcard-v2-bar-income'
+                     + (incomeFull ? ' is-full is-affordable' : '');
+    return `
+      <div class="mcard-v2 mcard-v2--${kind}">
+        <div class="mcard-v2-header">
+          <span class="mcard-v2-title">${label}</span>
+          <span class="mcard-v2-date">${dateStr}</span>
+        </div>
+        <span class="mcard-v2-cpi" id="housing-${kind}-cpi"></span>
+        <div class="mcard-v2-price">${fmtM(price)}</div>
+        <div class="mcard-v2-idx-row">
+          <span class="mcard-v2-idx-lbl">Affordability index</span>
+          <span class="mcard-v2-idx-val">${Math.round(idx)}<span class="tot"> / 100</span></span>
+        </div>
+        <div class="mcard-v2-bar">
+          <div class="${incomeCls}" style="width:${incomePct}%"></div>
+          ${gapPct > 0 ? `<div class="mcard-v2-bar-gap" style="width:${gapPct}%"></div>` : ''}
+        </div>
+        <div class="mcard-v2-footer">
+          <span class="chip ${v.cls}">${v.lbl}</span>
+          <span class="mcard-v2-mortgage"><b>${fmt(mortgage)}</b>/mo mortgage payment</span>
+        </div>
+      </div>`;
+  };
+  document.getElementById('housing-pair-grid').innerHTML =
+      mcardV2('sfh',   'Single-family home', d.sfhPrice,   d.sfhIdx,   d.sfhMortgage,   'Feb 2026')
+    + mcardV2('condo', 'Condo',              d.condoPrice, d.condoIdx, d.condoMortgage, 'Feb 2026');
 
   const maxPTI = 0.85;
   const threshPct = (0.30 / maxPTI * 100).toFixed(1);
@@ -976,6 +1958,314 @@ function selectCounty(county) {
       </div>
     </div>`;
   }).join('');
+
+  // Re-render goods pane so it's ready when user switches tabs
+  if (typeof renderGoodsPane === 'function') renderGoodsPane();
+  if (typeof renderInflation === 'function') renderInflation();
+}
+
+/* ---------------- Inflation (BLS Honolulu CPI) ---------------- */
+/* CPI_DATA_START */
+const cpiData = {
+  allItems:  { yoy: 3.4, latestPeriod: "2026-03", source: "BLS CUURS49ASA0" },
+  shelter:   { yoy: 2.74, latestPeriod: "2026-03", source: "BLS CUURS49ASAH" },
+  food:      { yoy: 2.93, latestPeriod: "2026-03", source: "BLS CUURS49ASAF11" },
+  energy:    { yoy: 18.65, latestPeriod: "2026-03", source: "BLS CUURS49ASETB01" },
+  transport: { yoy: 9.08, latestPeriod: "2026-03", source: "BLS CUURS49ASAT" },
+};
+/* CPI_DATA_END */
+
+/* ---------------- Goods & Services (groceries) ---------------- */
+/* GROCERY_DATA_START */
+const groceryData = {
+  State:    { basketPretax:165.88, basketWithTax:173.35, monthlyFamily4:751, groceryIdx:100.4, groceryShareOfIncome:0.0733, weeklyPerCap:43, lastUpdated:"2026-04-15", household:{ singleFemale:51.66, singleMale:64.65, singleParent1Child:89.1, family4:173.35 }, categories:{ grains:35.17, vegetables:15.8, fruits:18.42, dairy:26.68, protein_meat:21.31, protein_seafood:1.59, protein_other:4.41, fats_oils:8.07, beverages:23.31, condiments:0.0, sugars_sweets:6.45, snacks:0.0, prepared:4.68 }, topItems:[ { name:"Folgers Classic Roast ground coffee", price:23.31, vsHnl:1.004 }, { name:"Calrose rice", price:18.95, vsHnl:1.019 }, { name:"Tropicana No Pulp Orange Juice, 89 oz", price:11.54, vsHnl:1.004 }, { name:"Boneless skinless chicken breast", price:9.64, vsHnl:1.027 }, { name:"Vegetable oil, ~40-48 fl oz", price:8.07, vsHnl:0.999 }, { name:"Ground beef 80/20", price:7.88, vsHnl:0.999 }, { name:"Cheerios, 12 oz", price:7.75, vsHnl:0.997 }, { name:"Land O'Lakes Salted Butter, 1 lb", price:7.58, vsHnl:0.998 } ] },
+  Honolulu: { basketPretax:165.24, basketWithTax:172.68, monthlyFamily4:748, groceryIdx:100.0, groceryShareOfIncome:0.0694, weeklyPerCap:43, lastUpdated:"2026-04-15", household:{ singleFemale:51.46, singleMale:64.4, singleParent1Child:88.75, family4:172.68 }, categories:{ grains:34.79, vegetables:15.95, fruits:18.29, dairy:26.79, protein_meat:21.02, protein_seafood:1.6, protein_other:4.4, fats_oils:8.08, beverages:23.22, condiments:0.0, sugars_sweets:6.49, snacks:0.0, prepared:4.61 }, topItems:[ { name:"Folgers Classic Roast ground coffee", price:23.22, vsHnl:1.0 }, { name:"Calrose rice", price:18.6, vsHnl:1.0 }, { name:"Tropicana No Pulp Orange Juice, 89 oz", price:11.5, vsHnl:1.0 }, { name:"Boneless skinless chicken breast", price:9.38, vsHnl:1.0 }, { name:"Vegetable oil, ~40-48 fl oz", price:8.08, vsHnl:1.0 }, { name:"Ground beef 80/20", price:7.89, vsHnl:1.0 }, { name:"Cheerios, 12 oz", price:7.77, vsHnl:1.0 }, { name:"Land O'Lakes Salted Butter, 1 lb", price:7.59, vsHnl:1.0 } ] },
+  Maui:     { basketPretax:175.69, basketWithTax:183.6, monthlyFamily4:795, groceryIdx:106.3, groceryShareOfIncome:0.086, weeklyPerCap:46, lastUpdated:"2026-04-15", household:{ singleFemale:54.72, singleMale:68.48, singleParent1Child:94.36, family4:183.6 }, categories:{ grains:37.7, vegetables:16.89, fruits:19.82, dairy:29.0, protein_meat:20.21, protein_seafood:1.73, protein_other:4.69, fats_oils:9.03, beverages:24.75, condiments:0.0, sugars_sweets:7.46, snacks:0.0, prepared:4.41 }, topItems:[ { name:"Folgers Classic Roast ground coffee", price:24.75, vsHnl:1.066 }, { name:"Calrose rice", price:20.45, vsHnl:1.099 }, { name:"Tropicana No Pulp Orange Juice, 89 oz", price:12.31, vsHnl:1.07 }, { name:"Vegetable oil, ~40-48 fl oz", price:9.03, vsHnl:1.118 }, { name:"Cheerios, 12 oz", price:8.42, vsHnl:1.084 }, { name:"Land O'Lakes Salted Butter, 1 lb", price:8.4, vsHnl:1.107 }, { name:"Boneless skinless chicken breast", price:8.33, vsHnl:0.888 }, { name:"Ground beef 80/20", price:7.92, vsHnl:1.004 } ] },
+  Hawaii:   { basketPretax:162.3, basketWithTax:169.6, monthlyFamily4:734, groceryIdx:98.2, groceryShareOfIncome:0.0891, weeklyPerCap:42, lastUpdated:"2026-04-15", household:{ singleFemale:50.55, singleMale:63.26, singleParent1Child:87.17, family4:169.6 }, categories:{ grains:35.05, vegetables:14.58, fruits:18.04, dairy:24.85, protein_meat:23.05, protein_seafood:1.46, protein_other:4.28, fats_oils:7.44, beverages:22.78, condiments:0.0, sugars_sweets:5.66, snacks:0.0, prepared:5.11 }, topItems:[ { name:"Folgers Classic Roast ground coffee", price:22.78, vsHnl:0.981 }, { name:"Calrose rice", price:19.34, vsHnl:1.04 }, { name:"Boneless skinless chicken breast", price:11.39, vsHnl:1.214 }, { name:"Tropicana No Pulp Orange Juice, 89 oz", price:11.23, vsHnl:0.977 }, { name:"Ground beef 80/20", price:7.83, vsHnl:0.992 }, { name:"Vegetable oil, ~40-48 fl oz", price:7.44, vsHnl:0.921 }, { name:"Cheerios, 12 oz", price:7.25, vsHnl:0.933 }, { name:"Land O'Lakes Salted Butter, 1 lb", price:7.02, vsHnl:0.925 } ] },
+  Kauai:    { basketPretax:162.3, basketWithTax:169.6, monthlyFamily4:734, groceryIdx:98.2, groceryShareOfIncome:0.0663, weeklyPerCap:42, lastUpdated:"2026-04-15", household:{ singleFemale:50.55, singleMale:63.26, singleParent1Child:87.17, family4:169.6 }, categories:{ grains:35.05, vegetables:14.58, fruits:18.04, dairy:24.85, protein_meat:23.05, protein_seafood:1.46, protein_other:4.28, fats_oils:7.44, beverages:22.78, condiments:0.0, sugars_sweets:5.66, snacks:0.0, prepared:5.11 }, topItems:[ { name:"Folgers Classic Roast ground coffee", price:22.78, vsHnl:0.981 }, { name:"Calrose rice", price:19.34, vsHnl:1.04 }, { name:"Boneless skinless chicken breast", price:11.39, vsHnl:1.214 }, { name:"Tropicana No Pulp Orange Juice, 89 oz", price:11.23, vsHnl:0.977 }, { name:"Ground beef 80/20", price:7.83, vsHnl:0.992 }, { name:"Vegetable oil, ~40-48 fl oz", price:7.44, vsHnl:0.921 }, { name:"Cheerios, 12 oz", price:7.25, vsHnl:0.933 }, { name:"Land O'Lakes Salted Butter, 1 lb", price:7.02, vsHnl:0.925 } ] },
+};
+/* GROCERY_DATA_END */
+
+/* GAS_DATA_START */
+const gasData = {
+  State:    { regular:5.651, mid_grade:5.913, premium:6.164, diesel:7.186, mom_change:0.484, yoy_change:1.144, asOf:"2026-04-21" },
+  Honolulu: { regular:5.628, mid_grade:5.908, premium:6.17, diesel:6.936, mom_change:0.586, yoy_change:1.199, asOf:"2026-04-21" },
+  Maui:     { regular:5.606, mid_grade:5.903, premium:6.142, diesel:7.778, mom_change:0.303, yoy_change:1.084, asOf:"2026-04-21" },
+  Hawaii:   { regular:5.665, mid_grade:5.906, premium:6.22, diesel:7.164, mom_change:0.335, yoy_change:1.003, asOf:"2026-04-21" },
+  Kauai:    { regular:5.965, mid_grade:6.226, premium:6.459, diesel:7.299, mom_change:0.477, yoy_change:0.864, asOf:"2026-04-21" },
+};
+/* GAS_DATA_END */
+
+const CAT_LABELS = {
+  grains:'Grains & rice', vegetables:'Vegetables', fruits:'Fruits', dairy:'Dairy',
+  protein_meat:'Meat & pork', protein_seafood:'Seafood', protein_other:'Other protein',
+  fats_oils:'Fats & oils', beverages:'Beverages', condiments:'Condiments',
+  sugars_sweets:'Sugars & sweets', snacks:'Snacks', prepared:'Prepared'
+};
+const HH_OPTIONS = [
+  { key:'singleFemale',       label:'Single adult (F)' },
+  { key:'singleMale',         label:'Single adult (M)' },
+  { key:'singleParent1Child', label:'Parent + 1 child' },
+  { key:'family4',            label:'Family of 4' },
+];
+let currentHH = 'family4';
+
+function pctSigned(x) { return (x>=0?'+':'') + (x*100).toFixed(1) + '%'; }
+
+/* ---------------- Goods pane renderer (v2 — paired card layout) ---------------- */
+function renderGoodsPane() {
+  const g = groceryData[currentCounty];
+  const gas = (typeof gasData !== 'undefined') ? gasData[currentCounty] : null;
+  const income = countyData[currentCounty].income;
+  if (!g) return;
+
+  // Update section header {{county}} placeholder
+  const titleEl = document.querySelector('#pane-goods .metrics-container-title');
+  if (titleEl) titleEl.textContent = 'Groceries & gas · ' + fullLbl[currentCounty];
+
+  /* 1. Narrative — one sentence */
+  const shareClr = g.groceryShareOfIncome > 0.09 ? 'var(--coral)' : g.groceryShareOfIncome > 0.08 ? 'var(--amber)' : 'var(--green)';
+  const gasTxt = (gas && gas.regular) ? '<strong>$' + gas.regular.toFixed(2) + '/gal</strong> for gas' : '';
+  document.getElementById('goods-narrative').innerHTML = `
+    <div class="narrative-eyebrow">${fullLbl[currentCounty]} &middot; Goods</div>
+    <div class="narrative-prose">
+      A family of four spends about <strong>${fmt(g.monthlyFamily4)}/mo</strong> on groceries${gasTxt ? ' and pays ' + gasTxt : ''} —
+      <span style="color:${shareClr};font-weight:600;">${(g.groceryShareOfIncome*100).toFixed(1)}%</span> of median household income goes to food alone.
+      All grocery figures include Hawaiʻi's 4.5% GET.
+    </div>`;
+
+  /* 2. Paired cards — Groceries + Gas */
+  const grocVerdict = g.groceryShareOfIncome >= 0.10 ? { cls:'chip--coral', lbl:'Cost-burdened' }
+                    : g.groceryShareOfIncome >= 0.08 ? { cls:'chip--amber', lbl:'Stretched' }
+                    :                                  { cls:'chip--green', lbl:'Affordable' };
+  // Bar: 0–15% of income scale, 10% threshold for burdened.
+  const grocSharePct = g.groceryShareOfIncome * 100;
+  const grocFillPct = Math.min(grocSharePct / 15 * 100, 100);
+  const grocGapPct = 100 - grocFillPct;
+  const grocAffordable = grocSharePct < 10;
+  const grocFillCls = 'mcard-v2-bar-income' + (grocAffordable ? ' is-affordable' : '');
+  const monthlyFmt = fmt(g.monthlyFamily4);
+  const grocCard = `
+    <div class="mcard-v2 mcard-v2--groceries">
+      <div class="mcard-v2-header">
+        <span class="mcard-v2-title">Groceries</span>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
+          <span class="mcard-v2-date">Apr 2026</span>
+          <span class="mcard-v2-cpi" id="goods-groc-cpi"></span>
+        </div>
+      </div>
+      <div class="mcard-v2-price">${fmt(g.basketWithTax)}/wk</div>
+      <div class="mcard-v2-idx-row">
+        <span class="mcard-v2-idx-lbl">Share of median income</span>
+        <span class="mcard-v2-idx-val">${grocSharePct.toFixed(1)}<span class="tot"> %</span></span>
+      </div>
+      <div class="mcard-v2-bar">
+        <div class="${grocFillCls}" style="width:${grocFillPct.toFixed(1)}%"></div>
+        ${grocGapPct > 0 ? '<div class="mcard-v2-bar-gap" style="width:' + grocGapPct.toFixed(1) + '%"></div>' : ''}
+      </div>
+      <div class="mcard-v2-footer">
+        <span class="chip ${grocVerdict.cls}">${grocVerdict.lbl}</span>
+        <span class="mcard-v2-mortgage"><b>${monthlyFmt}</b>/mo &middot; family of 4</span>
+      </div>
+    </div>`;
+
+  // Gas card
+  let gasCard = '';
+  if (gas && typeof gas.regular === 'number') {
+    const momArrow = gas.mom_change > 0.02 ? '▲' : gas.mom_change < -0.02 ? '▼' : '•';
+    const yoy = gas.yoy_change || 0;
+    const yoySign = yoy > 0.02 ? 'up' : yoy < -0.02 ? 'down' : 'flat';
+    const yoyVerdict = yoy > 0.20 ? { cls:'chip--coral', lbl:'Rising fast' }
+                     : yoy > 0.05 ? { cls:'chip--amber', lbl:'Rising' }
+                     : yoy < -0.05 ? { cls:'chip--green', lbl:'Falling' }
+                     :               { cls:'chip--green', lbl:'Stable' };
+    // YoY bar: centered on zero, range –$1.50 to +$1.50
+    const yoyAbs = Math.min(Math.abs(yoy), 1.5);
+    const yoyWidth = (yoyAbs / 1.5) * 50;
+    const yoyOffset = yoy >= 0 ? 50 : (50 - yoyWidth);
+    const yoyCls = yoy > 0.02 ? 'is-up' : yoy < -0.02 ? 'is-down' : 'is-flat';
+    const yoySignStr = yoy >= 0 ? '+' : '−';
+    gasCard = `
+      <div class="mcard-v2 mcard-v2--gas">
+        <div class="mcard-v2-header">
+          <span class="mcard-v2-title">Gas &middot; regular</span>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
+            <span class="mcard-v2-date">${gas.asOf || 'Apr 2026'}</span>
+            <span class="mcard-v2-cpi" id="goods-gas-cpi"></span>
+          </div>
+        </div>
+        <div class="mcard-v2-price">$${gas.regular.toFixed(2)}</div>
+        <div class="mcard-v2-idx-row">
+          <span class="mcard-v2-idx-lbl">Year over year</span>
+          <span class="mcard-v2-idx-val">${yoySignStr}$${Math.abs(yoy).toFixed(2)}</span>
+        </div>
+        <div class="mcard-v2-yoy-bar">
+          <div class="mcard-v2-yoy-fill ${yoyCls}" style="left:${yoyOffset.toFixed(1)}%;width:${yoyWidth.toFixed(1)}%"></div>
+        </div>
+        <div class="mcard-v2-footer">
+          <span class="chip ${yoyVerdict.cls}">${yoyVerdict.lbl}</span>
+          <span class="mcard-v2-mortgage">${momArrow} <b>${gas.mom_change>=0?'+':'−'}$${Math.abs(gas.mom_change).toFixed(2)}</b> vs. last mo.</span>
+        </div>
+      </div>`;
+  } else {
+    gasCard = '<div class="mcard-v2 mcard-v2--gas"><div class="mcard-v2-header"><span class="mcard-v2-title">Gas</span><span class="mcard-v2-date">—</span></div><div class="mcard-v2-price">—</div></div>';
+  }
+  document.getElementById('goods-pair-grid').innerHTML = grocCard + gasCard;
+
+  /* Repaint CPI badges (if cpiData available — fallback to blank) */
+  renderGoodsCpiBadges();
+
+  /* 3. County comparison — single grouped horizontal bar chart */
+  const compareEl = document.getElementById('goods-county-compare');
+  if (compareEl) {
+    const avgGas = counties.reduce((s,c) => s + ((gasData[c] && gasData[c].regular) || 0), 0) / counties.length;
+    compareEl.innerHTML = counties.map(c => {
+      const gd = groceryData[c];
+      const gx = gasData[c] || {};
+      const sharePct = (gd.groceryShareOfIncome * 100);
+      const shareFill = Math.min(sharePct / 15 * 100, 100);
+      const shareClr = sharePct > 10 ? 'var(--coral)' : sharePct > 8 ? 'var(--amber)' : 'var(--green)';
+      const gasRatio = avgGas > 0 && gx.regular ? (gx.regular / avgGas) : 1;
+      // Gas bar: 0.85 → 1.15 range maps to 0–100% with 1.0 at 50%
+      const gasPct = Math.max(0, Math.min(100, (gasRatio - 0.85) / 0.30 * 100));
+      const gasClr = gasRatio > 1.04 ? 'var(--coral)' : gasRatio < 0.96 ? 'var(--green)' : 'var(--amber)';
+      const isState = c === 'State';
+      return `
+        <div class="bar-row ${isState?'bar-row--state':''}" style="align-items:flex-start;flex-direction:column;gap:4px;padding:10px 0;">
+          <div style="display:flex;justify-content:space-between;width:100%;align-items:baseline;">
+            <div class="bar-lbl ${isState?'bar-lbl--state':''}" style="flex:0 0 auto;min-width:auto;">${shortLbl[c]}${isState?' <span class="state-badge">Median</span>':''}</div>
+            <div style="font-size:12px;color:var(--text-lt);">${gd.household && gd.household.family4 ? '$'+Math.round(gd.household.family4)+'/wk' : ''} &middot; ${(gx.regular||0).toFixed(2)} /gal</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;width:100%;">
+            <div style="flex:0 0 78px;font-size:11px;color:var(--text-lt);text-align:right;">Groceries</div>
+            <div class="bar-bg" style="flex:1;">
+              <div class="bar-fill" style="width:${shareFill.toFixed(1)}%;background:${shareClr};"></div>
+            </div>
+            <div class="bar-val" style="color:${shareClr};min-width:56px;">${sharePct.toFixed(1)}%</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;width:100%;">
+            <div style="flex:0 0 78px;font-size:11px;color:var(--text-lt);text-align:right;">Gas</div>
+            <div class="bar-bg" style="flex:1;">
+              <div class="bar-fill" style="width:${gasPct.toFixed(1)}%;background:${gasClr};"></div>
+            </div>
+            <div class="bar-val" style="color:${gasClr};min-width:56px;">${((gasRatio-1)*100>=0?'+':'')}${((gasRatio-1)*100).toFixed(1)}%</div>
+          </div>
+        </div>${isState?'<div class="bar-separator"></div>':''}`;
+    }).join('');
+  }
+
+  /* 4. Household calculator — compact */
+  document.getElementById('goods-hh-toggle').innerHTML = HH_OPTIONS.map(opt =>
+    `<button class="hh-toggle-btn${opt.key===currentHH?' active':''}" onclick="setHH('${opt.key}')">${opt.label}</button>`
+  ).join('');
+  const hhWeekly = g.household[currentHH] || 0;
+  const hhMonthly = hhWeekly * 4.33;
+  const hhAnnual = hhMonthly * 12;
+  const hhShare = hhAnnual / income;
+  const hhLabel = HH_OPTIONS.find(o => o.key === currentHH).label;
+  document.getElementById('goods-hh-out').innerHTML =
+    `<strong>${hhLabel}</strong> in ${fullLbl[currentCounty]}: ` +
+    `<b>${fmt(hhWeekly)}/wk</b> &middot; <b>${fmt(hhMonthly)}/mo</b> &middot; <b>${fmt(hhAnnual)}/yr</b> ` +
+    `<span style="color:var(--text-lt);">(${(hhShare*100).toFixed(1)}% of 4-person median income)</span>`;
+
+  /* 5. Details — category bars + top items (only rendered when open OR on first render) */
+  renderGoodsDetail(g);
+}
+
+function renderGoodsDetail(g) {
+  /* Category bars */
+  const catEntries = Object.entries(g.categories).filter(([_,v]) => v > 0);
+  const catMax = Math.max(...catEntries.map(([_,v])=>v));
+  document.getElementById('goods-category-bars').innerHTML = catEntries
+    .sort((a,b)=>b[1]-a[1])
+    .map(([k,v]) => {
+      const w = (v/catMax*100).toFixed(1);
+      return `<div class="cat-bar-row">
+        <div class="cat-bar-lbl">${CAT_LABELS[k]||k}</div>
+        <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:${w}%;"></div></div>
+        <div class="cat-bar-val">${fmt(v)}/wk</div>
+      </div>`;
+    }).join('');
+
+  /* Top items table */
+  document.getElementById('goods-items-county-label').textContent = fullLbl[currentCounty];
+  document.getElementById('goods-top-items').innerHTML = g.topItems.map(it => {
+    const diff = (it.vsHnl - 1);
+    const clr = diff > 0.02 ? 'var(--coral)' : diff < -0.02 ? 'var(--green)' : 'var(--text-lt)';
+    const diffTxt = currentCounty === 'Honolulu' ? '<span style="color:var(--text-lt);">—</span>' : `<span style="color:${clr};">${pctSigned(diff)}</span>`;
+    return `<tr><td>${it.name}</td><td>$${it.price.toFixed(2)}</td><td>${diffTxt}</td></tr>`;
+  }).join('');
+}
+
+/* CPI badge repainter — reads cpiData if present; safe no-op otherwise */
+function renderGoodsCpiBadges() {
+  const cpi = (typeof cpiData !== 'undefined') ? cpiData : null;
+  const gEl = document.getElementById('goods-groc-cpi');
+  const xEl = document.getElementById('goods-gas-cpi');
+  if (gEl) {
+    if (cpi && cpi.food && typeof cpi.food.yoy === 'number') {
+      const up = cpi.food.yoy > 0;
+      gEl.className = 'mcard-v2-cpi ' + (up ? 'is-up' : 'is-down');
+      gEl.innerHTML = '<span class="cpi-arrow">' + (up?'▲':'▼') + '</span>Food CPI ' + (up?'+':'−') + Math.abs(cpi.food.yoy).toFixed(1) + '% YoY';
+    } else { gEl.textContent = ''; }
+  }
+  if (xEl) {
+    if (cpi && cpi.energy && typeof cpi.energy.yoy === 'number') {
+      const up = cpi.energy.yoy > 0;
+      xEl.className = 'mcard-v2-cpi ' + (up ? 'is-up' : 'is-down');
+      xEl.innerHTML = '<span class="cpi-arrow">' + (up?'▲':'▼') + '</span>Energy CPI ' + (up?'+':'−') + Math.abs(cpi.energy.yoy).toFixed(1) + '% YoY';
+    } else { xEl.textContent = ''; }
+  }
+}
+
+function renderHousingCpiBadges() {
+  const cpi = (typeof cpiData !== 'undefined') ? cpiData : null;
+  ['sfh','condo'].forEach(k => {
+    const el = document.getElementById('housing-' + k + '-cpi');
+    if (!el) return;
+    if (cpi && cpi.shelter && typeof cpi.shelter.yoy === 'number') {
+      const up = cpi.shelter.yoy > 0;
+      el.className = 'mcard-v2-cpi ' + (up ? 'is-up' : 'is-down');
+      el.innerHTML = '<span class="cpi-arrow">' + (up?'▲':'▼') + '</span>Shelter CPI ' + (up?'+':'−') + Math.abs(cpi.shelter.yoy).toFixed(1) + '% YoY';
+    } else { el.textContent = ''; }
+  });
+}
+
+function renderInflation() {
+  const cpi = (typeof cpiData !== 'undefined') ? cpiData : null;
+  const chip = document.getElementById('header-inflation-chip');
+  const val  = document.getElementById('header-inflation-val');
+  if (!chip || !val) return;
+  if (cpi && cpi.allItems && typeof cpi.allItems.yoy === 'number') {
+    const y = cpi.allItems.yoy;
+    val.textContent = (y >= 0 ? '+' : '−') + Math.abs(y).toFixed(1) + '% YoY';
+    val.classList.remove('is-hi','is-mid','is-low');
+    val.classList.add(y > 3 ? 'is-hi' : (y >= 2 ? 'is-mid' : 'is-low'));
+    if (cpi.allItems.latestPeriod) chip.title = 'Honolulu all-items CPI · ' + cpi.allItems.latestPeriod + ' · BLS';
+    chip.hidden = false;
+  } else {
+    chip.hidden = true;
+  }
+  renderHousingCpiBadges();
+}
+
+function setHH(key) {
+  currentHH = key;
+  renderGoodsPane();
+}
+
+function selectPane(pane) {
+  document.querySelectorAll('.top-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.top-tab').forEach((b,i) => {
+    b.setAttribute('aria-selected', 'false');
+  });
+  const idx = pane === 'goods' ? 1 : 0;
+  const activeBtn = document.querySelectorAll('.top-tab')[idx];
+  activeBtn.classList.add('active');
+  activeBtn.setAttribute('aria-selected', 'true');
+  document.getElementById('pane-housing').classList.toggle('is-active', pane === 'housing');
+  document.getElementById('pane-goods').classList.toggle('is-active', pane === 'goods');
+  if (pane === 'goods') renderGoodsPane();
 }
 
 function renderBuildAuth() {
@@ -997,6 +2287,140 @@ function renderBuildAuth() {
     </div>`;
   }).join('');
 }
+
+/* ---------------- Hero summary strip + county popover ---------------- */
+let currentHomeView = 'home'; // 'home' (SFH median) or 'rent' (median gross rent)
+
+function fmtMoneyBig(n) {
+  if (n >= 1000000) return '$' + (n/1000000).toFixed(n >= 10000000 ? 1 : 2).replace(/\.?0+$/,'') + 'M';
+  if (n >= 1000)    return '$' + Math.round(n/1000) + 'K';
+  return '$' + Math.round(n).toLocaleString();
+}
+
+function renderSummaryStrip() {
+  const d = countyData[currentCounty];
+  const g = (typeof groceryData !== 'undefined') ? groceryData[currentCounty] : null;
+  const gas = (typeof gasData !== 'undefined') ? gasData[currentCounty] : null;
+
+  // Tile 1 — Home / Rent (segmented)
+  const homeVal = document.getElementById('kpi-home-value');
+  const homeSub = document.getElementById('kpi-home-sub');
+  if (currentHomeView === 'rent') {
+    homeVal.textContent = fmt(d.rent) + '/mo';
+    homeSub.textContent = 'Median gross rent · ACS 5-yr';
+  } else {
+    homeVal.textContent = fmtMoneyBig(d.sfhPrice);
+    homeSub.textContent = 'Median single-family · Feb 2026';
+  }
+  document.querySelectorAll('#kpi-home .kpi-seg-opt').forEach(b => {
+    const on = b.getAttribute('data-view') === currentHomeView;
+    b.classList.toggle('is-active', on);
+    b.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+
+  // Tile 1 — mini affordability bar (SFH index or rent burden)
+  const fillEl = document.getElementById('kpi-home-idx-fill');
+  const gapEl  = document.getElementById('kpi-home-idx-gap');
+  const txtEl  = document.getElementById('kpi-home-idx-text');
+  if (fillEl && gapEl && txtEl) {
+    if (currentHomeView === 'rent') {
+      // Rent burden: rent × 12 / income. <25% green, 25–30% amber, ≥30% coral.
+      const burden = (d.rent * 12) / d.income; // 0–1
+      const burdenPct = burden * 100;
+      // Bar scale: 0–40% maps to 0–100% fill; cap at 40%.
+      const capped = Math.min(burdenPct, 40);
+      const fillPct = (capped / 40) * 100;
+      const vcls = burdenPct >= 30 ? 'is-coral'
+                 : burdenPct >= 25 ? 'is-amber'
+                 : 'is-green';
+      const vlbl = burdenPct >= 30 ? 'Cost-burdened'
+                 : burdenPct >= 25 ? 'Near threshold'
+                 : 'Affordable';
+      const isAffordable = burdenPct < 30;
+      fillEl.className = 'kpi-idx-bar-income' + (isAffordable ? ' is-affordable' : '');
+      fillEl.style.width = fillPct.toFixed(1) + '%';
+      gapEl.style.width  = (100 - fillPct).toFixed(1) + '%';
+      txtEl.innerHTML = burdenPct.toFixed(0) + '% of income · <span class="kpi-idx-verdict ' + vcls + '">' + vlbl + '</span>';
+    } else {
+      // SFH affordability index: 100 = affordable at median income.
+      const idx = d.sfhIdx;
+      const incomePct = Math.min(idx, 100);
+      const gapPct    = Math.max(0, 100 - incomePct);
+      const isFull = idx >= 100;
+      const vcls = idx >= 80 ? 'is-green'
+                 : idx >= 55 ? 'is-amber'
+                 : 'is-coral';
+      const vlbl = idx >= 100 ? 'Within reach'
+                 : idx >= 80  ? 'Near reach'
+                 : idx >= 55  ? 'Stretched'
+                 : 'Cost-burdened';
+      fillEl.className = 'kpi-idx-bar-income' + (isFull ? ' is-full is-affordable' : '');
+      fillEl.style.width = incomePct.toFixed(1) + '%';
+      gapEl.style.width  = gapPct.toFixed(1) + '%';
+      txtEl.innerHTML = Math.round(idx) + ' / 100 · <span class="kpi-idx-verdict ' + vcls + '">' + vlbl + '</span>';
+    }
+  }
+
+  // Tile 2 — Groceries (weekly, family of 4)
+  const grocVal = document.getElementById('kpi-groc-value');
+  if (g && typeof g.basketWithTax === 'number') {
+    grocVal.textContent = '$' + Math.round(g.basketWithTax) + '/wk';
+  } else {
+    grocVal.textContent = '—';
+  }
+
+  // Tile 3 — Gas (regular unleaded, current)
+  const gasVal = document.getElementById('kpi-gas-value');
+  const gasSub = document.getElementById('kpi-gas-sub');
+  if (gas && typeof gas.regular === 'number') {
+    gasVal.textContent = '$' + gas.regular.toFixed(2);
+    if (typeof gas.mom_change === 'number') {
+      const arrow = gas.mom_change > 0.005 ? '▲' : gas.mom_change < -0.005 ? '▼' : '•';
+      const clr   = gas.mom_change > 0.005 ? 'var(--coral)' : gas.mom_change < -0.005 ? 'var(--green)' : 'var(--text-lt)';
+      const sign  = gas.mom_change >= 0 ? '+' : '−';
+      gasSub.innerHTML = 'Regular · <span style="color:' + clr + ';font-weight:500;">' + arrow + ' ' + sign + '$' + Math.abs(gas.mom_change).toFixed(2) + ' MoM</span>';
+    } else {
+      gasSub.textContent = 'Regular unleaded · /gal';
+    }
+  } else {
+    gasVal.textContent = '—';
+    gasSub.textContent = 'Regular unleaded · /gal';
+  }
+
+  // Tile 4 — Median income (4-person, HUD)
+  document.getElementById('kpi-income-value').textContent = fmtMoneyBig(d.income);
+}
+
+function setHomeView(view) {
+  if (view !== 'home' && view !== 'rent') return;
+  currentHomeView = view;
+  renderSummaryStrip();
+}
+function toggleHomeRent() { setHomeView(currentHomeView === 'rent' ? 'home' : 'rent'); }
+
+function toggleCountyPopover(ev) {
+  if (ev) ev.stopPropagation();
+  const btn = document.getElementById('county-select-btn');
+  const pop = document.getElementById('county-popover');
+  const open = !pop.classList.contains('is-open');
+  pop.classList.toggle('is-open', open);
+  btn.classList.toggle('is-open', open);
+  btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+
+function closeCountyPopover() {
+  const btn = document.getElementById('county-select-btn');
+  const pop = document.getElementById('county-popover');
+  if (!pop) return;
+  pop.classList.remove('is-open');
+  if (btn) { btn.classList.remove('is-open'); btn.setAttribute('aria-expanded', 'false'); }
+}
+
+document.addEventListener('click', (ev) => {
+  const wrap = document.querySelector('.county-select-wrap');
+  if (wrap && !wrap.contains(ev.target)) closeCountyPopover();
+});
+document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeCountyPopover(); });
 
 selectCounty('State');
 renderBuildAuth();

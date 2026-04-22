@@ -2,19 +2,22 @@ name: Monthly Data Update
 
 on:
   schedule:
-    # Runs at 9:00 AM UTC on the 1st of every month
-    # Redfin releases new data on the 3rd Friday — running on the 1st catches
-    # the prior month's data; adjust to '0 9 15 * *' to run mid-month instead.
-    - cron: '0 9 1 * *'
+    # 10:00 UTC on the 1st of every month (midnight HST).
+    # Redfin data releases on the 3rd Friday; the 1st captures prior month.
+    # AAA gas prices update daily — 1st-of-month gives a clean monthly snapshot.
+    # BLS CPI is bimonthly with a lag; fetcher handles interpolation.
+    - cron: '0 10 1 * *'
 
-  # Allows manual trigger from the GitHub Actions UI (Actions tab → Run workflow)
+  # Manual trigger from GitHub Actions UI (Actions tab → Run workflow)
   workflow_dispatch:
 
 jobs:
   update:
     runs-on: ubuntu-latest
     permissions:
-      contents: write   # needed to commit and push the updated HTML
+      contents: write   # needed to commit and push updated files
+    env:
+      BLS_API_KEY: ${{ secrets.BLS_API_KEY }}
 
     steps:
       - name: Check out repo
@@ -28,15 +31,31 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run price updater
+      # 1. Grocery pipeline: CPI-adjusts baseline prices → regenerates CSVs
+      #    under pipelines/grocery/data/output/.
+      - name: Run grocery pipeline (CPI-adjust baseline)
+        run: python pipelines/grocery/scripts/update_prices.py
+
+      # 2. Patchers — read data sources and update both HTML files.
+      - name: Patch Redfin housing prices
         run: python redfin-price-updater.py
+
+      - name: Patch grocery prices
+        run: python grocery-price-updater.py
+
+      - name: Patch gas prices
+        run: python gas-price-updater.py
+
+      - name: Patch BLS Honolulu CPI (inflation chip + card badges)
+        run: python bls-cpi-updater.py
 
       - name: Commit and push if anything changed
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add squarespace-single-file.html
-          # Only commit if the file actually changed; exit 0 either way
+          git add squarespace-single-file.html index.html
+          git add data/gas_prices_history.csv 2>/dev/null || true
+          git add pipelines/grocery/data/output pipelines/grocery/data/cpi_cache 2>/dev/null || true
           git diff --staged --quiet \
             && echo "No changes — data already up to date." \
             || git commit -m "chore: monthly data update $(date +'%Y-%m')"

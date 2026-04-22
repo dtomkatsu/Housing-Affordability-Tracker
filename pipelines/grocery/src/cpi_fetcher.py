@@ -53,10 +53,13 @@ def fetch_cpi_data(
         sid = series["seriesID"]
         points = []
         for obs in series.get("data", []):
+            raw_val = obs.get("value", "-")
+            if raw_val == "-":
+                continue  # BLS uses '-' for missing/preliminary data
             points.append({
                 "year": int(obs["year"]),
                 "period": obs["period"],  # e.g. "M01", "M02", ... "M12"
-                "value": float(obs["value"]),
+                "value": float(raw_val),
             })
         # Sort chronologically (BLS returns newest first)
         points.sort(key=lambda p: (p["year"], p["period"]))
