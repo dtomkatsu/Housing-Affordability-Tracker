@@ -1615,10 +1615,17 @@
       <div class="affordability-note">Groceries are family-of-4 post-tax (4.5% GET). Gas is current AAA Hawaiʻi regular unleaded average.</div>
     </div>
 
-    <div class="card" style="margin-top:22px;">
-      <div class="card-title">Goods cost across counties</div>
-      <div class="card-sub">Groceries as share of median 4-person income &nbsp;·&nbsp; gas relative to statewide average</div>
-      <div id="goods-county-compare"></div>
+    <div class="housing-pair-grid" style="margin-top:22px;">
+      <div class="card">
+        <div class="card-title">Groceries by county</div>
+        <div class="card-sub">Share of median 4-person income</div>
+        <div id="goods-county-compare-groc"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Gas by county</div>
+        <div class="card-sub">vs. statewide average</div>
+        <div id="goods-county-compare-gas"></div>
+      </div>
     </div>
 
     <div class="calc-section" style="margin-top:22px;">
@@ -2145,14 +2152,15 @@ function renderGoodsPane() {
   /* Repaint CPI badges (if cpiData available — fallback to blank) */
   renderGoodsCpiBadges();
 
-  /* 3. County comparison — single grouped horizontal bar chart */
-  const compareEl = document.getElementById('goods-county-compare');
-  if (compareEl) {
+  /* 3. County comparison — split into two smaller side-by-side cards:
+        Groceries (share of income)  +  Gas (vs. statewide avg).        */
+  const grocEl = document.getElementById('goods-county-compare-groc');
+  const gasEl  = document.getElementById('goods-county-compare-gas');
+  if (grocEl || gasEl) {
     const avgGas = counties.reduce((s,c) => s + ((gasData[c] && gasData[c].regular) || 0), 0) / counties.length;
-    compareEl.innerHTML = counties.map(c => {
+    const rows = counties.map(c => {
       const gd = groceryData[c];
       const gx = gasData[c] || {};
-      // TFP-anchored share for this county when tfpData is present.
       const cIncome = countyData[c].income;
       const cMult   = (gd.groceryIdx || 100) / 100;
       const cTfpMo  = tfp ? tfp.hawaii.family4Monthly * cMult * GET_MULT : null;
@@ -2162,32 +2170,36 @@ function renderGoodsPane() {
       const shareFill = Math.min(sharePct / 15 * 100, 100);
       const shareClr = sharePct > 10 ? 'var(--coral)' : sharePct > 8 ? 'var(--amber)' : 'var(--green)';
       const gasRatio = avgGas > 0 && gx.regular ? (gx.regular / avgGas) : 1;
-      // Gas bar: 0.85 → 1.15 range maps to 0–100% with 1.0 at 50%
       const gasPct = Math.max(0, Math.min(100, (gasRatio - 0.85) / 0.30 * 100));
       const gasClr = gasRatio > 1.04 ? 'var(--coral)' : gasRatio < 0.96 ? 'var(--green)' : 'var(--amber)';
       const isState = c === 'State';
+      return { c, isState, cWeekly, gx, sharePct, shareFill, shareClr, gasRatio, gasPct, gasClr };
+    });
+    const rowHTML = (r, kind) => {
+      const lblSub = kind === 'groc'
+        ? (r.cWeekly ? '$' + Math.round(r.cWeekly) + '/wk' : '')
+        : (r.gx.regular ? r.gx.regular.toFixed(2) + ' /gal' : '');
+      const fill = kind === 'groc' ? r.shareFill : r.gasPct;
+      const clr  = kind === 'groc' ? r.shareClr  : r.gasClr;
+      const val  = kind === 'groc'
+        ? r.sharePct.toFixed(1) + '%'
+        : (((r.gasRatio - 1) * 100 >= 0 ? '+' : '') + ((r.gasRatio - 1) * 100).toFixed(1) + '%');
       return `
-        <div class="bar-row ${isState?'bar-row--state':''}" style="align-items:flex-start;flex-direction:column;gap:4px;padding:10px 0;">
+        <div class="bar-row ${r.isState?'bar-row--state':''}" style="align-items:flex-start;flex-direction:column;gap:4px;padding:8px 0;">
           <div style="display:flex;justify-content:space-between;width:100%;align-items:baseline;">
-            <div class="bar-lbl ${isState?'bar-lbl--state':''}" style="flex:0 0 auto;min-width:auto;">${shortLbl[c]}${isState?' <span class="state-badge">Median</span>':''}</div>
-            <div style="font-size:12px;color:var(--text-lt);">${cWeekly ? '$'+Math.round(cWeekly)+'/wk' : ''} &middot; ${(gx.regular||0).toFixed(2)} /gal</div>
+            <div class="bar-lbl ${r.isState?'bar-lbl--state':''}" style="flex:0 0 auto;min-width:auto;">${shortLbl[r.c]}${r.isState?' <span class="state-badge">Median</span>':''}</div>
+            <div style="font-size:12px;color:var(--text-lt);">${lblSub}</div>
           </div>
           <div style="display:flex;align-items:center;gap:10px;width:100%;">
-            <div style="flex:0 0 78px;font-size:11px;color:var(--text-lt);text-align:right;">Groceries</div>
             <div class="bar-bg" style="flex:1;">
-              <div class="bar-fill" style="width:${shareFill.toFixed(1)}%;background:${shareClr};"></div>
+              <div class="bar-fill" style="width:${fill.toFixed(1)}%;background:${clr};"></div>
             </div>
-            <div class="bar-val" style="color:${shareClr};min-width:56px;">${sharePct.toFixed(1)}%</div>
+            <div class="bar-val" style="color:${clr};min-width:56px;">${val}</div>
           </div>
-          <div style="display:flex;align-items:center;gap:10px;width:100%;">
-            <div style="flex:0 0 78px;font-size:11px;color:var(--text-lt);text-align:right;">Gas</div>
-            <div class="bar-bg" style="flex:1;">
-              <div class="bar-fill" style="width:${gasPct.toFixed(1)}%;background:${gasClr};"></div>
-            </div>
-            <div class="bar-val" style="color:${gasClr};min-width:56px;">${((gasRatio-1)*100>=0?'+':'')}${((gasRatio-1)*100).toFixed(1)}%</div>
-          </div>
-        </div>${isState?'<div class="bar-separator"></div>':''}`;
-    }).join('');
+        </div>${r.isState?'<div class="bar-separator"></div>':''}`;
+    };
+    if (grocEl) grocEl.innerHTML = rows.map(r => rowHTML(r, 'groc')).join('');
+    if (gasEl)  gasEl.innerHTML  = rows.map(r => rowHTML(r, 'gas')).join('');
   }
 
   /* 4. Household calculator — compact */
