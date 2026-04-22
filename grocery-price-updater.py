@@ -333,7 +333,7 @@ def main() -> int:
         print(f"ERROR: {COUNTY_CSV} not found", file=sys.stderr)
         return 1
 
-    print(f"Loading grocery data from {PRICE_TRACKER_ROOT}/data/output/")
+    print(f"Loading grocery data from {GROCERY_PIPELINE_ROOT}/data/output/")
     data = build_grocery_data()
     for c in ("State", "Honolulu", "Maui", "Hawaii", "Kauai"):
         g = data[c]
