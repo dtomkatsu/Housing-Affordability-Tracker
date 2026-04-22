@@ -808,7 +808,17 @@
     color: var(--ocean);
     line-height: 1.05;
     letter-spacing: -0.01em;
-    margin-bottom: 14px;
+    margin-bottom: 6px;
+  }
+  .mcard-v2-sublabel {
+    font-size: 10.5px;
+    font-weight: 500;
+    color: var(--text-lt);
+    opacity: 0.85;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    line-height: 1.25;
+    margin-bottom: 12px;
   }
   .mcard-v2-idx-row {
     display: flex;
@@ -1633,10 +1643,16 @@
         </div>
         <div class="note-box" style="border-left-color:var(--green);margin-bottom:0;">
           <strong style="color:var(--text);">Methodology</strong><br>
-          Grocery prices are collected from member/loyalty pricing at Foodland (Maikaʻi), Safeway (Club Card), Costco, Walmart, Target, and Don Quijote, then combined using per-county market-share weights derived from USDA SNAP retailer data. All prices include Hawaiʻi's 4.5% General Excise Tax (GET). The basket covers 85 items across 13 USDA Thrifty Food Plan categories, adjusted for Hawaiʻi consumption patterns (rice-heavier, more seafood, more SPAM/pork, less frozen prepared meals).
+          <span id="goods-methodology-body">
+            Headline grocery figures are anchored to the USDA <strong>Thrifty Food Plan</strong> for Hawaiʻi — a federally calibrated minimum-cost food budget for the reference family of four (two adults 20–50, two children ages 6–8 and 9–11). County-level variation comes from our priced staple basket below (Honolulu = 100 index). Hawaiʻi's 4.5% General Excise Tax is applied at the register.
+            <br><br>
+            Our tracked basket covers staple SKUs collected from member/loyalty pricing at Foodland (Maikaʻi), Safeway (Club Card), Costco, Walmart, Target, and Don Quijote, then combined using per-county market-share weights derived from USDA SNAP retailer data. It is a <strong>price index</strong>, not a complete household food budget — useful for comparing counties month-to-month. The USDA TFP number reflects the full household food basket as calibrated by USDA.
+          </span>
           <br><br>
           <strong style="color:var(--text);">Data sources</strong><br>
-          Hawaiʻi Grocery Price Tracker · USDA Thrifty Food Plan 2023 · Hawaiʻi GET (4.5%) · U.S. Census Bureau County Business Patterns. Gas prices via <a href="https://gasprices.aaa.com/?state=HI" style="color:var(--green);" target="_blank">AAA Hawaiʻi</a> — updated daily, scraped monthly. Household-scaling factors follow the USDA four-person reference family normalization.
+          <span id="goods-datasources-body">
+            USDA Food and Nutrition Service · CNPP Thrifty Food Plan monthly AK-HI report (reference family of 4) · Hawaiʻi Grocery Price Tracker · Hawaiʻi GET (4.5%) · U.S. Census Bureau County Business Patterns. Gas prices via <a href="https://gasprices.aaa.com/?state=HI" style="color:var(--green);" target="_blank">AAA Hawaiʻi</a> — updated daily, scraped monthly. Household-scaling factors follow the USDA four-person reference family normalization.
+          </span>
         </div>
       </div>
     </details>
@@ -1664,6 +1680,15 @@ let currentCounty = 'State';
 
 const fmt = n => '$' + Math.round(n).toLocaleString();
 const pct = n => (n*100).toFixed(1)+'%';
+/* "2026-01" -> "Jan 2026" (returns input unchanged if not matching). */
+function formatMonth(yyyyMm) {
+  if (!yyyyMm || typeof yyyyMm !== 'string') return '';
+  const m = /^(\d{4})-(\d{2})$/.exec(yyyyMm);
+  if (!m) return yyyyMm;
+  const names = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const idx = parseInt(m[2], 10) - 1;
+  return (names[idx] || m[2]) + ' ' + m[1];
+}
 function fmtM(n) {
   if (n >= 1000000) return '$' + parseFloat((n/1000000).toFixed(2)) + 'M';
   if (n >= 1000) return '$' + Math.round(n/1000) + 'K';
@@ -1975,6 +2000,19 @@ const cpiData = {
 };
 /* CPI_DATA_END */
 
+/* ---------------- USDA Thrifty Food Plan (Hawaiʻi reference family of 4) ---------------- */
+/* TFP_DATA_START */
+const tfpData = {
+  hawaii:  { family4Monthly: 1529.60, latestPeriod: "2026-01",
+             source: "USDA CNPP Alaska-Hawaii Thrifty Food Plan",
+             url: "https://www.fns.usda.gov/sites/default/files/resource-files/cnpp-costfood-alaskahawaii-jan2026.pdf" },
+  us48:    { family4Monthly: 1002.30, latestPeriod: "2026-03",
+             source: "USDA CNPP Thrifty Food Plan (US 48 avg)" },
+  hiRatio: 1.526,
+  referenceFamily: "2 adults (20-50) + 2 children (6-8, 9-11)"
+};
+/* TFP_DATA_END */
+
 /* ---------------- Goods & Services (groceries) ---------------- */
 /* GROCERY_DATA_START */
 const groceryData = {
@@ -2019,42 +2057,61 @@ function renderGoodsPane() {
   const income = countyData[currentCounty].income;
   if (!g) return;
 
+  // --- TFP anchor (USDA Thrifty Food Plan, HI reference family of 4) -----
+  // When tfpData is present, headline groceries card is anchored to USDA TFP
+  // with county variation from our priced basket (groceryIdx) and 4.5% GET.
+  // When null, fall back to the priced-basket numbers on g.
+  const tfp = (typeof tfpData !== 'undefined' && tfpData && tfpData.hawaii) ? tfpData : null;
+  const GET_MULT = 1.045;
+  const countyMult = (g.groceryIdx || 100) / 100;
+  const tfpMonthly = tfp ? tfp.hawaii.family4Monthly * countyMult * GET_MULT : null;
+  const tfpWeekly  = tfpMonthly ? tfpMonthly / 4.33 : null;
+  const displayMonthly = tfpMonthly ? Math.round(tfpMonthly) : g.monthlyFamily4;
+  const displayWeekly  = tfpWeekly  ? tfpWeekly              : g.basketWithTax;
+  const displayShare   = tfp ? (tfpMonthly * 12) / income     : g.groceryShareOfIncome;
+  const dateBadge      = tfp ? formatMonth(tfp.hawaii.latestPeriod) : 'Apr 2026';
+  const sourceSubLabel = tfp ? 'USDA Thrifty Food Plan · Hawaiʻi · incl. 4.5% GET'
+                             : 'Tracked basket · incl. 4.5% GET';
+
   // Update section header {{county}} placeholder
   const titleEl = document.querySelector('#pane-goods .metrics-container-title');
   if (titleEl) titleEl.textContent = 'Groceries & gas · ' + fullLbl[currentCounty];
 
   /* 1. Narrative — one sentence */
-  const shareClr = g.groceryShareOfIncome > 0.09 ? 'var(--coral)' : g.groceryShareOfIncome > 0.08 ? 'var(--amber)' : 'var(--green)';
+  const shareClr = displayShare > 0.09 ? 'var(--coral)' : displayShare > 0.08 ? 'var(--amber)' : 'var(--green)';
   const gasTxt = (gas && gas.regular) ? '<strong>$' + gas.regular.toFixed(2) + '/gal</strong> for gas' : '';
+  const narrProv = tfp ? ' <span style="color:var(--text-lt);">(USDA Thrifty Food Plan, county-adjusted)</span>' : '';
   document.getElementById('goods-narrative').innerHTML = `
     <div class="narrative-eyebrow">${fullLbl[currentCounty]} &middot; Goods</div>
     <div class="narrative-prose">
-      A family of four spends about <strong>${fmt(g.monthlyFamily4)}/mo</strong> on groceries${gasTxt ? ' and pays ' + gasTxt : ''} —
-      <span style="color:${shareClr};font-weight:600;">${(g.groceryShareOfIncome*100).toFixed(1)}%</span> of median household income goes to food alone.
+      A family of four spends about <strong>$${displayMonthly.toLocaleString()}/mo</strong> on groceries${narrProv}${gasTxt ? ' and pays ' + gasTxt : ''} —
+      <span style="color:${shareClr};font-weight:600;">${(displayShare*100).toFixed(1)}%</span> of median household income goes to food alone.
       All grocery figures include Hawaiʻi's 4.5% GET.
     </div>`;
 
   /* 2. Paired cards — Groceries + Gas */
-  const grocVerdict = g.groceryShareOfIncome >= 0.10 ? { cls:'chip--coral', lbl:'Cost-burdened' }
-                    : g.groceryShareOfIncome >= 0.08 ? { cls:'chip--amber', lbl:'Stretched' }
-                    :                                  { cls:'chip--green', lbl:'Affordable' };
+  const grocVerdict = displayShare >= 0.10 ? { cls:'chip--coral', lbl:'Cost-burdened' }
+                    : displayShare >= 0.08 ? { cls:'chip--amber', lbl:'Stretched' }
+                    :                        { cls:'chip--green', lbl:'Affordable' };
   // Bar: 0–15% of income scale, 10% threshold for burdened.
-  const grocSharePct = g.groceryShareOfIncome * 100;
+  const grocSharePct = displayShare * 100;
   const grocFillPct = Math.min(grocSharePct / 15 * 100, 100);
   const grocGapPct = 100 - grocFillPct;
   const grocAffordable = grocSharePct < 10;
   const grocFillCls = 'mcard-v2-bar-income' + (grocAffordable ? ' is-affordable' : '');
-  const monthlyFmt = fmt(g.monthlyFamily4);
+  const monthlyFmt = '$' + displayMonthly.toLocaleString();
+  const weeklyDisplayTxt = '$' + Math.round(displayWeekly).toLocaleString() + '/wk';
   const grocCard = `
     <div class="mcard-v2 mcard-v2--groceries">
       <div class="mcard-v2-header">
         <span class="mcard-v2-title">Groceries</span>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
-          <span class="mcard-v2-date">Apr 2026</span>
+          <span class="mcard-v2-date">${dateBadge}</span>
           <span class="mcard-v2-cpi" id="goods-groc-cpi"></span>
         </div>
       </div>
-      <div class="mcard-v2-price">${fmt(g.basketWithTax)}/wk</div>
+      <div class="mcard-v2-price">${weeklyDisplayTxt}</div>
+      <div class="mcard-v2-sublabel">${sourceSubLabel}</div>
       <div class="mcard-v2-idx-row">
         <span class="mcard-v2-idx-lbl">Share of median income</span>
         <span class="mcard-v2-idx-val">${grocSharePct.toFixed(1)}<span class="tot"> %</span></span>
@@ -2122,7 +2179,13 @@ function renderGoodsPane() {
     compareEl.innerHTML = counties.map(c => {
       const gd = groceryData[c];
       const gx = gasData[c] || {};
-      const sharePct = (gd.groceryShareOfIncome * 100);
+      // TFP-anchored share for this county when tfpData is present.
+      const cIncome = countyData[c].income;
+      const cMult   = (gd.groceryIdx || 100) / 100;
+      const cTfpMo  = tfp ? tfp.hawaii.family4Monthly * cMult * GET_MULT : null;
+      const cShare  = cTfpMo ? (cTfpMo * 12) / cIncome : gd.groceryShareOfIncome;
+      const cWeekly = cTfpMo ? cTfpMo / 4.33 : (gd.household && gd.household.family4) || 0;
+      const sharePct = cShare * 100;
       const shareFill = Math.min(sharePct / 15 * 100, 100);
       const shareClr = sharePct > 10 ? 'var(--coral)' : sharePct > 8 ? 'var(--amber)' : 'var(--green)';
       const gasRatio = avgGas > 0 && gx.regular ? (gx.regular / avgGas) : 1;
@@ -2134,7 +2197,7 @@ function renderGoodsPane() {
         <div class="bar-row ${isState?'bar-row--state':''}" style="align-items:flex-start;flex-direction:column;gap:4px;padding:10px 0;">
           <div style="display:flex;justify-content:space-between;width:100%;align-items:baseline;">
             <div class="bar-lbl ${isState?'bar-lbl--state':''}" style="flex:0 0 auto;min-width:auto;">${shortLbl[c]}${isState?' <span class="state-badge">Median</span>':''}</div>
-            <div style="font-size:12px;color:var(--text-lt);">${gd.household && gd.household.family4 ? '$'+Math.round(gd.household.family4)+'/wk' : ''} &middot; ${(gx.regular||0).toFixed(2)} /gal</div>
+            <div style="font-size:12px;color:var(--text-lt);">${cWeekly ? '$'+Math.round(cWeekly)+'/wk' : ''} &middot; ${(gx.regular||0).toFixed(2)} /gal</div>
           </div>
           <div style="display:flex;align-items:center;gap:10px;width:100%;">
             <div style="flex:0 0 78px;font-size:11px;color:var(--text-lt);text-align:right;">Groceries</div>
@@ -2158,7 +2221,10 @@ function renderGoodsPane() {
   document.getElementById('goods-hh-toggle').innerHTML = HH_OPTIONS.map(opt =>
     `<button class="hh-toggle-btn${opt.key===currentHH?' active':''}" onclick="setHH('${opt.key}')">${opt.label}</button>`
   ).join('');
-  const hhWeekly = g.household[currentHH] || 0;
+  // Scale household output by TFP/basket ratio so household-type proportions
+  // from household_scales.json are preserved but anchored to TFP magnitude.
+  const hhScale = (tfp && g.monthlyFamily4) ? (tfpMonthly / g.monthlyFamily4) : 1;
+  const hhWeekly = (g.household[currentHH] || 0) * hhScale;
   const hhMonthly = hhWeekly * 4.33;
   const hhAnnual = hhMonthly * 12;
   const hhShare = hhAnnual / income;
@@ -2173,6 +2239,25 @@ function renderGoodsPane() {
 }
 
 function renderGoodsDetail(g) {
+  /* TFP provenance line (refresh each render so it tracks currentCounty) */
+  const tfp = (typeof tfpData !== 'undefined' && tfpData && tfpData.hawaii) ? tfpData : null;
+  const methEl = document.getElementById('goods-methodology-body');
+  if (methEl) {
+    let provEl = document.getElementById('goods-methodology-provenance');
+    if (!provEl) {
+      methEl.insertAdjacentHTML('beforeend', '<br><br><em id="goods-methodology-provenance" style="color:var(--text-lt);"></em>');
+      provEl = document.getElementById('goods-methodology-provenance');
+    }
+    if (tfp) {
+      provEl.innerHTML = 'Our tracked basket for ' + fullLbl[currentCounty] +
+        ' is <strong>' + fmt(g.basketWithTax) + '/wk</strong> (' + fmt(g.monthlyFamily4) +
+        '/mo). TFP source: ' + formatMonth(tfp.hawaii.latestPeriod) + ' USDA CNPP AK-HI report.';
+    } else {
+      provEl.innerHTML = 'Tracked basket for ' + fullLbl[currentCounty] +
+        ': <strong>' + fmt(g.basketWithTax) + '/wk</strong> (' + fmt(g.monthlyFamily4) + '/mo).';
+    }
+  }
+
   /* Category bars */
   const catEntries = Object.entries(g.categories).filter(([_,v]) => v > 0);
   const catMax = Math.max(...catEntries.map(([_,v])=>v));

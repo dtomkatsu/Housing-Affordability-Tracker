@@ -49,6 +49,13 @@ jobs:
       - name: Patch BLS Honolulu CPI (inflation chip + card badges)
         run: python bls-cpi-updater.py
 
+      # USDA Thrifty Food Plan anchors the groceries headline for the
+      # reference family of 4. Failures fall back to a null tfpData block
+      # (dashboard uses the priced basket) so a CNPP URL hiccup never fails CI.
+      - name: Patch USDA Thrifty Food Plan (groceries headline)
+        run: python tfp-updater.py
+        continue-on-error: true
+
       - name: Commit and push if anything changed
         run: |
           git config user.name  "github-actions[bot]"
