@@ -21,12 +21,14 @@
     --ocean-300: #7dc0d9;
     --ocean-100: #e8f4f8;       /* = legacy --sky */
 
-    /* Seafoam — brand accent + "affordable / good" semantic */
-    --seafoam-700: #2d8570;
-    --seafoam-500: #5ab59a;
-    --seafoam-400: #7dd4b5;
-    --seafoam-200: #bfe5d6;
-    --seafoam-100: #e8f5ef;
+    /* Seafoam — brand accent + "affordable / good" semantic.
+       Pushed brighter/more cyan than typical forest greens so the
+       "coastal" feel is unmistakable against navy chrome.         */
+    --seafoam-700: #1e8a73;
+    --seafoam-500: #3fc4a0;
+    --seafoam-400: #6ddcbb;
+    --seafoam-200: #b0ecd5;
+    --seafoam-100: #e2f6ee;
 
     /* Coral — single warning role. coral-300 replaces mustard amber. */
     --coral-500: #c94f3a;
@@ -585,7 +587,9 @@
     display: flex;
   }
   .narrative-bar-income {
-    background: linear-gradient(90deg, var(--ocean-mid), var(--ocean));
+    /* Default seafoam so "income you have" is always green, even when a
+       gap exists. Full-width affordable state pushes to brighter tints. */
+    background: linear-gradient(90deg, var(--seafoam-500), var(--seafoam-700));
     height: 100%;
     transition: width 0.45s cubic-bezier(.4,0,.2,1);
     border-radius: 999px 0 0 999px;
@@ -603,7 +607,7 @@
     transition: width 0.45s cubic-bezier(.4,0,.2,1);
   }
   .narrative-bar-income.is-affordable {
-    background: linear-gradient(90deg, var(--seafoam-400), var(--seafoam-500));
+    background: linear-gradient(90deg, var(--seafoam-400), var(--seafoam-200));
   }
 
   .narrative-chips {
@@ -886,14 +890,16 @@
     margin-bottom: 14px;
   }
   .mcard-v2-bar-income {
-    background: linear-gradient(90deg, var(--ocean-mid), var(--ocean));
+    /* Seafoam by default — paired housing/goods cards always show the
+       coastal palette, not a navy bar-of-the-day.                      */
+    background: linear-gradient(90deg, var(--seafoam-500), var(--seafoam-700));
     height: 100%;
     transition: width 0.45s cubic-bezier(.4,0,.2,1);
     border-radius: 999px 0 0 999px;
   }
   .mcard-v2-bar-income.is-full { border-radius: 999px; }
   .mcard-v2-bar-income.is-affordable {
-    background: linear-gradient(90deg, var(--seafoam-400), var(--seafoam-500));
+    background: linear-gradient(90deg, var(--seafoam-400), var(--seafoam-200));
   }
   .mcard-v2-bar-gap {
     background: repeating-linear-gradient(
