@@ -1011,12 +1011,12 @@
   .mvalue.ok { color: var(--green) !important; }
   .mcard-icon { display: none; }
 
-  /* Hero card: white canvas, seafoam accent stripe, serif hero price.
-     Replaces the old solid-teal banner — dark-on-white for better scannability
-     and to let the serif number carry the eye. */
+  /* Hero card: white canvas, thick seafoam stripe, dark-navy serif hero,
+     chip-row assumptions, and gap bars that turn the market-vs-affordable
+     comparison into a visible proportion rather than flat text. */
   .afford-banner {
     background: #fff;
-    border-left: 6px solid var(--seafoam-500);
+    border-left: 8px solid var(--seafoam-500);
     border-radius: 20px;
     padding: 26px 30px;
     margin-bottom: 1.25rem;
@@ -1038,68 +1038,120 @@
     margin-left: 4px;
   }
 
+  /* R1: hero in ocean-900 (dark navy) for authority. Seafoam stays on the
+     stripe and the "under" semantic only. Bumped to 3.4rem for gravitas. */
   .afford-price {
     font-family: 'DM Serif Display', serif !important;
-    font-size: 3.2rem;
+    font-size: 3.4rem;
     font-weight: 400;
-    color: var(--seafoam-700);
+    color: var(--ocean-900);
     line-height: 1;
-    margin-bottom: 10px;
+    margin-bottom: 14px;
+    letter-spacing: -0.01em;
   }
 
+  /* R4: assumptions become a row of outlined micro-chips so the card has
+     texture instead of a muted paragraph that disappears. */
   .afford-assumptions {
-    font-size: 13px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+  .afford-assumption-chip {
+    display: inline-block;
+    padding: 5px 11px;
+    font-size: 11.5px;
+    font-weight: 500;
     color: var(--text-mid);
-    line-height: 1.5;
-    margin-bottom: 18px;
+    background: #fff;
+    border: 1px solid rgba(7, 56, 74, 0.12);
+    border-radius: 999px;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+  .afford-assumption-chip b {
+    color: var(--text);
+    font-weight: 700;
   }
 
   .afford-divider {
     height: 1px;
     background: rgba(7, 56, 74, 0.08);
-    margin: 0 0 14px 0;
+    margin: 0 0 18px 0;
   }
 
-  .afford-compares {
+  /* R2: gap bars — each row shows an affordable-baseline bar plus the market
+     value's coverage. Seafoam = what the household's affordable price buys;
+     coral tail = how far past that the market is (over-affordable cases).
+     A dark tick marks the affordable ceiling so under-affordable rows still
+     read at a glance ("market falls short of tick = headroom"). Bars across
+     SFH + Condo share a common scale so row lengths are directly comparable. */
+  .afford-gaps {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 18px;
   }
-
-  .afford-compare-pill {
+  .afford-gap-header {
     display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 11px 16px;
-    border-radius: 12px;
-    background: var(--coral-100);
-    border-left: 3px solid var(--coral-500);
-    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 7px;
   }
-  .afford-compare-pill.under {
-    background: var(--seafoam-100);
-    border-left-color: var(--seafoam-500);
-  }
-  .afford-compare-pill-label {
+  .afford-gap-label {
     font-size: 14px;
     font-weight: 600;
     color: var(--text);
-    min-width: 110px;
   }
-  .afford-compare-pill-price {
+  .afford-gap-price {
     font-size: 15px;
     font-weight: 600;
     color: var(--text);
+    font-variant-numeric: tabular-nums;
   }
-  .afford-compare-pill-gap {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--coral-500);
-    margin-left: auto;
+  .afford-gap-bar {
+    position: relative;
+    height: 14px;
+    background: rgba(7, 56, 74, 0.06);
+    border-radius: 8px;
+    overflow: visible; /* allow tick to overhang */
   }
-  .afford-compare-pill.under .afford-compare-pill-gap {
-    color: var(--seafoam-700);
+  .afford-gap-bar-fill-sea,
+  .afford-gap-bar-fill-coral {
+    position: absolute;
+    top: 0;
+    bottom: 0;
   }
+  .afford-gap-bar-fill-sea {
+    left: 0;
+    background: var(--seafoam-500);
+    border-radius: 8px 0 0 8px;
+  }
+  .afford-gap-bar-fill-sea.full-round { border-radius: 8px; }
+  .afford-gap-bar-fill-coral {
+    background: var(--coral-500);
+    border-radius: 0 8px 8px 0;
+  }
+  .afford-gap-bar-tick {
+    position: absolute;
+    top: -4px;
+    bottom: -4px;
+    width: 2px;
+    background: var(--ocean-900);
+    border-radius: 2px;
+    z-index: 2;
+    transform: translateX(-1px);
+  }
+  .afford-gap-footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-mid);
+    margin-top: 7px;
+  }
+  .afford-gap-footer .gap-delta { font-weight: 700; }
+  .afford-gap-footer .gap-delta.over { color: var(--coral-500); }
+  .afford-gap-footer .gap-delta.under { color: var(--seafoam-700); }
 
   .over { color: var(--coral-500); }
   .under { color: var(--seafoam-700); }
@@ -1770,22 +1822,58 @@ function updateAfford() {
   const sfhDiff = d.sfhPrice - affordPrice;
   const condoDiff = d.condoPrice - affordPrice;
 
+  // Shared bar scale across SFH + Condo so the two rows are directly
+  // comparable by length (condo always shorter than SFH where SFH is pricier).
+  const commonMax = Math.max(affordPrice, d.sfhPrice, d.condoPrice);
+  const affordPct = (affordPrice / commonMax) * 100;
+
+  function gapRow(label, market) {
+    const isOver = market > affordPrice;
+    const marketPct = (market / commonMax) * 100;
+    const coveredPct = Math.min(marketPct, affordPct);  // seafoam ends here
+    const coralLeft  = affordPct;                        // coral starts at affordable tick
+    const coralWidth = isOver ? (marketPct - affordPct) : 0;
+    const diff = Math.abs(market - affordPrice);
+    const deltaHtml = isOver
+      ? `<span class="gap-delta over">▲ ${fmt(diff)} gap</span>`
+      : `<span class="gap-delta under">▼ ${fmt(diff)} headroom</span>`;
+    // If market >= affordable, seafoam fills exactly up to the tick and the
+    // right edge is squared off (coral takes over). If market < affordable,
+    // seafoam stops short — round its right edge too so it reads as a
+    // self-contained fill rather than a clipped bar.
+    const seaClass = (marketPct >= affordPct) ? '' : 'full-round';
+    return `
+      <div class="afford-gap">
+        <div class="afford-gap-header">
+          <span class="afford-gap-label">${label}</span>
+          <span class="afford-gap-price">${fmt(market)}</span>
+        </div>
+        <div class="afford-gap-bar">
+          <div class="afford-gap-bar-fill-sea ${seaClass}" style="width:${coveredPct}%"></div>
+          ${coralWidth > 0 ? `<div class="afford-gap-bar-fill-coral" style="left:${coralLeft}%;width:${coralWidth}%"></div>` : ''}
+          <div class="afford-gap-bar-tick" style="left:${affordPct}%" title="Affordable ceiling"></div>
+        </div>
+        <div class="afford-gap-footer">
+          <span>affordable ${fmt(affordPrice)}</span>
+          ${deltaHtml}
+        </div>
+      </div>
+    `;
+  }
+
   document.getElementById('afford-banner').innerHTML = `
     <div class="afford-banner-label">Max affordable home price <span class="afford-loc">· ${fullLbl[currentCounty]}</span></div>
     <div class="afford-price">${fmt(affordPrice)}</div>
-    <div class="afford-assumptions">at ${fmt(d.income)} income · ${rate.toFixed(2)}% rate · 20% down · 30% DTI</div>
+    <div class="afford-assumptions">
+      <span class="afford-assumption-chip"><b>${fmt(d.income)}</b> income</span>
+      <span class="afford-assumption-chip"><b>${rate.toFixed(2)}%</b> rate</span>
+      <span class="afford-assumption-chip"><b>20%</b> down</span>
+      <span class="afford-assumption-chip"><b>30%</b> DTI</span>
+    </div>
     <div class="afford-divider"></div>
-    <div class="afford-compares">
-      <div class="afford-compare-pill over">
-        <span class="afford-compare-pill-label">SFH median</span>
-        <span class="afford-compare-pill-price">${fmt(d.sfhPrice)}</span>
-        <span class="afford-compare-pill-gap">▲ ${fmt(sfhDiff)} over affordable</span>
-      </div>
-      <div class="afford-compare-pill ${condoDiff>0?'over':'under'}">
-        <span class="afford-compare-pill-label">Condo median</span>
-        <span class="afford-compare-pill-price">${fmt(d.condoPrice)}</span>
-        <span class="afford-compare-pill-gap">${condoDiff>0 ? '▲ '+fmt(condoDiff)+' over affordable' : '▼ '+fmt(Math.abs(condoDiff))+' under affordable'}</span>
-      </div>
+    <div class="afford-gaps">
+      ${gapRow('SFH median',   d.sfhPrice)}
+      ${gapRow('Condo median', d.condoPrice)}
     </div>
   `;
 }
