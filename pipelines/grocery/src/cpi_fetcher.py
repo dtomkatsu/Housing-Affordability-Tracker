@@ -152,3 +152,68 @@ def find_nearest_periods(cpi_data: dict, series_id: str, target_year: int, targe
                 after = p
 
     return before, after
+
+
+# ---------------------------------------------------------------------------
+# Staleness helpers (required by pipeline.py)
+# ---------------------------------------------------------------------------
+
+# BLS publishes bimonthly Honolulu CPI in even months; release ~15th of following month.
+BLS_RELEASE_MONTHS = {2, 4, 6, 8, 10, 12}
+BLS_RELEASE_DAY = 15
+
+
+def expected_latest_period(today: date | None = None) -> tuple[int, int]:
+    """Return (year, month) of the most recent bimonthly Honolulu CPI period
+    expected to have been released by *today*.
+
+    BLS releases the data for month M around the 15th of month M+1, so a
+    period only counts as "expected" once today >= 15th of the following month.
+    """
+    if today is None:
+        today = date.today()
+    y, m = today.year, today.month
+    for _ in range(12):
+        if m in BLS_RELEASE_MONTHS:
+            release_year  = y if m < 12 else y + 1
+            release_month = m + 1 if m < 12 else 1
+            if (today.year, today.month, today.day) >= (release_year, release_month, BLS_RELEASE_DAY):
+                return (y, m)
+        m -= 1
+        if m == 0:
+            m = 12
+            y -= 1
+    return (today.year - 1, today.month)
+
+
+def cache_has_period(cpi_data: dict, series_ids: list[str], year: int, month: int) -> bool:
+    """True if every series in *series_ids* has a data point for year/M{month:02d}."""
+    period = f"M{month:02d}"
+    for sid in series_ids:
+        points = cpi_data.get(sid, [])
+        if not any(p["year"] == year and p["period"] == period for p in points):
+            return False
+    return True
+
+
+def fetch_if_stale(
+    cpi_config: CPIConfig,
+    start_year: int | None = None,
+    api_key: str | None = None,
+) -> tuple[dict, bool]:
+    """Fetch BLS CPI only if the cache lacks the most recent expected period.
+
+    Returns *(cpi_data, did_fetch)*. Falls back to cached data on network error.
+    """
+    cached = load_cached_cpi() or {}
+    series_ids = cpi_config.all_series_ids
+    exp_year, exp_month = expected_latest_period()
+
+    if cached and cache_has_period(cached, series_ids, exp_year, exp_month):
+        return cached, False
+
+    try:
+        fresh = fetch_and_cache(cpi_config, start_year=start_year, api_key=api_key)
+        return fresh, True
+    except Exception:
+        return cached, False
