@@ -1,0 +1,68 @@
+{
+  "version": "1.0.0",
+  "description": "Inter-island freight sensitivity classification for each basket item. Used to contextualize cross-county price differentials.",
+  "last_updated": "2026-04-09",
+  "context": {
+    "inter_island_freight_increase_5yr": "~80%",
+    "inter_island_freight_increase_2026": "25.75% (effective Jan 1, 2026)",
+    "single_carrier": "One regulated inter-island carrier controls nearly all food distribution",
+    "oahu_advantage": "Goods land on Oahu first — minimal relative freight impact",
+    "local_production": "Meadow Gold dairy produced on Oahu by Laulima Dairy"
+  },
+  "tiers": {
+    "A": {
+      "description": "High freight sensitivity — perishable, refrigerated",
+      "expected_outer_island_premium": "20-30%+",
+      "items": [
+        "DAIRY-01", "DAIRY-02", "DAIRY-03", "DAIRY-04", "DAIRY-05",
+        "DAIRY-06", "DAIRY-07", "DAIRY-08", "DAIRY-09",
+        "VEG-01", "VEG-02", "VEG-03", "VEG-04", "VEG-05", "VEG-06", "VEG-07",
+        "FRUIT-01", "FRUIT-02", "FRUIT-03", "FRUIT-04", "FRUIT-08",
+        "MEAT-01", "MEAT-02", "MEAT-03", "MEAT-04", "MEAT-05", "MEAT-06", "MEAT-07",
+        "MEAT-09", "MEAT-10",
+        "FISH-03", "FISH-04",
+        "PROT-02",
+        "FAT-03",
+        "PREP-04"
+      ]
+    },
+    "B": {
+      "description": "Moderate freight sensitivity — shelf-stable but heavy/bulky",
+      "expected_outer_island_premium": "10-20%",
+      "items": [
+        "GRAIN-01", "GRAIN-02", "GRAIN-09",
+        "BEV-01", "BEV-02", "BEV-04",
+        "FAT-01", "FAT-02",
+        "SWEET-01",
+        "FRUIT-08"
+      ]
+    },
+    "C": {
+      "description": "Low freight sensitivity — light, shelf-stable",
+      "expected_outer_island_premium": "5-15%",
+      "items": [
+        "GRAIN-03", "GRAIN-04", "GRAIN-05", "GRAIN-06", "GRAIN-07", "GRAIN-08",
+        "GRAIN-10", "GRAIN-11",
+        "VEG-08", "VEG-09", "VEG-10", "VEG-11",
+        "FRUIT-05", "FRUIT-06", "FRUIT-07", "FRUIT-09",
+        "MEAT-08",
+        "FISH-01", "FISH-02",
+        "PROT-01", "PROT-03", "PROT-04",
+        "BEV-03", "BEV-05", "BEV-06",
+        "COND-01", "COND-02", "COND-03", "COND-04", "COND-05", "COND-06",
+        "SWEET-02", "SWEET-03",
+        "SNACK-01", "SNACK-02", "SNACK-03",
+        "PREP-01", "PREP-02", "PREP-03", "PREP-05", "PREP-06"
+      ]
+    }
+  },
+  "freight_tracking_items": {
+    "description": "Items where the Honolulu-to-outer-island price spread directly measures freight cost impact",
+    "items": {
+      "DAIRY-01": "Meadow Gold whole milk — produced on Oahu, shipped inter-island",
+      "DAIRY-02": "Meadow Gold 2% milk — same local production",
+      "DAIRY-08": "Meadow Gold half & half — same local production",
+      "SNACK-03": "Diamond Bakery arare — manufactured on Oahu"
+    }
+  }
+}

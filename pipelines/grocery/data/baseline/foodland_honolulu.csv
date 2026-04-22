@@ -1,0 +1,27 @@
+slot_id,product_name,price,size_qty,size_unit,is_substitution,substitution_note,date
+BEV-03,"Folgers Classic Roast, 25.9 oz",24.99,25.9,oz,false,,2026-04-10
+DAIRY-01,"Sunhearth Milk, 1 gallon",7.99,128.0,fl_oz,false,,2026-04-10
+DAIRY-03,Kraft SIngles American Cheese Slices,5.19,12.0,oz,false,,2026-04-10
+DAIRY-06,"Land O'Lakes Salted Butter, 1 lb",8.99,16.0,oz,false,,2026-04-10
+DAIRY-07,"Farm Pack Mainland Eggs, Large, 12 each",8.99,12.0,ct,false,,2026-04-10
+FAT-01,"Wesson Vegetable Oil, 40 oz",9.69,40.0,fl_oz,false,,2026-04-10
+FISH-01,"StarKist Chunk Light Tuna, 5 oz",1.89,5.0,oz,false,,2026-04-10
+FRUIT-01,"Bananas, 1 lb",1.39,1.0,lb,false,,2026-04-10
+FRUIT-03,"Fuji Apple, 1 lb",2.49,1.0,lb,false,,2026-04-10
+FRUIT-05,"Dole Pineapple Chunks in Juice, 20 oz",3.49,20.0,oz,false,,2026-04-10
+FRUIT-08,"Tropicana No Pulp Orange Juice, 89 oz",12.49,89.0,fl_oz,false,,2026-04-10
+GRAIN-01,"Hinode Calrose Rice, 20 lb",18.99,20.0,lb,false,,2026-04-10
+GRAIN-03,"Health and Harvest Bread, White, 22 oz",5.19,22.0,oz,false,,2026-04-10
+GRAIN-05,"Cheerios, 12 oz",8.99,12.0,oz,false,,2026-04-10
+GRAIN-07,"Barilla Spaghetti, 16 oz",3.49,16.0,oz,false,,2026-04-10
+MEAT-01,"Ground beef 80/20, ~1 lb",7.99,1.0,lb,false,,2026-04-10
+MEAT-04,"Boneless skinless chicken breast, 1 lb",5.79,1.0,lb,false,,2026-04-10
+MEAT-08,"SPAM Classic, 12 oz",3.79,12.0,oz,false,,2026-04-10
+PREP-01,"Campbell's Chicken Noodle Soup, 10.75 oz",2.79,10.75,oz,false,,2026-04-10
+PREP-03,"Maruchan Ramen Soy Sauce, 2.25 oz",0.99,2.25,oz,false,,2026-04-10
+PROT-04,"Jif Creamy Peanut Butter, 16 oz",4.79,16.0,oz,false,,2026-04-10
+SWEET-01,"C&H Granulated Sugar, 4 lb",8.39,4.0,lb,false,,2026-04-10
+VEG-01,"Russet potatoes, 5 lb bag",5.79,5.0,lb,false,,2026-04-10
+VEG-04,"Taylor Farms Baby Spinach, 6 oz",5.79,6.0,oz,false,,2026-04-10
+VEG-06,"Roma tomatoes, 1 lb",4.29,1.0,lb,false,,2026-04-10
+VEG-08,"Del Monte Whole Kernel Corn, 15.25 oz",2.69,15.25,oz,false,,2026-04-10
