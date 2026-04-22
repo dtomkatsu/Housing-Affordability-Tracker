@@ -14,12 +14,15 @@
        Three families × five tints replace ~34 ad-hoc hexes.
        See palette audit commit for the full swap table.           */
 
-    /* Ocean — primary chrome, headings, links, chart accents */
-    --ocean-900: #0a3d58;
-    --ocean-700: #0a4f6e;       /* = legacy --ocean */
-    --ocean-500: #1a7a9a;       /* = legacy --ocean-mid */
-    --ocean-300: #7dc0d9;
-    --ocean-100: #e8f4f8;       /* = legacy --sky */
+    /* Ocean — primary chrome, headings, links, chart accents.
+       Shifted toward teal so the dark chrome (header, hero cards) reads
+       as the same coastal family as --seafoam, not a separate navy world.
+       Old pure-blue hues: 900 #0a3d58, 700 #0a4f6e, 500 #1a7a9a.          */
+    --ocean-900: #07384a;
+    --ocean-700: #0b5566;       /* = legacy --ocean; HEADER BG */
+    --ocean-500: #1a8496;       /* = legacy --ocean-mid */
+    --ocean-300: #7dc8d3;
+    --ocean-100: #e6f3f4;       /* = legacy --sky */
 
     /* Seafoam — brand accent + "affordable / good" semantic.
        Pushed brighter/more cyan than typical forest greens so the
