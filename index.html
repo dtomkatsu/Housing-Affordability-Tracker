@@ -1011,98 +1011,98 @@
   .mvalue.ok { color: var(--green) !important; }
   .mcard-icon { display: none; }
 
+  /* Hero card: white canvas, seafoam accent stripe, serif hero price.
+     Replaces the old solid-teal banner — dark-on-white for better scannability
+     and to let the serif number carry the eye. */
   .afford-banner {
-    background: var(--ocean);
-    border-radius: 16px;
-    padding: 20px 22px;
+    background: #fff;
+    border-left: 6px solid var(--seafoam-500);
+    border-radius: 20px;
+    padding: 26px 30px;
     margin-bottom: 1.25rem;
-    color: white;
+    color: var(--text);
+    box-shadow: 0 1px 2px rgba(7, 56, 74, 0.04), 0 4px 14px rgba(7, 56, 74, 0.05);
   }
 
   .afford-banner-label {
-    font-size: 13px;
-    letter-spacing: 0.08em;
+    font-size: 12px;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.5);
+    color: var(--ocean-700);
     margin-bottom: 10px;
-    font-weight: 500;
+    font-weight: 600;
   }
-
-  .afford-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+  .afford-banner-label .afford-loc {
+    color: var(--text-mid);
+    font-weight: 500;
+    margin-left: 4px;
+  }
 
   .afford-price {
     font-family: 'DM Serif Display', serif !important;
-    font-size: 2.4rem;
+    font-size: 3.2rem;
     font-weight: 400;
-    color: white;
+    color: var(--seafoam-700);
     line-height: 1;
-    margin-bottom: 4px;
+    margin-bottom: 10px;
   }
 
-  .afford-price-label { font-size: 14px; color: rgba(255,255,255,0.5); }
-
-  .afford-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-  .afford-comp-item {
-    background: rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 10px 12px;
-  }
-
-  .afford-comp-label { font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 3px; }
-  .afford-comp-price { font-size: 1.1rem; font-weight: 500; }
-  .afford-comp-gap { font-size: 13px; margin-top: 2px; }
-
-  .afford-banner-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 14px;
-    flex-wrap: wrap;
-  }
-  .afford-banner-header .afford-banner-label { margin-bottom: 0; }
-  .afford-location-chip {
-    background: rgba(255,255,255,0.18);
-    border: 1px solid rgba(255,255,255,0.3);
-    color: white;
-    padding: 3px 14px;
-    border-radius: 999px;
+  .afford-assumptions {
     font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    white-space: nowrap;
+    color: var(--text-mid);
+    line-height: 1.5;
+    margin-bottom: 18px;
   }
-  .afford-params {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 12px;
+
+  .afford-divider {
+    height: 1px;
+    background: rgba(7, 56, 74, 0.08);
+    margin: 0 0 14px 0;
   }
-  .afford-param {
-    background: rgba(255,255,255,0.1);
-    border-radius: 8px;
-    padding: 7px 11px;
+
+  .afford-compares {
     display: flex;
     flex-direction: column;
-    gap: 1px;
-    min-width: 92px;
+    gap: 10px;
   }
-  .afford-param-val {
+
+  .afford-compare-pill {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 11px 16px;
+    border-radius: 12px;
+    background: var(--coral-100);
+    border-left: 3px solid var(--coral-500);
+    flex-wrap: wrap;
+  }
+  .afford-compare-pill.under {
+    background: var(--seafoam-100);
+    border-left-color: var(--seafoam-500);
+  }
+  .afford-compare-pill-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    min-width: 110px;
+  }
+  .afford-compare-pill-price {
     font-size: 15px;
     font-weight: 600;
-    color: white;
-    line-height: 1.2;
+    color: var(--text);
   }
-  .afford-param-lbl {
-    font-size: 10px;
-    color: rgba(255,255,255,0.6);
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+  .afford-compare-pill-gap {
+    font-size: 13px;
     font-weight: 500;
+    color: var(--coral-500);
+    margin-left: auto;
   }
-  .over { color: var(--coral-300); }
-  .under { color: var(--seafoam-400); }
+  .afford-compare-pill.under .afford-compare-pill-gap {
+    color: var(--seafoam-700);
+  }
+
+  .over { color: var(--coral-500); }
+  .under { color: var(--seafoam-700); }
 
   .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 1.25rem; }
 
@@ -1771,43 +1771,20 @@ function updateAfford() {
   const condoDiff = d.condoPrice - affordPrice;
 
   document.getElementById('afford-banner').innerHTML = `
-    <div class="afford-banner-header">
-      <div class="afford-banner-label">Max affordable home price</div>
-      <div class="afford-location-chip">${fullLbl[currentCounty]}</div>
-    </div>
-    <div class="afford-row">
-      <div>
-        <div class="afford-price">${fmt(affordPrice)}</div>
-        <div class="afford-params">
-          <div class="afford-param">
-            <div class="afford-param-val">${fmt(d.income)}</div>
-            <div class="afford-param-lbl">4-person income</div>
-          </div>
-          <div class="afford-param">
-            <div class="afford-param-val">${rate.toFixed(2)}%</div>
-            <div class="afford-param-lbl">Mortgage rate</div>
-          </div>
-          <div class="afford-param">
-            <div class="afford-param-val">20%</div>
-            <div class="afford-param-lbl">Down payment</div>
-          </div>
-          <div class="afford-param">
-            <div class="afford-param-val">30%</div>
-            <div class="afford-param-lbl">Max DTI</div>
-          </div>
-        </div>
+    <div class="afford-banner-label">Max affordable home price <span class="afford-loc">· ${fullLbl[currentCounty]}</span></div>
+    <div class="afford-price">${fmt(affordPrice)}</div>
+    <div class="afford-assumptions">at ${fmt(d.income)} income · ${rate.toFixed(2)}% rate · 20% down · 30% DTI</div>
+    <div class="afford-divider"></div>
+    <div class="afford-compares">
+      <div class="afford-compare-pill over">
+        <span class="afford-compare-pill-label">SFH median</span>
+        <span class="afford-compare-pill-price">${fmt(d.sfhPrice)}</span>
+        <span class="afford-compare-pill-gap">▲ ${fmt(sfhDiff)} over affordable</span>
       </div>
-      <div class="afford-compare">
-        <div class="afford-comp-item">
-          <div class="afford-comp-label">vs. median SFH</div>
-          <div class="afford-comp-price over">${fmt(d.sfhPrice)}</div>
-          <div class="afford-comp-gap over">▲ ${fmt(sfhDiff)} over affordable</div>
-        </div>
-        <div class="afford-comp-item">
-          <div class="afford-comp-label">vs. median condo</div>
-          <div class="afford-comp-price ${condoDiff>0?'over':'under'}">${fmt(d.condoPrice)}</div>
-          <div class="afford-comp-gap ${condoDiff>0?'over':'under'}">${condoDiff>0 ? '▲ '+fmt(condoDiff)+' over' : '▼ '+fmt(Math.abs(condoDiff))+' under'} affordable</div>
-        </div>
+      <div class="afford-compare-pill ${condoDiff>0?'over':'under'}">
+        <span class="afford-compare-pill-label">Condo median</span>
+        <span class="afford-compare-pill-price">${fmt(d.condoPrice)}</span>
+        <span class="afford-compare-pill-gap">${condoDiff>0 ? '▲ '+fmt(condoDiff)+' over affordable' : '▼ '+fmt(Math.abs(condoDiff))+' under affordable'}</span>
       </div>
     </div>
   `;
