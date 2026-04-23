@@ -1581,6 +1581,240 @@
     .coming-soon-grid { grid-template-columns: repeat(2, 1fr); }
     .cat-bar-lbl { width: 100px; font-size: 13px; }
   }
+
+  /* =========================================================
+     POLISH LAYER — v2
+     Entrance animations, card lift, slider upgrade, focus
+     rings, and a back-to-top affordance. Honors reduced-motion.
+     ========================================================= */
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; } to { opacity: 1; }
+  }
+  @keyframes popIn {
+    from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* Content rendered into these containers enters on county switch.
+     Each repaint rebuilds innerHTML, which retriggers the animation. */
+  #housing-pair-grid > *,
+  #goods-pair-grid   > *,
+  #pti-bars          > *,
+  #rent-grid         > *,
+  #market-compare-wrap > *,
+  #goods-county-compare-groc > *,
+  #goods-county-compare-gas  > *,
+  .afford-banner,
+  .narrative-card {
+    animation: fadeUp 0.42s cubic-bezier(.22,.61,.36,1) both;
+  }
+
+  /* Stagger bar rows so the eye tracks the sequence. */
+  #pti-bars .pti-row,
+  #rent-grid .rent-row,
+  #build-auth-bars .bar-row,
+  #goods-county-compare-groc .bar-row,
+  #goods-county-compare-gas .bar-row {
+    animation: fadeUp 0.45s cubic-bezier(.22,.61,.36,1) both;
+  }
+  #pti-bars .pti-row:nth-child(2)             { animation-delay: 0.04s; }
+  #pti-bars .pti-row:nth-child(3)             { animation-delay: 0.08s; }
+  #pti-bars .pti-row:nth-child(4)             { animation-delay: 0.12s; }
+  #pti-bars .pti-row:nth-child(5)             { animation-delay: 0.16s; }
+  #pti-bars .pti-row:nth-child(6)             { animation-delay: 0.20s; }
+  #rent-grid .rent-row:nth-child(2)           { animation-delay: 0.05s; }
+  #rent-grid .rent-row:nth-child(3)           { animation-delay: 0.10s; }
+  #rent-grid .rent-row:nth-child(4)           { animation-delay: 0.15s; }
+  #rent-grid .rent-row:nth-child(5)           { animation-delay: 0.20s; }
+
+  /* ── Card hover-lift ────────────────────────────────────────
+     The paired-card grid was visually static. A gentle elevation
+     on hover invites the user to read the numbers they're seeing. */
+  .mcard-v2 {
+    transition: transform 0.22s cubic-bezier(.22,.61,.36,1),
+                box-shadow 0.22s cubic-bezier(.22,.61,.36,1),
+                border-color 0.22s;
+    will-change: transform;
+  }
+  .mcard-v2:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 28px rgba(7, 56, 74, 0.10),
+                0 2px 6px  rgba(7, 56, 74, 0.06);
+    border-color: rgba(7, 56, 74, 0.18);
+  }
+  .card, .calc-section, .narrative-card {
+    transition: box-shadow 0.22s, border-color 0.22s;
+  }
+  .card:hover, .calc-section:hover, .narrative-card:hover {
+    box-shadow: 0 4px 16px rgba(7, 56, 74, 0.05);
+  }
+
+  /* ── KPI summary-strip hover ──────────────────────────────── */
+  .kpi {
+    border-radius: 10px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    margin: -6px 0;
+    transition: background 0.18s;
+  }
+  .kpi:hover { background: rgba(7, 56, 74, 0.025); }
+
+  /* Number readouts get a subtle pop when they change. Triggered
+     from JS by toggling .is-updating for one frame. */
+  .kpi-value, .mcard-v2-price, .calc-big, .afford-price {
+    transition: transform 0.28s cubic-bezier(.22,.61,.36,1),
+                color 0.2s;
+  }
+  .is-updating { transform: scale(1.04); }
+
+  /* ── Slider upgrade ──────────────────────────────────────────
+     Thicker track, bigger thumb with a ring on hover/active.
+     Keeps the old ocean color but adds depth and feedback. */
+  input[type=range] {
+    height: 6px;
+    background: linear-gradient(to right, var(--ocean-100), var(--sand));
+  }
+  input[type=range]::-webkit-slider-thumb {
+    width: 22px; height: 22px;
+    box-shadow: 0 0 0 1px var(--ocean),
+                0 2px 6px rgba(7, 56, 74, 0.18);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  input[type=range]::-webkit-slider-thumb:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 1px var(--ocean),
+                0 0 0 6px rgba(26, 132, 150, 0.14),
+                0 2px 6px rgba(7, 56, 74, 0.18);
+  }
+  input[type=range]:active::-webkit-slider-thumb {
+    transform: scale(0.96);
+    box-shadow: 0 0 0 1px var(--ocean),
+                0 0 0 8px rgba(26, 132, 150, 0.22);
+  }
+  input[type=range]::-moz-range-thumb {
+    width: 20px; height: 20px;
+    transition: transform 0.15s;
+  }
+  input[type=range]::-moz-range-thumb:hover { transform: scale(1.08); }
+
+  /* ── Chip hover (interactive affordance, not just color) ──── */
+  .chip {
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .chip:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(7, 56, 74, 0.08);
+  }
+
+  /* ── PTI bar fill: tooltip-like hover feedback ──────────── */
+  .pti-bar-fill,
+  .bar-fill,
+  .rent-hbar,
+  .afford-gap-bar-fill-sea,
+  .afford-gap-bar-fill-coral {
+    transition: filter 0.2s, box-shadow 0.2s, width 0.45s cubic-bezier(.4,0,.2,1);
+  }
+  .pti-row:hover .pti-bar-fill,
+  .bar-row:hover .bar-fill,
+  .rent-row:hover .rent-hbar,
+  .afford-gap:hover .afford-gap-bar-fill-sea,
+  .afford-gap:hover .afford-gap-bar-fill-coral {
+    filter: brightness(1.08);
+  }
+
+  /* ── Popover open animation ─────────────────────────────── */
+  .county-popover.is-open { animation: popIn 0.18s cubic-bezier(.22,.61,.36,1); }
+
+  /* ── Tab pane fade on switch ────────────────────────────── */
+  .pane.is-active { animation: fadeIn 0.25s ease-out; }
+
+  /* ── Top-tab press feedback ─────────────────────────────── */
+  .top-tab { position: relative; }
+  .top-tab:active { transform: scale(0.985); }
+  .top-tab.active { transform: translateY(-1px); }
+
+  /* ── Focus-visible rings (keyboard users get clear affordance,
+     mouse users don't see the ring) ─────────────────────────── */
+  .top-tab:focus-visible,
+  .county-select:focus-visible,
+  .county-popover-item:focus-visible,
+  .kpi-seg-opt:focus-visible,
+  .hh-toggle-btn:focus-visible,
+  .scroll-top-btn:focus-visible,
+  .copy-btn:focus-visible,
+  input[type=range]:focus-visible {
+    outline: 2px solid var(--ocean-mid);
+    outline-offset: 2px;
+    border-radius: 999px;
+  }
+
+  /* ── Back-to-top button ─────────────────────────────────── */
+  .scroll-top-btn {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: white;
+    color: var(--ocean);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 18px rgba(7, 56, 74, 0.12),
+                0 2px 4px  rgba(7, 56, 74, 0.06);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(8px);
+    transition: opacity 0.22s, transform 0.22s, background 0.15s;
+    z-index: 100;
+  }
+  .scroll-top-btn.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+  .scroll-top-btn:hover { background: var(--sky); }
+  .scroll-top-btn svg { display: block; }
+
+  /* ── Keyboard hint (mouse users never see it) ───────────── */
+  .kbd-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    margin-left: 10px;
+  }
+  .kbd-hint kbd {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    padding: 1px 5px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.7);
+  }
+  @media (max-width: 720px) { .kbd-hint { display: none; } }
+
+  /* ── Respect reduced-motion preference ──────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+    .mcard-v2:hover { transform: none; }
+  }
 </style>
 </head>
 <body>
@@ -1603,7 +1837,7 @@
         </div>
       </div>
       <div class="county-select-wrap">
-        <button class="county-select" id="county-select-btn" aria-haspopup="listbox" aria-expanded="false" onclick="toggleCountyPopover(event)">
+        <button class="county-select" id="county-select-btn" aria-haspopup="listbox" aria-expanded="false" onclick="toggleCountyPopover(event)" title="Keyboard: 1–5 switch county · H/G switch pane">
           <span class="county-select-lbl">Viewing</span>
           <span class="county-select-name" id="county-select-name">Statewide</span>
           <span class="caret" aria-hidden="true"></span>
@@ -1903,6 +2137,12 @@
     </details>
   </section><!-- /#pane-goods -->
 </main>
+
+<button class="scroll-top-btn" id="scroll-top-btn" aria-label="Back to top" title="Back to top (press Home)">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"/>
+  </svg>
+</button>
 
 <footer>
   Sources: UHERO 2025 Hawaiʻi Housing Factbook; RLB Quarterly Cost Report Q1 2026; Hawaiʻi Board of Realtors; U.S. Census ACS 5-Year Estimates; Freddie Mac PMMS; DBEDT QSER; Hawaiʻi Grocery Price Tracker; USDA Thrifty Food Plan 2023; HUD State Income Limits FY 2025.
@@ -2773,10 +3013,123 @@ document.addEventListener('click', (ev) => {
   const wrap = document.querySelector('.county-select-wrap');
   if (wrap && !wrap.contains(ev.target)) closeCountyPopover();
 });
-document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeCountyPopover(); });
 
-selectCounty('State');
+/* ---------------- Number count-up animation -----------------
+   We pulse .is-updating on the big numbers each time they're
+   rewritten so the change registers visually. Doing a full count
+   from-old-to-new requires knowing the previous value; for the
+   paired cards that's tricky because innerHTML gets rebuilt, so
+   we keep this to a scale-pulse pass that works universally.   */
+const ANIM_OK = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function pulseNumbers() {
+  if (!ANIM_OK) return;
+  document.querySelectorAll(
+    '.kpi-value, .mcard-v2-price, .calc-big, .afford-price'
+  ).forEach(el => {
+    el.classList.remove('is-updating');
+    // force reflow so the class re-triggers the transition
+    void el.offsetWidth;
+    el.classList.add('is-updating');
+    setTimeout(() => el.classList.remove('is-updating'), 280);
+  });
+}
+
+/* ---------------- URL + localStorage persistence -------------
+   Share-a-view: ?county=Maui&pane=goods writes into state on
+   load. Subsequent changes echo back to the URL (replaceState so
+   we don't pollute history) and localStorage for next visit.   */
+const VALID_COUNTIES = new Set(counties);
+const VALID_PANES    = new Set(['housing','goods']);
+function loadInitialState() {
+  const params = new URLSearchParams(window.location.search);
+  let county = params.get('county');
+  let pane   = params.get('pane');
+  try {
+    if (!county) county = localStorage.getItem('hat.county');
+    if (!pane)   pane   = localStorage.getItem('hat.pane');
+  } catch (_) { /* private-mode Safari */ }
+  if (!VALID_COUNTIES.has(county)) county = 'State';
+  if (!VALID_PANES.has(pane))      pane   = 'housing';
+  return { county, pane };
+}
+function persistState() {
+  try {
+    localStorage.setItem('hat.county', currentCounty);
+    const pane = document.getElementById('pane-goods').classList.contains('is-active') ? 'goods' : 'housing';
+    localStorage.setItem('hat.pane', pane);
+    const params = new URLSearchParams(window.location.search);
+    params.set('county', currentCounty);
+    params.set('pane', pane);
+    const newUrl = window.location.pathname + '?' + params.toString() + window.location.hash;
+    window.history.replaceState(null, '', newUrl);
+  } catch (_) {}
+}
+
+/* ---------------- Back-to-top button --------------------- */
+const scrollBtn = document.getElementById('scroll-top-btn');
+function updateScrollBtn() {
+  if (!scrollBtn) return;
+  scrollBtn.classList.toggle('is-visible', window.scrollY > 400);
+}
+window.addEventListener('scroll', updateScrollBtn, { passive: true });
+if (scrollBtn) {
+  scrollBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: ANIM_OK ? 'smooth' : 'auto' });
+  });
+}
+
+/* ---------------- Keyboard shortcuts ---------------------
+   1-5  → county (State / Honolulu / Maui / Hawaiʻi / Kauaʻi)
+   H    → Housing pane     G → Goods pane
+   R    → Rent KPI view    O → Home/Own KPI view
+   Home → back to top      Esc → close popover (existing)    */
+const COUNTY_KEYMAP = { '1':'State','2':'Honolulu','3':'Maui','4':'Hawaii','5':'Kauai' };
+document.addEventListener('keydown', (ev) => {
+  if (ev.key === 'Escape') closeCountyPopover();
+  // Skip when typing in a field
+  const t = ev.target;
+  if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+  if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
+
+  if (COUNTY_KEYMAP[ev.key]) {
+    ev.preventDefault();
+    selectCounty(COUNTY_KEYMAP[ev.key]);
+    return;
+  }
+  const k = ev.key.toLowerCase();
+  if (k === 'h') { ev.preventDefault(); selectPane('housing'); persistState(); }
+  else if (k === 'g') { ev.preventDefault(); selectPane('goods'); persistState(); }
+  else if (k === 'r') { ev.preventDefault(); setHomeView('rent'); }
+  else if (k === 'o') { ev.preventDefault(); setHomeView('home'); }
+  else if (ev.key === 'Home') { ev.preventDefault(); window.scrollTo({ top: 0, behavior: ANIM_OK ? 'smooth' : 'auto' }); }
+});
+
+/* Hook persistence + pulse into the existing mutation points
+   without rewriting selectCounty/selectPane internals.        */
+const _selectCounty = selectCounty;
+selectCounty = function(c) {
+  _selectCounty(c);
+  persistState();
+  pulseNumbers();
+};
+const _selectPane = selectPane;
+selectPane = function(p) {
+  _selectPane(p);
+  persistState();
+  pulseNumbers();
+};
+const _setHomeView = setHomeView;
+setHomeView = function(v) {
+  _setHomeView(v);
+  pulseNumbers();
+};
+
+/* ---------------- Initial state --------------------------- */
+const _init = loadInitialState();
+if (_init.pane === 'goods') selectPane('goods');
+selectCounty(_init.county);
 renderBuildAuth();
+updateScrollBtn();
 
 const rlbLabels = ["Q1 2020","Q2 2020","Q3 2020","Q4 2020","Q1 2021","Q2 2021","Q3 2021","Q4 2021","Q1 2022","Q2 2022","Q3 2022","Q4 2022","Q1 2023","Q2 2023","Q3 2023","Q4 2023","Q1 2024","Q2 2024","Q3 2024","Q4 2024","Q1 2025","Q2 2025","Q3 2025","Q4 2025","Q1 2026"];
 const rlbMF  = [100.0,100.0,100.0,100.0,100.0,104.9,122.0,122.0,124.4,124.4,129.3,129.3,131.7,131.7,131.7,131.7,134.1,134.1,136.6,136.6,141.5,141.5,146.3,146.3,151.2];
