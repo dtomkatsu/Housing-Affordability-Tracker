@@ -2019,19 +2019,8 @@ function updateAfford() {
     }
   }
 
-  // Coverage: what fraction of the county's median SFH the household can
-  // actually afford. Thresholds match classic affordability conventions.
-  const coveragePct = Math.round((affordPrice / d.sfhPrice) * 100);
-  const covCls = coveragePct >= 100 ? 'ok' : (coveragePct >= 70 ? 'mid' : '');
-
   document.getElementById('afford-banner').innerHTML = `
-    <div class="afford-header">
-      <div class="afford-banner-label">Max affordable home price <span class="afford-loc">· ${fullLbl[currentCounty]}</span></div>
-      <div class="afford-coverage-chip ${covCls}">
-        <span class="afford-coverage-chip-num">${coveragePct}%</span>
-        <span class="afford-coverage-chip-lbl">of median SFH</span>
-      </div>
-    </div>
+    <div class="afford-banner-label">Max affordable home price <span class="afford-loc">· ${fullLbl[currentCounty]}</span></div>
     <div class="afford-price">${fmt(affordPrice)}</div>
     <div class="afford-assumptions">
       <span class="afford-assumption-chip"><b>${fmt(d.income)}</b> income</span>
@@ -2041,8 +2030,7 @@ function updateAfford() {
     </div>
     <div class="afford-divider"></div>
     <div class="afford-gaps">
-      ${gapRow('SFH median',   d.sfhPrice)}
-      ${gapRow('Condo median', d.condoPrice)}
+      ${gapRow('Single-family home', d.sfhPrice)}
     </div>
   `;
 }
