@@ -1678,7 +1678,7 @@
         </div>
       </div>
       <div class="kpi-value" id="kpi-groc-value">—</div>
-      <div class="kpi-sub" id="kpi-groc-sub">Family of 4 · weekly</div>
+      <div class="kpi-sub" id="kpi-groc-sub">Family of 4 · monthly</div>
     </div>
     <div class="kpi">
       <div class="kpi-label-row">
@@ -2714,10 +2714,10 @@ function renderSummaryStrip() {
     }
   }
 
-  // Tile 2 — Groceries (weekly, family of 4)
+  // Tile 2 — Groceries (monthly, family of 4)
   const grocVal = document.getElementById('kpi-groc-value');
-  if (g && typeof g.basketWithTax === 'number') {
-    grocVal.textContent = '$' + Math.round(g.basketWithTax) + '/wk';
+  if (g && typeof g.monthlyFamily4 === 'number') {
+    grocVal.textContent = '$' + Math.round(g.monthlyFamily4).toLocaleString() + '/mo';
   } else {
     grocVal.textContent = '—';
   }
