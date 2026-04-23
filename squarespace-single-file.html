@@ -1129,12 +1129,11 @@
     margin: 0 0 18px 0;
   }
 
-  /* R2: gap bars — each row shows an affordable-baseline bar plus the market
-     value's coverage. Seafoam = what the household's affordable price buys;
-     coral tail = how far past that the market is (over-affordable cases).
-     A dark tick marks the affordable ceiling so under-affordable rows still
-     read at a glance ("market falls short of tick = headroom"). Bars across
-     SFH + Condo share a common scale so row lengths are directly comparable. */
+  /* R2 (updated): per-bar scale — each bar's total width = that home type's
+     market price (100%). Seafoam fill shows how much of the market price the
+     household's max budget covers; coral tail = the gap above budget.
+     Under-budget rows fill the full bar in seafoam + show a ✓ badge.
+     No shared axis: each bar is self-contained and immediately readable. */
   .afford-gaps {
     display: flex;
     flex-direction: column;
@@ -1200,6 +1199,7 @@
   .afford-gap-footer .gap-delta { font-weight: 700; }
   .afford-gap-footer .gap-delta.over { color: var(--coral-500); }
   .afford-gap-footer .gap-delta.under { color: var(--seafoam-700); }
+  .afford-within { color: var(--seafoam-700); font-weight: 700; }
 
   .over { color: var(--coral-500); }
   .under { color: var(--seafoam-700); }
@@ -1970,43 +1970,53 @@ function updateAfford() {
   const sfhDiff = d.sfhPrice - affordPrice;
   const condoDiff = d.condoPrice - affordPrice;
 
-  // Shared bar scale across SFH + Condo so the two rows are directly
-  // comparable by length (condo always shorter than SFH where SFH is pricier).
-  const commonMax = Math.max(affordPrice, d.sfhPrice, d.condoPrice);
-  const affordPct = (affordPrice / commonMax) * 100;
-
+  // Per-bar scale: each bar's total width = that home type's market price.
+  // Seafoam fill = what the household's max price covers as a % of market.
+  // Coral tail = the gap above budget. No shared axis — each bar is
+  // self-contained so proportions are immediately readable.
   function gapRow(label, market) {
     const isOver = market > affordPrice;
-    const marketPct = (market / commonMax) * 100;
-    const coveredPct = Math.min(marketPct, affordPct);  // seafoam ends here
-    const coralLeft  = affordPct;                        // coral starts at affordable tick
-    const coralWidth = isOver ? (marketPct - affordPct) : 0;
     const diff = Math.abs(market - affordPrice);
-    const deltaHtml = isOver
-      ? `<span class="gap-delta over">▲ ${fmt(diff)} gap</span>`
-      : `<span class="gap-delta under">▼ ${fmt(diff)} headroom</span>`;
-    // If market >= affordable, seafoam fills exactly up to the tick and the
-    // right edge is squared off (coral takes over). If market < affordable,
-    // seafoam stops short — round its right edge too so it reads as a
-    // self-contained fill rather than a clipped bar.
-    const seaClass = (marketPct >= affordPct) ? '' : 'full-round';
-    return `
-      <div class="afford-gap">
-        <div class="afford-gap-header">
-          <span class="afford-gap-label">${label}</span>
-          <span class="afford-gap-price">${fmt(market)}</span>
+
+    if (isOver) {
+      // seafoam: affordable/market  →  coral: gap/market
+      const seaPct   = (affordPrice / market * 100).toFixed(1);
+      const coralPct = (diff / market * 100).toFixed(1);
+      const coverPct = Math.round(affordPrice / market * 100);
+      return `
+        <div class="afford-gap">
+          <div class="afford-gap-header">
+            <span class="afford-gap-label">${label}</span>
+            <span class="afford-gap-price">${fmt(market)}</span>
+          </div>
+          <div class="afford-gap-bar">
+            <div class="afford-gap-bar-fill-sea" style="width:${seaPct}%"></div>
+            <div class="afford-gap-bar-fill-coral" style="left:${seaPct}%;width:${coralPct}%"></div>
+          </div>
+          <div class="afford-gap-footer">
+            <span>budget covers ${coverPct}%</span>
+            <span class="gap-delta over">▲ ${fmt(diff)} over budget</span>
+          </div>
         </div>
-        <div class="afford-gap-bar">
-          <div class="afford-gap-bar-fill-sea ${seaClass}" style="width:${coveredPct}%"></div>
-          ${coralWidth > 0 ? `<div class="afford-gap-bar-fill-coral" style="left:${coralLeft}%;width:${coralWidth}%"></div>` : ''}
-          <div class="afford-gap-bar-tick" style="left:${affordPct}%" title="Affordable ceiling"></div>
+      `;
+    } else {
+      // market ≤ affordable: full seafoam bar — you can afford this
+      return `
+        <div class="afford-gap">
+          <div class="afford-gap-header">
+            <span class="afford-gap-label">${label}</span>
+            <span class="afford-gap-price">${fmt(market)}</span>
+          </div>
+          <div class="afford-gap-bar">
+            <div class="afford-gap-bar-fill-sea full-round" style="width:100%"></div>
+          </div>
+          <div class="afford-gap-footer">
+            <span class="afford-within">✓ within budget</span>
+            <span class="gap-delta under">▼ ${fmt(diff)} under budget</span>
+          </div>
         </div>
-        <div class="afford-gap-footer">
-          <span>affordable ${fmt(affordPrice)}</span>
-          ${deltaHtml}
-        </div>
-      </div>
-    `;
+      `;
+    }
   }
 
   // Coverage: what fraction of the county's median SFH the household can
