@@ -1221,6 +1221,105 @@
   .bar-fill--state { background: linear-gradient(90deg, rgba(26, 122, 154, 0.2) 0%, rgba(26, 122, 154, 0.3) 100%) !important; border-right: 2px solid var(--ocean-mid); }
   .bar-separator { height: 0; border-top: 1px dashed var(--border); margin: 8px 0 8px 70px; }
 
+  /* ── PTI split-panel layout ───────────────────────────────────────────── */
+  /* Two aligned columns (SFH left, Condo right) so county rows sit across
+     from each other and the SFH-vs-Condo comparison is horizontal, not
+     requiring the eye to cross a 5-row vertical gap. */
+  .pti-split-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  .pti-panel-header {
+    font-size: 11px;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    border-bottom: 2px solid;
+  }
+  .pti-panel-header--sfh   { color: var(--ocean-700); border-color: var(--ocean-700); }
+  .pti-panel-header--condo { color: var(--coral-300); border-color: var(--coral-300); }
+
+  /* Zone-tinted bar track: three background bands (seafoam / amber / coral)
+     reflect the 0-30% / 30-60% / 60%+ severity zones. The tick marks exactly
+     where 30% falls so the threshold is a landmark, not a hairline. */
+  .pti-bar-track {
+    flex: 1;
+    height: 18px;
+    border-radius: 5px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(to right,
+      rgba(30,138,115,0.13)  0%,     rgba(30,138,115,0.13) 35.29%,
+      rgba(224,138,91,0.13) 35.29%,  rgba(224,138,91,0.13) 70.59%,
+      rgba(201,79,58,0.13)  70.59%,  rgba(201,79,58,0.13)  100%);
+  }
+  .pti-bar-fill {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    border-radius: 5px;
+    opacity: 0.82;
+    transition: width 0.35s ease;
+  }
+  .pti-bar-tick {
+    position: absolute;
+    top: -2px; bottom: -2px;
+    width: 2px;
+    background: rgba(7,56,74,0.30);
+    border-radius: 2px;
+    z-index: 2;
+  }
+  .pti-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 9px;
+  }
+  .pti-row-lbl {
+    font-size: 14px;
+    color: var(--text-mid);
+    width: 62px;
+    flex-shrink: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pti-row-lbl--state { font-weight: 700; color: var(--text); }
+  .pti-row-val {
+    font-size: 13.5px;
+    font-weight: 700;
+    width: 42px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .pti-row-sep {
+    height: 0;
+    border-top: 1px dashed var(--border);
+    margin: 2px 0 10px 62px;
+  }
+  /* Zone legend strip */
+  .pti-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    font-size: 12px;
+    color: var(--text-lt);
+    margin-bottom: 16px;
+    align-items: center;
+  }
+  .pti-legend-item { display: flex; align-items: center; gap: 5px; }
+  .pti-legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
   .rent-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
   .rent-row-lbl { font-size: 15px; font-weight: 500; color: var(--text-mid); width: 72px; flex-shrink: 0; }
   .rent-bar-group { flex: 1; display: flex; flex-direction: column; gap: 4px; }
@@ -1475,6 +1574,7 @@
     .afford-row { grid-template-columns: 1fr; }
     .rlb-grid { grid-template-columns: 1fr; }
     .calc-grid { grid-template-columns: 1fr 1fr; }
+    .pti-split-grid { grid-template-columns: 1fr; }
     .slider-label { width: 100px; }
     .treemap-container { grid-template-columns: repeat(3, 1fr); }
     .top-tab { font-size: 17px; padding: 12px 14px; min-width: 140px; }
@@ -1684,7 +1784,7 @@
 
   <div class="card" style="margin-bottom:1.25rem;">
     <div class="card-title">Mortgage payment share of income</div>
-    <div class="card-sub">All counties &nbsp;·&nbsp; income gap to qualify shown per bar</div>
+    <div class="card-sub">All counties &nbsp;·&nbsp; monthly P&amp;I as % of gross income &nbsp;·&nbsp; 20% down, current rate</div>
     <div id="pti-bars"></div>
   </div>
 
@@ -2079,31 +2179,51 @@ function selectCounty(county) {
     + mcardV2('condo', 'Condo',              d.condoPrice, d.condoIdx, d.condoMortgage, 'Feb 2026');
 
   const maxPTI = 0.85;
-  const threshPct = (0.30 / maxPTI * 100).toFixed(1);
-  const ptiBarRow = (c, v, isState) => {
-    const w = Math.min(v/maxPTI*100,100).toFixed(1);
-    const gap = countyData[c].sfhGap;
-    const gapLabel = gap > 0 ? `<span style="font-size:12px;color:var(--coral);margin-left:4px;">+${fmt(gap)} needed</span>` : `<span style="font-size:12px;color:var(--green);margin-left:4px;">✓ affordable</span>`;
-    return `<div class="bar-row ${isState?'bar-row--state':''}">
-      <div class="bar-lbl ${isState?'bar-lbl--state':''}">${shortLbl[c]}${isState?' <span class="state-badge">Median</span>':''}</div>
-      <div class="bar-bg ${isState?'bar-bg--state':''}">
-        <div class="bar-fill ${isState?'bar-fill--state':''}" style="width:${w}%;background:${ptiColor(v)};"></div>
-        <div class="tline" style="left:${threshPct}%;" title="30% affordability threshold"></div>
+  // 30% threshold lands at 35.29% of the bar (30/85). Used for tick position
+  // and for the zone gradient stops in CSS.
+  const threshPct = (0.30 / maxPTI * 100).toFixed(2);
+
+  // Build one row inside a PTI panel. Reuses ptiColor() for semantic color.
+  const ptiRow = (c, v, isState) => {
+    const w = Math.min(v / maxPTI * 100, 100).toFixed(1);
+    const clr = ptiColor(v);
+    return `
+      <div class="pti-row">
+        <div class="pti-row-lbl${isState ? ' pti-row-lbl--state' : ''}">${shortLbl[c]}</div>
+        <div class="pti-bar-track">
+          <div class="pti-bar-fill" style="width:${w}%;background:${clr};"></div>
+          <div class="pti-bar-tick" style="left:${threshPct}%;" title="30% cost-burden threshold"></div>
+        </div>
+        <div class="pti-row-val" style="color:${clr}">${pct(v)}</div>
       </div>
-      <div class="bar-val" style="color:${ptiTextColor(v)}">${pct(v)}</div>
-    </div>${isState?'<div class="bar-separator"></div>':''}`;
+      ${isState ? '<div class="pti-row-sep"></div>' : ''}
+    `;
   };
+
   document.getElementById('pti-bars').innerHTML = `
-    <div style="font-size:13px;color:var(--text-lt);margin-bottom:8px;">
-      <span style="border-left:2px solid var(--text-lt);padding-left:5px;opacity:0.6;">Dashed line = 30% cost-burden threshold</span>
+    <div class="pti-legend">
+      <span class="pti-legend-item">
+        <span class="pti-legend-dot" style="background:rgba(30,138,115,0.55);"></span>
+        Under 30% — affordable
+      </span>
+      <span class="pti-legend-item">
+        <span class="pti-legend-dot" style="background:rgba(224,138,91,0.75);"></span>
+        30–60% — cost-burdened
+      </span>
+      <span class="pti-legend-item">
+        <span class="pti-legend-dot" style="background:rgba(201,79,58,0.80);"></span>
+        Over 60% — severely burdened
+      </span>
     </div>
-    <div class="section-sfh">
-      <div class="divider-label divider-label--sfh">Single-family home</div>
-      ${counties.map(c => ptiBarRow(c, countyData[c].sfhPTI, c==='State')).join('')}
-    </div>
-    <div class="section-condo">
-      <div class="divider-label divider-label--condo">Condo</div>
-      ${counties.map(c => ptiBarRow(c, countyData[c].condoPTI, c==='State')).join('')}
+    <div class="pti-split-grid">
+      <div class="pti-panel">
+        <div class="pti-panel-header pti-panel-header--sfh">Single-family home</div>
+        ${counties.map(c => ptiRow(c, countyData[c].sfhPTI, c === 'State')).join('')}
+      </div>
+      <div class="pti-panel">
+        <div class="pti-panel-header pti-panel-header--condo">Condo / Townhome</div>
+        ${counties.map(c => ptiRow(c, countyData[c].condoPTI, c === 'State')).join('')}
+      </div>
     </div>
   `;
 
