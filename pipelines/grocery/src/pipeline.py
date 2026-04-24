@@ -92,8 +92,12 @@ def run_pipeline(
                     # Fallback if we got nothing (e.g., empty cache + network fail).
                     cpi_data = load_cached_cpi() or {}
 
-    # Adjust prices
-    adjusted = adjust_prices(baseline_prices, cpi_data, cpi_config, basket, target_date)
+    # Adjust prices. ratio_info maps cpi_category → { ratio, is_projected,
+    # method, latest_observed, target_period } — used below to flag the
+    # dashboard's "proj." state when any category was forward-extrapolated.
+    adjusted, ratio_info = adjust_prices(
+        baseline_prices, cpi_data, cpi_config, basket, target_date
+    )
 
     # Collapse to weighted county averages
     county_prices = compute_weighted_county_prices(adjusted, store_weights)
@@ -146,10 +150,17 @@ def run_pipeline(
         )
         is_interpolated = not target_is_actual
 
+    # is_projected: any category's ratio was forward-extrapolated past the
+    # last observed BLS Honolulu bimonthly point. Distinct from interpolation
+    # (which happens strictly between two observed points).
+    is_projected = any(info.get("is_projected") for info in ratio_info.values())
+
     cpi_status = {
-        "is_interpolated": is_interpolated,
+        "is_interpolated":     is_interpolated,
+        "is_projected":        is_projected,
         "latest_actual_period": latest_actual_period,
-        "did_fetch_this_run": did_fetch,
+        "did_fetch_this_run":  did_fetch,
+        "ratio_info":          ratio_info,  # per-category projection metadata
     }
 
     return {

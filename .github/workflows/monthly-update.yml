@@ -2,11 +2,14 @@ name: Monthly Data Update
 
 on:
   schedule:
-    # 10:00 UTC on the 1st of every month (midnight HST).
-    # Redfin data releases on the 3rd Friday; the 1st captures prior month.
-    # AAA gas prices update daily — 1st-of-month gives a clean monthly snapshot.
-    # BLS CPI is bimonthly with a lag; fetcher handles interpolation.
-    - cron: '0 10 1 * *'
+    # 10:00 UTC on day 22 of every month (midnight HST).
+    # Redfin publishes on the 3rd Friday (day 15-21 inclusive); day 22 is
+    # always ≥ 1 day after release so the S3 bucket has the just-published
+    # prior-month data. All other sources captured at day-22 state:
+    #   - AAA gas: daily snapshot (always current)
+    #   - BLS Honolulu CPI: bimonthly, ~15th release — day 22 catches it
+    #   - USDA TFP: ~15th release — day 22 catches it, otherwise projected
+    - cron: '0 10 22 * *'
 
   # Manual trigger from GitHub Actions UI (Actions tab → Run workflow)
   workflow_dispatch:
@@ -55,6 +58,14 @@ jobs:
       - name: Patch USDA Thrifty Food Plan (groceries headline)
         run: python tfp-updater.py
         continue-on-error: true
+
+      # Guard: both HTML files must stay byte-identical — each updater patches
+      # both. A divergence here means one patcher or a manual edit missed a file.
+      - name: Verify HTML mirror is in sync (index.html == squarespace-single-file.html)
+        run: |
+          diff index.html squarespace-single-file.html \
+            && echo "HTML files are in sync ✓" \
+            || { echo "ERROR: index.html and squarespace-single-file.html have diverged!"; exit 1; }
 
       - name: Commit and push if anything changed
         run: |

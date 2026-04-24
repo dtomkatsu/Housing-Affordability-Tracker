@@ -32,44 +32,132 @@ def load_baseline(path: Path) -> list[BaselinePrice]:
     return prices
 
 
+def _latest_observed_point(points: list[dict]) -> dict | None:
+    """Return the most recent (year, period) observation for a BLS series."""
+    if not points:
+        return None
+    return max(points, key=lambda p: (p["year"], int(p["period"][1:])))
+
+
+def _project_forward(points: list[dict], target_date: date) -> float:
+    """Extrapolate a CPI index value forward past the last observed bimonthly point.
+
+    Uses the *compound* monthly rate derived from the last two observed Honolulu
+    bimonthly points (typically 2 months apart). We then multiply the latest
+    observed index by (1 + monthly_rate)**(months_beyond) — a linear-trend
+    projection that collapses to flat when the series is flat, but honestly
+    carries momentum when prices are still moving.
+
+    Caller must ensure *target_date* is strictly past the latest observed
+    point. Returns the projected index value.
+    """
+    if not points:
+        raise ValueError("cannot project forward from empty series")
+
+    ordered = sorted(points, key=lambda p: (p["year"], int(p["period"][1:])))
+    latest = ordered[-1]
+    latest_year, latest_month = latest["year"], int(latest["period"][1:])
+    months_beyond = (target_date.year - latest_year) * 12 + (target_date.month - latest_month)
+
+    if months_beyond <= 0 or len(ordered) < 2:
+        # Defensive: caller should have screened exact / past-bracketed cases.
+        return float(latest["value"])
+
+    prev = ordered[-2]
+    prev_year, prev_month = prev["year"], int(prev["period"][1:])
+    months_between = (latest_year - prev_year) * 12 + (latest_month - prev_month)
+    if months_between <= 0 or prev["value"] <= 0:
+        return float(latest["value"])
+
+    # Compound growth per month, then project forward. Cap the per-period
+    # rate at ±0.0189/month (~±25% annualized) to stop a single noisy bimonthly
+    # print from compounding into an unrealistic extrapolation.
+    monthly_rate = (latest["value"] / prev["value"]) ** (1.0 / months_between) - 1.0
+    monthly_rate = max(min(monthly_rate, 0.0189), -0.0189)
+    return float(latest["value"] * (1.0 + monthly_rate) ** months_beyond)
+
+
+def _value_at(
+    cpi_data: dict, series_id: str, points: list[dict], latest: dict | None,
+    target_date: date,
+) -> tuple[float | None, str]:
+    """Resolve a CPI index value at *target_date* and label which method was used.
+
+    Returns (value, method) where method is one of:
+        'exact'        — target matches an observed bimonthly period
+        'interpolated' — target is strictly between two observed points
+        'projected'    — target is past the latest observation (forward extrapolation)
+        'unavailable'  — no usable data
+
+    Disambiguates the find_nearest_periods "(point, None)" return: that shape
+    can mean either "exact match" OR "past the last observed point", and the
+    previous code conflated them into a silent flat extrapolation.
+    """
+    if latest is None:
+        return None, "unavailable"
+
+    before, after = find_nearest_periods(cpi_data, series_id, target_date.year, target_date.month)
+    if before is None:
+        return None, "unavailable"
+
+    latest_year, latest_month = latest["year"], int(latest["period"][1:])
+    beyond_latest = (target_date.year, target_date.month) > (latest_year, latest_month)
+
+    if after is None:
+        if beyond_latest:
+            return _project_forward(points, target_date), "projected"
+        # Exact match on an observed period (the "before" point IS the target).
+        return float(before["value"]), "exact"
+
+    return _interpolate(before, after, target_date), "interpolated"
+
+
 def compute_cpi_ratio(
     cpi_data: dict,
     series_id: str,
     baseline_date: date,
     target_date: date,
-) -> float:
-    """Compute CPI ratio (target / baseline) for a series, with interpolation.
+) -> dict:
+    """Compute CPI ratio (target / baseline) for a series.
 
-    Returns 1.0 if data is unavailable (no adjustment).
+    Returns a dict:
+        ratio            float    — target_cpi / baseline_cpi (1.0 if unavailable)
+        is_projected     bool     — target is beyond the last observed bimonthly point
+        method           str      — 'exact' | 'interpolated' | 'projected' | 'unavailable'
+        latest_observed  str|None — ISO period "YYYY-MM" of the latest observation
+        target_period    str      — ISO period of the target date
+
+    The previous version silently flat-lined when *target_date* was past the
+    last observed point. That hid a "no change since last observation" assumption
+    from the caller. We now detect the edge explicitly, linear-trend project the
+    index forward, and flag it so downstream UI can surface a `proj.` tag.
     """
-    # Get baseline CPI value
-    base_year, base_period = date_to_bls_period(baseline_date)
-    before, after = find_nearest_periods(cpi_data, series_id, base_year, baseline_date.month)
+    target_iso = f"{target_date.year}-{target_date.month:02d}"
+    points = cpi_data.get(series_id, [])
+    latest = _latest_observed_point(points)
+    latest_iso = (
+        f"{latest['year']}-{int(latest['period'][1:]):02d}"
+        if latest is not None else None
+    )
 
-    if before is None:
-        return 1.0
+    result = {
+        "ratio":           1.0,
+        "is_projected":    False,
+        "method":          "unavailable",
+        "latest_observed": latest_iso,
+        "target_period":   target_iso,
+    }
 
-    if after is None:
-        baseline_cpi = before["value"]
-    else:
-        # Interpolate between bracketing periods
-        baseline_cpi = _interpolate(before, after, baseline_date)
+    baseline_cpi, _bmethod = _value_at(cpi_data, series_id, points, latest, baseline_date)
+    target_cpi,   tmethod  = _value_at(cpi_data, series_id, points, latest, target_date)
 
-    # Get target CPI value
-    t_before, t_after = find_nearest_periods(cpi_data, series_id, target_date.year, target_date.month)
+    if baseline_cpi is None or target_cpi is None or baseline_cpi == 0:
+        return result
 
-    if t_before is None:
-        return 1.0
-
-    if t_after is None:
-        target_cpi = t_before["value"]
-    else:
-        target_cpi = _interpolate(t_before, t_after, target_date)
-
-    if baseline_cpi == 0:
-        return 1.0
-
-    return target_cpi / baseline_cpi
+    result["ratio"]        = target_cpi / baseline_cpi
+    result["method"]       = tmethod
+    result["is_projected"] = (tmethod == "projected")
+    return result
 
 
 def _interpolate(before: dict, after: dict, target: date) -> float:
@@ -95,12 +183,18 @@ def adjust_prices(
     cpi_config: CPIConfig,
     basket: BasketConfig,
     target_date: date,
-) -> list[AdjustedPrice]:
-    """Adjust all baseline prices to a target date using CPI ratios."""
+) -> tuple[list[AdjustedPrice], dict]:
+    """Adjust all baseline prices to a target date using CPI ratios.
+
+    Returns (adjusted_prices, ratio_info) where ratio_info is
+        { cpi_category: { ratio, is_projected, method, latest_observed, target_period } }
+    — one entry per category actually used. Callers use it to surface
+    projection state (e.g. the "proj." tag in the dashboard).
+    """
     adjusted = []
 
     # Pre-compute CPI ratios per category
-    ratios = {}
+    ratios: dict[str, dict] = {}
     for bp in baseline_prices:
         item = basket.get_item(bp.slot_id)
         if item is None:
@@ -110,7 +204,11 @@ def adjust_prices(
         if cpi_cat not in ratios:
             cat_config = cpi_config.categories.get(cpi_cat)
             if cat_config is None:
-                ratios[cpi_cat] = 1.0
+                ratios[cpi_cat] = {
+                    "ratio": 1.0, "is_projected": False, "method": "unavailable",
+                    "latest_observed": None,
+                    "target_period": f"{target_date.year}-{target_date.month:02d}",
+                }
                 continue
             series_id = cat_config["series_id"]
             base_date = date.fromisoformat(bp.date)
@@ -123,7 +221,8 @@ def adjust_prices(
             continue
 
         cpi_cat = item["cpi_category"]
-        ratio = ratios.get(cpi_cat, 1.0)
+        info = ratios.get(cpi_cat) or {"ratio": 1.0}
+        ratio = info["ratio"]
         adj_price = round(bp.price * ratio, 2)
         adj_per_unit = round(bp.per_unit_price * ratio, 4)
 
@@ -142,4 +241,4 @@ def adjust_prices(
             cpi_ratio=round(ratio, 6),
         ))
 
-    return adjusted
+    return adjusted, ratios

@@ -37,6 +37,8 @@ from pathlib import Path
 # Configuration
 # ------------------------------------------------------------------
 PROJECT_ROOT = Path(__file__).resolve().parent
+sys.path.insert(0, str(PROJECT_ROOT))
+from common.html_patcher import patch_html_files  # noqa: E402
 SOURCE_URL   = "https://gasprices.aaa.com/?state=HI"
 HISTORY_CSV  = PROJECT_ROOT / "data" / "gas_prices_history.csv"
 
@@ -259,17 +261,7 @@ def render_gas_data_block(data: dict, as_of: str) -> str:
     return "\n".join(lines)
 
 
-PATCH_RE = re.compile(
-    r"/\* GAS_DATA_START \*/.*?/\* GAS_DATA_END \*/",
-    flags=re.DOTALL,
-)
-
-
-def patch_html(html: str, new_block: str) -> tuple[str, bool]:
-    if not PATCH_RE.search(html):
-        return html, False
-    return PATCH_RE.sub(lambda _: new_block, html, count=1), True
-
+_DATA_TAG = "GAS"
 
 # ------------------------------------------------------------------
 # CLI
@@ -314,20 +306,7 @@ def main() -> int:
     print(f"  History appended → {HISTORY_CSV.relative_to(PROJECT_ROOT)}")
 
     # Patch HTML files
-    for path in files:
-        if not path.exists():
-            print(f"  skipping {path.name} (not found)")
-            continue
-        old_html = path.read_text()
-        new_html, ok = patch_html(old_html, new_block)
-        if not ok:
-            print(f"  WARNING: no GAS_DATA markers found in {path.name} — add them first")
-            continue
-        if new_html == old_html:
-            print(f"  {path.name}: no change")
-        else:
-            path.write_text(new_html)
-            print(f"  {path.name}: updated ✓")
+    patch_html_files(files, _DATA_TAG, new_block)
 
     print("\nDone.")
     return 0

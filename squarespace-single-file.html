@@ -334,7 +334,8 @@
     .header-inner { padding: 0 1.25rem; }
     header h1 { font-size: 1.95rem; }
     .title-row { flex-direction: column; align-items: flex-start; gap: 14px; }
-    .county-select-wrap { align-self: stretch; }
+    .county-select-wrap-row { align-self: stretch; width: 100%; }
+    .county-select-wrap { align-self: stretch; flex: 1 1 auto; }
     .county-select { width: 100%; justify-content: space-between; }
     .county-popover { left: 0; right: 0; }
     .summary-strip-inner { grid-template-columns: repeat(2, minmax(0,1fr)); row-gap: 18px; padding: 16px 1.25rem; }
@@ -837,6 +838,149 @@
     opacity: 0.7;
     letter-spacing: 0.04em;
     white-space: nowrap;
+  }
+  /* Period-freshness micro-tags (used inside card date badges + popover rows). */
+  .period-tag {
+    display: inline-block;
+    margin-left: 4px;
+    padding: 1px 5px;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: 3px;
+    background: rgba(0,0,0,0.06);
+    color: var(--text-lt);
+    vertical-align: 1px;
+  }
+  .period-tag--proj {
+    background: rgba(245, 158, 11, 0.16);   /* soft amber */
+    color: #92500b;
+  }
+  .period-tag--stale {
+    background: rgba(239, 68, 68, 0.16);    /* soft coral */
+    color: #9a1b1b;
+  }
+  /* Glossary: thin solid underline on terms + hover/tap tooltip */
+  .gloss {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: rgba(0,0,0,0.35);
+    text-underline-offset: 2px;
+    cursor: help;
+  }
+  .gloss:hover,
+  .gloss[aria-expanded="true"] {
+    text-decoration-color: var(--ocean);
+  }
+  /* Suppress underline on elements that are already visually distinct (micro-tags,
+     icon chips). The element still triggers the tooltip; cursor:help signals interactivity. */
+  .period-tag.gloss,
+  .header-inflation-chip.gloss {
+    text-decoration: none;
+  }
+  .gloss:focus-visible {
+    outline: 2px solid var(--ocean);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+  .gloss-tip {
+    position: absolute;
+    z-index: 60;
+    max-width: 280px;
+    padding: 10px 12px;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 8px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    font-size: 12.5px;
+    line-height: 1.45;
+    color: var(--text);
+  }
+  .gloss-tip[hidden] { display: none; }
+  .gloss-tip-term {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-lt);
+    margin-bottom: 4px;
+  }
+  .gloss-tip-def { color: var(--text); }
+  .gloss-tip-src {
+    display: block;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px dashed rgba(0,0,0,0.1);
+    font-size: 11.5px;
+  }
+  .gloss-tip-src a { color: var(--ocean); }
+  /* Header "As of" strip + info popover */
+  .header-asof-btn {
+    appearance: none;
+    background: none;
+    border: 1px solid rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.85);
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    margin-left: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    vertical-align: 1px;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .header-asof-btn:hover,
+  .header-asof-btn[aria-expanded="true"] {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(255,255,255,0.5);
+  }
+  .header-asof-popover {
+    position: absolute;
+    z-index: 50;
+    margin-top: 6px;
+    padding: 12px 14px;
+    min-width: 260px;
+    max-width: 320px;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    font-size: 12.5px;
+    color: var(--text);
+  }
+  .header-asof-popover[hidden] { display: none; }
+  .header-asof-popover-title {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-lt);
+    margin-bottom: 8px;
+  }
+  .header-asof-popover ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .header-asof-popover li {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 4px 0;
+    border-bottom: 1px dashed rgba(0,0,0,0.06);
+  }
+  .header-asof-popover li:last-child { border-bottom: none; }
+  .header-asof-popover li .asof-label {
+    color: var(--text-lt);
+    white-space: nowrap;
+  }
+  .header-asof-popover li .asof-value {
+    font-weight: 500;
+    text-align: right;
   }
   .mcard-v2-price {
     font-family: 'DM Serif Display', serif !important;
@@ -1581,6 +1725,564 @@
     .coming-soon-grid { grid-template-columns: repeat(2, 1fr); }
     .cat-bar-lbl { width: 100px; font-size: 13px; }
   }
+
+  /* =========================================================
+     POLISH LAYER — v2
+     Entrance animations, card lift, slider upgrade, focus
+     rings, and a back-to-top affordance. Honors reduced-motion.
+     ========================================================= */
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; } to { opacity: 1; }
+  }
+  @keyframes popIn {
+    from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* Content rendered into these containers enters on county switch.
+     Each repaint rebuilds innerHTML, which retriggers the animation. */
+  #housing-pair-grid > *,
+  #goods-pair-grid   > *,
+  #pti-bars          > *,
+  #rent-grid         > *,
+  #market-compare-wrap > *,
+  #goods-county-compare-groc > *,
+  #goods-county-compare-gas  > *,
+  .afford-banner,
+  .narrative-card {
+    animation: fadeUp 0.42s cubic-bezier(.22,.61,.36,1) both;
+  }
+
+  /* Stagger bar rows so the eye tracks the sequence. */
+  #pti-bars .pti-row,
+  #rent-grid .rent-row,
+  #build-auth-bars .bar-row,
+  #goods-county-compare-groc .bar-row,
+  #goods-county-compare-gas .bar-row {
+    animation: fadeUp 0.45s cubic-bezier(.22,.61,.36,1) both;
+  }
+  #pti-bars .pti-row:nth-child(2)             { animation-delay: 0.04s; }
+  #pti-bars .pti-row:nth-child(3)             { animation-delay: 0.08s; }
+  #pti-bars .pti-row:nth-child(4)             { animation-delay: 0.12s; }
+  #pti-bars .pti-row:nth-child(5)             { animation-delay: 0.16s; }
+  #pti-bars .pti-row:nth-child(6)             { animation-delay: 0.20s; }
+  #rent-grid .rent-row:nth-child(2)           { animation-delay: 0.05s; }
+  #rent-grid .rent-row:nth-child(3)           { animation-delay: 0.10s; }
+  #rent-grid .rent-row:nth-child(4)           { animation-delay: 0.15s; }
+  #rent-grid .rent-row:nth-child(5)           { animation-delay: 0.20s; }
+
+  /* ── Card hover-lift ────────────────────────────────────────
+     The paired-card grid was visually static. A gentle elevation
+     on hover invites the user to read the numbers they're seeing. */
+  .mcard-v2 {
+    transition: transform 0.22s cubic-bezier(.22,.61,.36,1),
+                box-shadow 0.22s cubic-bezier(.22,.61,.36,1),
+                border-color 0.22s;
+    will-change: transform;
+  }
+  .mcard-v2:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 28px rgba(7, 56, 74, 0.10),
+                0 2px 6px  rgba(7, 56, 74, 0.06);
+    border-color: rgba(7, 56, 74, 0.18);
+  }
+  .card, .calc-section, .narrative-card {
+    transition: box-shadow 0.22s, border-color 0.22s;
+  }
+  .card:hover, .calc-section:hover, .narrative-card:hover {
+    box-shadow: 0 4px 16px rgba(7, 56, 74, 0.05);
+  }
+
+  /* ── KPI summary-strip hover ──────────────────────────────── */
+  .kpi {
+    border-radius: 10px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    margin: -6px 0;
+    transition: background 0.18s;
+  }
+  .kpi:hover { background: rgba(7, 56, 74, 0.025); }
+
+  /* Number readouts get a subtle pop when they change. Triggered
+     from JS by toggling .is-updating for one frame. */
+  .kpi-value, .mcard-v2-price, .calc-big, .afford-price {
+    transition: transform 0.28s cubic-bezier(.22,.61,.36,1),
+                color 0.2s;
+  }
+  .is-updating { transform: scale(1.04); }
+
+  /* ── Slider upgrade ──────────────────────────────────────────
+     Thicker track, bigger thumb with a ring on hover/active.
+     Keeps the old ocean color but adds depth and feedback. */
+  input[type=range] {
+    height: 6px;
+    background: linear-gradient(to right, var(--ocean-100), var(--sand));
+  }
+  input[type=range]::-webkit-slider-thumb {
+    width: 22px; height: 22px;
+    box-shadow: 0 0 0 1px var(--ocean),
+                0 2px 6px rgba(7, 56, 74, 0.18);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  input[type=range]::-webkit-slider-thumb:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 1px var(--ocean),
+                0 0 0 6px rgba(26, 132, 150, 0.14),
+                0 2px 6px rgba(7, 56, 74, 0.18);
+  }
+  input[type=range]:active::-webkit-slider-thumb {
+    transform: scale(0.96);
+    box-shadow: 0 0 0 1px var(--ocean),
+                0 0 0 8px rgba(26, 132, 150, 0.22);
+  }
+  input[type=range]::-moz-range-thumb {
+    width: 20px; height: 20px;
+    transition: transform 0.15s;
+  }
+  input[type=range]::-moz-range-thumb:hover { transform: scale(1.08); }
+
+  /* ── Chip hover (interactive affordance, not just color) ──── */
+  .chip {
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .chip:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(7, 56, 74, 0.08);
+  }
+
+  /* ── PTI bar fill: tooltip-like hover feedback ──────────── */
+  .pti-bar-fill,
+  .bar-fill,
+  .rent-hbar,
+  .afford-gap-bar-fill-sea,
+  .afford-gap-bar-fill-coral {
+    transition: filter 0.2s, box-shadow 0.2s, width 0.45s cubic-bezier(.4,0,.2,1);
+  }
+  .pti-row:hover .pti-bar-fill,
+  .bar-row:hover .bar-fill,
+  .rent-row:hover .rent-hbar,
+  .afford-gap:hover .afford-gap-bar-fill-sea,
+  .afford-gap:hover .afford-gap-bar-fill-coral {
+    filter: brightness(1.08);
+  }
+
+  /* ── Popover open animation ─────────────────────────────── */
+  .county-popover.is-open { animation: popIn 0.18s cubic-bezier(.22,.61,.36,1); }
+
+  /* ── Tab pane fade on switch ────────────────────────────── */
+  .pane.is-active { animation: fadeIn 0.25s ease-out; }
+
+  /* ── Top-tab press feedback ─────────────────────────────── */
+  .top-tab { position: relative; }
+  .top-tab:active { transform: scale(0.985); }
+  .top-tab.active { transform: translateY(-1px); }
+
+  /* ── Focus-visible rings (keyboard users get clear affordance,
+     mouse users don't see the ring) ─────────────────────────── */
+  .top-tab:focus-visible,
+  .county-select:focus-visible,
+  .county-popover-item:focus-visible,
+  .kpi-seg-opt:focus-visible,
+  .hh-toggle-btn:focus-visible,
+  .scroll-top-btn:focus-visible,
+  .copy-btn:focus-visible,
+  input[type=range]:focus-visible {
+    outline: 2px solid var(--ocean-mid);
+    outline-offset: 2px;
+    border-radius: 999px;
+  }
+
+  /* ── Back-to-top button ─────────────────────────────────── */
+  .scroll-top-btn {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: white;
+    color: var(--ocean);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 18px rgba(7, 56, 74, 0.12),
+                0 2px 4px  rgba(7, 56, 74, 0.06);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(8px);
+    transition: opacity 0.22s, transform 0.22s, background 0.15s;
+    z-index: 100;
+  }
+  .scroll-top-btn.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+  .scroll-top-btn:hover { background: var(--sky); }
+  .scroll-top-btn svg { display: block; }
+
+  /* ── Keyboard hint (mouse users never see it) ───────────── */
+  .kbd-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    margin-left: 10px;
+  }
+  .kbd-hint kbd {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    padding: 1px 5px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.7);
+  }
+  @media (max-width: 720px) { .kbd-hint { display: none; } }
+
+  /* ── Respect reduced-motion preference ──────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+    .mcard-v2:hover { transform: none; }
+  }
+
+  /* =========================================================
+     POLISH LAYER — v3
+     Interactive rows, share-link button, slider progress fill,
+     slider value bubble, card coastal glow, softer afford banner,
+     scroll-top tooltip, discover-hint toast.
+     ========================================================= */
+
+  /* Softer hero: replace the chunky 8px border-left with a 5px
+     gradient stripe + a subtle inner highlight ring. Reads as a
+     finished edge rather than a slab. */
+  .afford-banner {
+    border-left: none;
+    background:
+      linear-gradient(to right,
+        var(--seafoam-500) 0, var(--seafoam-500) 5px,
+        var(--seafoam-400) 5px, var(--seafoam-400) 5px,
+        #fff 5px);
+    box-shadow: 0 1px 2px rgba(7, 56, 74, 0.04),
+                0 4px 18px rgba(7, 56, 74, 0.06),
+                inset 0 1px 0 rgba(255,255,255,0.6);
+  }
+
+  /* ── Clickable data rows: PTI, rent, goods compare, build-auth
+     Hovering a row hints at its interactivity with a tint and a
+     left-edge accent bar. Clicking switches to that county.     */
+  .pti-row.is-clickable,
+  .rent-row.is-clickable,
+  .is-clickable-row {
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 4px 6px;
+    margin-left: -6px;
+    margin-right: -6px;
+    position: relative;
+    transition: background 0.15s, transform 0.15s;
+  }
+  .pti-row.is-clickable::before,
+  .rent-row.is-clickable::before,
+  .is-clickable-row::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 6px;
+    bottom: 6px;
+    width: 2px;
+    background: var(--ocean-mid);
+    border-radius: 2px;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .pti-row.is-clickable:hover,
+  .rent-row.is-clickable:hover,
+  .is-clickable-row:hover {
+    background: rgba(26, 132, 150, 0.05);
+  }
+  .pti-row.is-clickable:hover::before,
+  .rent-row.is-clickable:hover::before,
+  .is-clickable-row:hover::before {
+    opacity: 1;
+  }
+  .pti-row.is-clickable.is-current,
+  .rent-row.is-clickable.is-current,
+  .is-clickable-row.is-current {
+    background: rgba(26, 132, 150, 0.08);
+  }
+  .pti-row.is-clickable.is-current::before,
+  .rent-row.is-clickable.is-current::before,
+  .is-clickable-row.is-current::before {
+    opacity: 1;
+    background: var(--ocean);
+  }
+
+  /* ── Card coastal glow on hover ─────────────────────────── */
+  .mcard-v2:hover {
+    border-color: var(--ocean-300);
+  }
+  .mcard-v2::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    pointer-events: none;
+    box-shadow: inset 0 0 0 1px transparent;
+    transition: box-shadow 0.22s;
+  }
+  .mcard-v2:hover::after {
+    box-shadow: inset 0 0 0 1px rgba(125, 200, 211, 0.45);
+  }
+
+  /* ── Slider: dynamic progress fill + floating value bubble ── */
+  input[type=range].has-progress {
+    background: linear-gradient(to right,
+      var(--ocean-mid) 0%,
+      var(--ocean-mid) var(--progress, 0%),
+      var(--ocean-100) var(--progress, 0%),
+      var(--sand) 100%);
+  }
+
+  .slider-row { position: relative; }
+  .slider-bubble {
+    position: absolute;
+    bottom: calc(100% - 2px);
+    transform: translateX(-50%);
+    background: var(--ocean-900);
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 9px;
+    border-radius: 6px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    white-space: nowrap;
+    z-index: 10;
+    font-variant-numeric: tabular-nums;
+  }
+  .slider-bubble::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 4px solid transparent;
+    border-top-color: var(--ocean-900);
+  }
+  .slider-row.is-dragging .slider-bubble { opacity: 1; }
+
+  /* ── Share link button ─────────────────────────────────── */
+  .share-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.22);
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.88);
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, transform 0.15s;
+    line-height: 1;
+  }
+  .share-btn:hover {
+    background: rgba(255,255,255,0.16);
+    border-color: rgba(255,255,255,0.4);
+  }
+  .share-btn:active { transform: scale(0.97); }
+  .share-btn.is-copied {
+    background: var(--seafoam-500);
+    border-color: var(--seafoam-500);
+    color: white;
+  }
+  .share-btn svg { width: 13px; height: 13px; }
+  .county-select-wrap-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  /* ── Toast for "Link copied" ───────────────────────────── */
+  .toast {
+    position: fixed;
+    bottom: 78px;
+    right: 22px;
+    background: var(--ocean-900);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    box-shadow: 0 8px 24px rgba(7, 56, 74, 0.22);
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .toast.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .toast svg { color: var(--seafoam-400); width: 16px; height: 16px; }
+
+  /* ── Scroll-top tooltip on hover ───────────────────────── */
+  .scroll-top-btn {
+    position: fixed;
+  }
+  .scroll-top-btn::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    right: calc(100% + 10px);
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--ocean-900);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 11.5px;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+  }
+  .scroll-top-btn:hover::after { opacity: 1; }
+  .scroll-top-btn:hover {
+    background: var(--ocean);
+    color: white;
+    border-color: var(--ocean);
+  }
+
+  /* ── Discover-hint: tiny dismissable banner on first visit ── */
+  .discover-hint {
+    position: fixed;
+    bottom: 22px;
+    left: 22px;
+    max-width: 290px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px 12px 16px;
+    box-shadow: 0 10px 30px rgba(7, 56, 74, 0.12),
+                0 2px 6px rgba(7, 56, 74, 0.06);
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--text-mid);
+    z-index: 90;
+    display: none;
+    animation: popIn 0.28s cubic-bezier(.22,.61,.36,1);
+  }
+  .discover-hint.is-visible { display: block; }
+  .discover-hint kbd {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    padding: 1px 5px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--sand);
+    color: var(--text);
+    margin: 0 1px;
+  }
+  .discover-hint-close {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: var(--text-lt);
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .discover-hint-close:hover { background: var(--sand); color: var(--text); }
+  .discover-hint-title {
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+  }
+  @media (max-width: 540px) { .discover-hint { display: none !important; } }
+
+  /* ── Data-value hover tooltip (simple CSS tooltip on [data-tip]) ── */
+  [data-tip] { position: relative; }
+  [data-tip]:hover::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ocean-900);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    z-index: 20;
+    pointer-events: none;
+  }
+
+  /* ── KPI tile: seg buttons + clickable whole-tile cursor ── */
+  .kpi-seg-opt {
+    position: relative;
+  }
+  .kpi-seg-opt.is-active::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    box-shadow: 0 0 0 2px rgba(26, 132, 150, 0.18);
+    pointer-events: none;
+    animation: popIn 0.2s cubic-bezier(.22,.61,.36,1);
+  }
+
+  /* ── Staggered reveal for the summary strip on initial load ── */
+  .summary-strip-inner .kpi {
+    animation: fadeUp 0.5s cubic-bezier(.22,.61,.36,1) both;
+  }
+  .summary-strip-inner .kpi:nth-child(1) { animation-delay: 0.05s; }
+  .summary-strip-inner .kpi:nth-child(2) { animation-delay: 0.12s; }
+  .summary-strip-inner .kpi:nth-child(3) { animation-delay: 0.19s; }
+  .summary-strip-inner .kpi:nth-child(4) { animation-delay: 0.26s; }
+
+  /* Lower hint + toast on small screens so they don't stack */
+  @media (max-width: 720px) {
+    .toast { bottom: 20px; right: 20px; }
+    .discover-hint { max-width: calc(100vw - 40px); }
+  }
 </style>
 </head>
 <body>
@@ -1595,25 +2297,41 @@
       <div class="title-block">
         <h1>Hawaiʻi Cost of Living Tracker</h1>
         <div class="header-meta" id="header-meta">
-          <span>Q1 2026 &nbsp;·&nbsp; Updated Apr 2026</span>
-          <span class="header-inflation-chip" id="header-inflation-chip" title="Honolulu all-items CPI · BLS" hidden>
+          <span id="header-asof-label">As of —</span>
+          <button type="button" class="header-asof-btn" id="header-asof-btn"
+                  aria-expanded="false" aria-controls="header-asof-popover"
+                  title="Per-metric freshness">i</button>
+          <span class="header-inflation-chip gloss" data-gloss="CPI" id="header-inflation-chip" hidden>
             <span class="header-inflation-lbl">Hawaiʻi inflation</span>
             <span class="header-inflation-val" id="header-inflation-val">—</span>
           </span>
         </div>
+        <div class="header-asof-popover" id="header-asof-popover" hidden>
+          <div class="header-asof-popover-title">Data freshness</div>
+          <ul id="header-asof-list"></ul>
+        </div>
       </div>
-      <div class="county-select-wrap">
-        <button class="county-select" id="county-select-btn" aria-haspopup="listbox" aria-expanded="false" onclick="toggleCountyPopover(event)">
-          <span class="county-select-lbl">Viewing</span>
-          <span class="county-select-name" id="county-select-name">Statewide</span>
-          <span class="caret" aria-hidden="true"></span>
+      <div class="county-select-wrap-row">
+        <button class="share-btn" id="share-link-btn" onclick="copyShareLink(event)" title="Copy a shareable link to the current view" aria-label="Copy shareable link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+          </svg>
+          <span class="share-btn-lbl">Share</span>
         </button>
-        <div class="county-popover" id="county-popover" role="listbox">
-          <button class="county-popover-item is-active" data-county="State"    onclick="selectCounty('State')">Statewide</button>
-          <button class="county-popover-item"           data-county="Honolulu" onclick="selectCounty('Honolulu')">Honolulu</button>
-          <button class="county-popover-item"           data-county="Maui"     onclick="selectCounty('Maui')">Maui</button>
-          <button class="county-popover-item"           data-county="Hawaii"   onclick="selectCounty('Hawaii')">Hawaiʻi</button>
-          <button class="county-popover-item"           data-county="Kauai"    onclick="selectCounty('Kauai')">Kauaʻi</button>
+        <div class="county-select-wrap">
+          <button class="county-select" id="county-select-btn" aria-haspopup="listbox" aria-expanded="false" onclick="toggleCountyPopover(event)" title="Keyboard: 1–5 switch county · H/G switch pane">
+            <span class="county-select-lbl">Viewing</span>
+            <span class="county-select-name" id="county-select-name">Statewide</span>
+            <span class="caret" aria-hidden="true"></span>
+          </button>
+          <div class="county-popover" id="county-popover" role="listbox">
+            <button class="county-popover-item is-active" data-county="State"    onclick="selectCounty('State')">Statewide</button>
+            <button class="county-popover-item"           data-county="Honolulu" onclick="selectCounty('Honolulu')">Honolulu</button>
+            <button class="county-popover-item"           data-county="Maui"     onclick="selectCounty('Maui')">Maui</button>
+            <button class="county-popover-item"           data-county="Hawaii"   onclick="selectCounty('Hawaii')">Hawaiʻi</button>
+            <button class="county-popover-item"           data-county="Kauai"    onclick="selectCounty('Kauai')">Kauaʻi</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1725,7 +2443,7 @@
         </div>
       </div>
       <div class="kpi-value" id="kpi-income-value">—</div>
-      <div class="kpi-sub" id="kpi-income-sub">4-person · HUD FY 2025</div>
+      <div class="kpi-sub" id="kpi-income-sub">4-person · <span class="gloss" data-gloss="HUD">HUD</span> FY 2025</div>
     </div>
   </div>
 </section>
@@ -1754,21 +2472,23 @@
   <div class="metrics-container">
     <div class="metrics-container-title">Housing market &amp; affordability</div>
     <div class="housing-pair-grid" id="housing-pair-grid"></div>
-    <div class="affordability-note">Affordability index: 100 = typical Hawaiʻi household can afford the median home at current mortgage rates.</div>
+    <div class="affordability-note"><span class="gloss" data-gloss="affordabilityIndex">Affordability index</span>: 100 = typical Hawaiʻi household can afford the median home at current mortgage rates.</div>
   </div>
 
   <div class="section-label">Affordability calculator</div>
   <div class="calc-section">
     <p style="font-size:15px;color:var(--text-mid);margin-bottom:16px;">Enter your household income and adjust the mortgage rate to see what you can afford — and how it compares to median market prices.</p>
 
-    <div class="slider-row">
+    <div class="slider-row" id="income-slider-row">
       <div class="slider-label">Household income</div>
-      <input type="range" id="income-slider" min="30000" max="300000" step="1000" value="98317" oninput="updateCalc()">
+      <input type="range" id="income-slider" class="has-progress" min="30000" max="300000" step="1000" value="98317" oninput="updateCalc()">
+      <div class="slider-bubble" id="income-bubble">$98,317</div>
       <div class="slider-val" id="income-display">$98,317</div>
     </div>
-    <div class="slider-row">
+    <div class="slider-row" id="rate-slider-row">
       <div class="slider-label">Mortgage rate</div>
-      <input type="range" id="rate-slider" min="3.0" max="9.0" step="0.05" value="6.38" oninput="updateCalc(); updateAfford()">
+      <input type="range" id="rate-slider" class="has-progress" min="3.0" max="9.0" step="0.05" value="6.38" oninput="updateCalc(); updateAfford()">
+      <div class="slider-bubble" id="rate-bubble">6.38%</div>
       <div class="slider-val" id="rate-display">6.38%</div>
     </div>
 
@@ -1783,17 +2503,17 @@
   </div>
 
   <div class="card" style="margin-bottom:1.25rem;">
-    <div class="card-title">Mortgage payment share of income</div>
+    <div class="card-title"><span class="gloss" data-gloss="mortgagePayment">Mortgage payment</span> share of income <span style="color:var(--text-lt);font-weight:400;font-size:14px;">(<span class="gloss" data-gloss="PTI">PTI</span>)</span></div>
     <div class="card-sub">All counties &nbsp;·&nbsp; monthly P&amp;I as % of gross income &nbsp;·&nbsp; 20% down, current rate</div>
     <div id="pti-bars"></div>
   </div>
 
   <div class="card">
     <div class="card-title">Rental market</div>
-    <div class="card-sub">Median contract rent (existing leases) vs. asking rent for new listings &nbsp;·&nbsp; both exclude utilities</div>
+    <div class="card-sub">Median <span class="gloss" data-gloss="contractRent">contract rent</span> (existing leases) vs. <span class="gloss" data-gloss="askingRent">asking rent</span> for new listings &nbsp;·&nbsp; both exclude utilities</div>
     <div class="legend-row">
-      <span><span class="swatch" style="background:var(--ocean-300);"></span>Existing lease <span style="color:var(--text-lt);font-size:13px;">(BLS CPI — Honolulu; Census ACS — neighbor islands)</span></span>
-      <span><span class="swatch" style="background:var(--coral-500);"></span>Asking rent <span style="color:var(--text-lt);font-size:13px;">(Zillow ZORI)</span></span>
+      <span><span class="swatch" style="background:var(--ocean-300);"></span><span class="gloss" data-gloss="rentNowcast">Tenant rent · nowcast</span> <span style="color:var(--text-lt);font-size:13px;">(70% <span class="gloss" data-gloss="BLS">BLS</span> <span class="gloss" data-gloss="CPI">CPI</span> + 30% <span class="gloss" data-gloss="ZORI">ZORI</span>, anchored to <span class="gloss" data-gloss="ACS">ACS</span> 2024)</span></span>
+      <span><span class="swatch" style="background:var(--coral-500);"></span>Asking rent <span style="color:var(--text-lt);font-size:13px;">(Zillow <span class="gloss" data-gloss="ZORI">ZORI</span>)</span></span>
     </div>
     <div id="rent-grid"></div>
   </div>
@@ -1803,7 +2523,7 @@
     <div class="goods-detail-body">
       <div class="card">
         <div class="card-title">Construction hard costs &nbsp;·&nbsp; Honolulu (Q1 2026)</div>
-        <div class="card-sub">RLB Quarterly Cost Report &nbsp;·&nbsp; change measured from Q1 2020</div>
+        <div class="card-sub"><span class="gloss" data-gloss="RLB">RLB</span> Quarterly Cost Report &nbsp;·&nbsp; change measured from Q1 2020</div>
         <div class="rlb-grid">
           <div class="rlb-card">
             <div class="rlb-label">Multifamily</div>
@@ -1830,16 +2550,16 @@
         </div>
         <div style="position:relative;width:100%;height:180px;"><canvas id="rlb-chart"></canvas></div>
 
-        <div class="card-sub" style="margin-top:20px;margin-bottom:10px;">Private building authorizations by county &nbsp;·&nbsp; DBEDT QSER · 2025 annual total</div>
+        <div class="card-sub" style="margin-top:20px;margin-bottom:10px;">Private building authorizations by county &nbsp;·&nbsp; <span class="gloss" data-gloss="DBEDT">DBEDT</span> QSER · 2025 annual total</div>
         <div id="build-auth-bars"></div>
       </div>
 
       <div class="note-box" style="margin-bottom:0;">
         <strong style="color:var(--text);">Note on condos &amp; construction costs</strong><br>
-        Condo mortgage payments exclude HOA fees, which average ~$762/month statewide — among the highest in the nation. At $310–$520/sf for multifamily hard costs alone, up ~30% since 2020, building to price points accessible to median-income households requires substantial public subsidy. Affordability index: 100 = perfectly affordable at median income; below 100 = median income falls short.
+        Condo <span class="gloss" data-gloss="mortgagePayment">mortgage payments</span> exclude HOA fees, which average ~$762/month statewide — among the highest in the nation. At $310–$520/sf for multifamily hard costs alone, up ~30% since 2020, building to price points accessible to median-income households requires substantial public subsidy. <span class="gloss" data-gloss="affordabilityIndex">Affordability index</span>: 100 = perfectly affordable at median income; below 100 = median income falls short.
         <br><br>
         <strong style="color:var(--text);">Note on construction cost indices</strong><br>
-        The cost indices track the <em>low end</em> of each published RLB cost range (e.g., $310/sf for multifamily, not $520/sf), rebased to Q1 2020 = 100. Using the low end understates actual cost growth for higher-complexity projects, so the increases shown — +51% multifamily, +19% single-family, +81% ground parking — should be read as a floor, not a ceiling.
+        The cost indices track the <em>low end</em> of each published <span class="gloss" data-gloss="RLB">RLB</span> cost range (e.g., $310/sf for multifamily, not $520/sf), rebased to Q1 2020 = 100. Using the low end understates actual cost growth for higher-complexity projects, so the increases shown — +51% multifamily, +19% single-family, +81% ground parking — should be read as a floor, not a ceiling.
       </div>
     </div>
   </details>
@@ -1851,7 +2571,7 @@
     <div class="metrics-container">
       <div class="metrics-container-title">Groceries &amp; gas &middot; {{county}}</div>
       <div class="housing-pair-grid" id="goods-pair-grid"></div>
-      <div class="affordability-note">Groceries are family-of-4 post-tax (4.5% GET). Gas is current AAA Hawaiʻi regular unleaded average.</div>
+      <div class="affordability-note">Groceries are family-of-4 post-tax (4.5% <span class="gloss" data-gloss="GET">GET</span>). Gas is current <span class="gloss" data-gloss="AAA">AAA</span> Hawaiʻi regular unleaded average.</div>
     </div>
 
     <div class="housing-pair-grid" style="margin-top:22px;">
@@ -1889,14 +2609,14 @@
         <div class="note-box" style="border-left-color:var(--green);margin-bottom:0;">
           <strong style="color:var(--text);">Methodology</strong><br>
           <span id="goods-methodology-body">
-            Headline grocery figures are anchored to the USDA <strong>Thrifty Food Plan</strong> for Hawaiʻi — a federally calibrated minimum-cost food budget for the reference family of four (two adults 20–50, two children ages 6–8 and 9–11). County-level variation comes from our priced staple basket below (Honolulu = 100 index). Hawaiʻi's 4.5% General Excise Tax is applied at the register.
+            Headline grocery figures are anchored to the <span class="gloss" data-gloss="USDA">USDA</span> <strong><span class="gloss" data-gloss="thriftyFoodPlan">Thrifty Food Plan</span></strong> for Hawaiʻi — a federally calibrated minimum-cost food budget for the reference family of four (two adults 20–50, two children ages 6–8 and 9–11). County-level variation comes from our priced staple basket below (Honolulu = 100 index). Hawaiʻi's 4.5% <span class="gloss" data-gloss="GET">General Excise Tax</span> is applied at the register.
             <br><br>
-            Our tracked basket covers staple SKUs collected from member/loyalty pricing at Foodland (Maikaʻi), Safeway (Club Card), Costco, Walmart, Target, and Don Quijote, then combined using per-county market-share weights derived from USDA SNAP retailer data. It is a <strong>price index</strong>, not a complete household food budget — useful for comparing counties month-to-month. The USDA TFP number reflects the full household food basket as calibrated by USDA.
+            Our tracked basket covers staple SKUs collected from member/loyalty pricing at Foodland (Maikaʻi), Safeway (Club Card), Costco, Walmart, Target, and Don Quijote, then combined using per-county market-share weights derived from USDA SNAP retailer data. It is a <strong>price index</strong>, not a complete household food budget — useful for comparing counties month-to-month. The USDA <span class="gloss" data-gloss="TFP">TFP</span> number reflects the full household food basket as calibrated by USDA.
           </span>
           <br><br>
           <strong style="color:var(--text);">Data sources</strong><br>
           <span id="goods-datasources-body">
-            USDA Food and Nutrition Service · CNPP Thrifty Food Plan monthly AK-HI report (reference family of 4) · Hawaiʻi Grocery Price Tracker · Hawaiʻi GET (4.5%) · U.S. Census Bureau County Business Patterns. Gas prices via <a href="https://gasprices.aaa.com/?state=HI" style="color:var(--green);" target="_blank">AAA Hawaiʻi</a> — updated daily, scraped monthly. Household-scaling factors follow the USDA four-person reference family normalization.
+            <span class="gloss" data-gloss="USDA">USDA</span> Food and Nutrition Service · <span class="gloss" data-gloss="CNPP">CNPP</span> <span class="gloss" data-gloss="thriftyFoodPlan">Thrifty Food Plan</span> monthly AK-HI report (reference family of 4) · Hawaiʻi Grocery Price Tracker · Hawaiʻi <span class="gloss" data-gloss="GET">GET</span> (4.5%) · U.S. Census Bureau County Business Patterns. Gas prices via <a href="https://gasprices.aaa.com/?state=HI" style="color:var(--green);" target="_blank">AAA Hawaiʻi</a> — updated daily, scraped monthly. Household-scaling factors follow the USDA four-person reference family normalization.
           </span>
         </div>
       </div>
@@ -1904,18 +2624,37 @@
   </section><!-- /#pane-goods -->
 </main>
 
+<button class="scroll-top-btn" id="scroll-top-btn" aria-label="Back to top" data-tooltip="Back to top · Home">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"/>
+  </svg>
+</button>
+
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <polyline points="20 6 9 17 4 12"/>
+  </svg>
+  <span id="toast-msg">Link copied</span>
+</div>
+
+<div class="discover-hint" id="discover-hint" role="note">
+  <button class="discover-hint-close" onclick="dismissHint()" aria-label="Dismiss hint">×</button>
+  <div class="discover-hint-title">Keyboard shortcuts</div>
+  Press <kbd>1</kbd>–<kbd>5</kbd> to switch county, <kbd>H</kbd>/<kbd>G</kbd> to switch pane.
+</div>
+
 <footer>
-  Sources: UHERO 2025 Hawaiʻi Housing Factbook; RLB Quarterly Cost Report Q1 2026; Hawaiʻi Board of Realtors; U.S. Census ACS 5-Year Estimates; Freddie Mac PMMS; DBEDT QSER; Hawaiʻi Grocery Price Tracker; USDA Thrifty Food Plan 2023; HUD State Income Limits FY 2025.
+  Sources: <span class="gloss" data-gloss="UHERO">UHERO</span> 2025 Hawaiʻi Housing Factbook; <span class="gloss" data-gloss="RLB">RLB</span> Quarterly Cost Report Q1 2026; Hawaiʻi Board of Realtors; U.S. Census <span class="gloss" data-gloss="ACS">ACS</span> 5-Year Estimates; Freddie Mac <span class="gloss" data-gloss="PMMS">PMMS</span>; <span class="gloss" data-gloss="DBEDT">DBEDT</span> QSER; Hawaiʻi Grocery Price Tracker; <span class="gloss" data-gloss="USDA">USDA</span> <span class="gloss" data-gloss="thriftyFoodPlan">Thrifty Food Plan</span> 2023; <span class="gloss" data-gloss="HUD">HUD</span> State Income Limits FY 2025.
   <br>Produced by Hawaiʻi Appleseed Center for Law &amp; Economic Justice &nbsp;·&nbsp; <a href="https://hiappleseed.org" style="color:var(--ocean-mid);">hiappleseed.org</a>
 </footer>
 
 <script>
 const countyData = {
-  State:    { income:123000,  sfhPrice:1024900,  condoPrice:555200,  sfhPTI:0.5790, condoPTI:0.3657, sfhIdx:51.8, condoIdx:82.0, sfhGap:91439,  condoGap:21529, rent:1768, askRent:2915, sfhMortgage:4744, condoMortgage:2996, buildAuth:4404 },
-  Honolulu: { income:129300, sfhPrice:1155000, condoPrice:515000,  sfhPTI:0.6278, condoPTI:0.3218, sfhIdx:47.8, condoIdx:93.2, sfhGap:113935, condoGap:7592,  rent:2093, askRent:2843, sfhMortgage:5455, condoMortgage:2796, buildAuth:2736 },
-  Maui:     { income:110900,  sfhPrice:1206500, condoPrice:675000,  sfhPTI:0.7532, condoPTI:0.5752, sfhIdx:39.8, condoIdx:52.2, sfhGap:143626, condoGap:87199, rent:1668, askRent:3581, sfhMortgage:5967, condoMortgage:4557, buildAuth:651 },
-  Hawaii:   { income:98800,  sfhPrice:641000,  condoPrice:672500,  sfhPTI:0.3366, condoPTI:0.4268, sfhIdx:89.1, condoIdx:70.3, sfhGap:9424,   condoGap:32644, rent:1203, askRent:2623, sfhMortgage:2166, condoMortgage:2746, buildAuth:911 },
-  Kauai:    { income:132900,  sfhPrice:1542500, condoPrice:757500,  sfhPTI:0.6913, condoPTI:0.6081, sfhIdx:43.4, condoIdx:49.3, sfhGap:122110, condoGap:96144, rent:1582, askRent:3572, sfhMortgage:5393, condoMortgage:4744, buildAuth:106 },
+  State:    { income:123000,  sfhPrice:1024900,  condoPrice:555200,  sfhPTI:0.5790, condoPTI:0.3657, sfhIdx:51.8, condoIdx:82.0, sfhGap:91439,  condoGap:21529, rent:1920, askRent:2915, sfhMortgage:4744, condoMortgage:2996, buildAuth:4404 },
+  Honolulu: { income:129300, sfhPrice:1155000, condoPrice:515000,  sfhPTI:0.6278, condoPTI:0.3218, sfhIdx:47.8, condoIdx:93.2, sfhGap:113935, condoGap:7592,  rent:2025, askRent:2843, sfhMortgage:5455, condoMortgage:2796, buildAuth:2736 },
+  Maui:     { income:110900,  sfhPrice:1206500, condoPrice:675000,  sfhPTI:0.7532, condoPTI:0.5752, sfhIdx:39.8, condoIdx:52.2, sfhGap:143626, condoGap:87199, rent:1788, askRent:3581, sfhMortgage:5967, condoMortgage:4557, buildAuth:651 },
+  Hawaii:   { income:98800,  sfhPrice:641000,  condoPrice:672500,  sfhPTI:0.3366, condoPTI:0.4268, sfhIdx:89.1, condoIdx:70.3, sfhGap:9424,   condoGap:32644, rent:1357, askRent:2623, sfhMortgage:2166, condoMortgage:2746, buildAuth:911 },
+  Kauai:    { income:132900,  sfhPrice:1542500, condoPrice:757500,  sfhPTI:0.6913, condoPTI:0.6081, sfhIdx:43.4, condoIdx:49.3, sfhGap:122110, condoGap:96144, rent:1775, askRent:3572, sfhMortgage:5393, condoMortgage:4744, buildAuth:106 },
 };
 const counties = ['State','Honolulu','Maui','Hawaii','Kauai'];
 const shortLbl = { State:'State', Honolulu:'Honolulu', Maui:'Maui', Hawaii:'Hawaiʻi', Kauai:'Kauaʻi' };
@@ -1933,6 +2672,42 @@ function formatMonth(yyyyMm) {
   const names = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const idx = parseInt(m[2], 10) - 1;
   return (names[idx] || m[2]) + ' ' + m[1];
+}
+/* Period-label formatter: emits "Mar 2026" with optional "proj." or "bimonthly" tag.
+   Input shape: { period: "YYYY-MM"|"FY 2025"|"2025", cadence, projected, originalPeriod }
+   - cadence 'annual' → returns period as-is (no month formatting)
+   - projected=true → appends amber "proj." tag
+   - cadence 'bimonthly' → appends neutral "bimonthly" tag
+*/
+function fmtPeriodLabel(info) {
+  if (!info || !info.period) return '—';
+  if (info.cadence === 'annual') return info.period;
+  const m = formatMonth(info.period);
+  if (info.projected)             return m + ' <span class="period-tag period-tag--proj gloss" data-gloss="projected">proj.</span>';
+  if (info.cadence === 'bimonthly') return m + ' <span class="period-tag">bimonthly</span>';
+  return m;
+}
+/* Plain-text variant for tooltips/popover rows (no HTML). */
+function fmtPeriodText(info) {
+  if (!info || !info.period) return '—';
+  if (info.cadence === 'annual') return info.period;
+  const m = formatMonth(info.period);
+  if (info.projected) {
+    const orig = info.originalPeriod ? ' from ' + formatMonth(info.originalPeriod) : '';
+    return m + ' (proj.' + orig + ')';
+  }
+  if (info.cadence === 'bimonthly') return m + ' (bimonthly)';
+  return m;
+}
+/* Returns true if a monthly periodInfo is >5 months behind refMonth. */
+function isStalePeriod(info, refMonth) {
+  if (!info || !info.period || info.cadence !== 'monthly') return false;
+  const ref = /^(\d{4})-(\d{2})$/.exec(refMonth);
+  const per = /^(\d{4})-(\d{2})$/.exec(info.period);
+  if (!ref || !per) return false;
+  const refIdx = parseInt(ref[1],10)*12 + parseInt(ref[2],10);
+  const perIdx = parseInt(per[1],10)*12 + parseInt(per[2],10);
+  return (refIdx - perIdx) > 5;
 }
 function fmtM(n) {
   if (n >= 1000000) return '$' + parseFloat((n/1000000).toFixed(2)) + 'M';
@@ -2060,7 +2835,7 @@ function updateCalc() {
     <div class="market-compare-title">How your budget compares in ${fullLbl[currentCounty]}</div>
     <div class="market-compare">
       <div class="mc-item">
-        <div class="mc-label">Median SFH price</div>
+        <div class="mc-label"><span class="gloss" data-gloss="medianPrice">Median</span> <span class="gloss" data-gloss="SFH">SFH</span> price</div>
         <div class="mc-price ${sfhDiff>0?'mc-over':'mc-under'}">${fmt(d.sfhPrice)}</div>
         <div class="mc-gap ${sfhDiff>0?'mc-over':'mc-under'}">${sfhDiff>0 ? '▲ '+fmt(sfhDiff)+' over budget' : '▼ '+fmt(Math.abs(sfhDiff))+' under budget'}</div>
       </div>
@@ -2159,7 +2934,7 @@ function selectCounty(county) {
         <span class="mcard-v2-cpi" id="housing-${kind}-cpi"></span>
         <div class="mcard-v2-price">${fmtM(price)}</div>
         <div class="mcard-v2-idx-row">
-          <span class="mcard-v2-idx-lbl">Affordability index</span>
+          <span class="mcard-v2-idx-lbl"><span class="gloss" data-gloss="affordabilityIndex">Affordability index</span></span>
           <span class="mcard-v2-idx-val">${Math.round(idx)}<span class="tot"> / 100</span></span>
         </div>
         <div class="mcard-v2-bar">
@@ -2172,9 +2947,16 @@ function selectCounty(county) {
         </div>
       </div>`;
   };
+  // Derive housing period badge. Prefer the global housingLatestPeriod
+  // marker (patched by redfin-price-updater); fall back to countyData.State.period.
+  const housingPeriod =
+      (typeof housingLatestPeriod !== 'undefined' && housingLatestPeriod)
+        ? housingLatestPeriod
+        : ((countyData.State && countyData.State.period) ? countyData.State.period.slice(0, 7) : null);
+  const housingBadge  = housingPeriod ? formatMonth(housingPeriod) : 'Mar 2026';
   document.getElementById('housing-pair-grid').innerHTML =
-      mcardV2('sfh',   'Single-family home', d.sfhPrice,   d.sfhIdx,   d.sfhMortgage,   'Feb 2026')
-    + mcardV2('condo', 'Condo',              d.condoPrice, d.condoIdx, d.condoMortgage, 'Feb 2026');
+      mcardV2('sfh',   'Single-family home', d.sfhPrice,   d.sfhIdx,   d.sfhMortgage,   housingBadge)
+    + mcardV2('condo', 'Condo',              d.condoPrice, d.condoIdx, d.condoMortgage, housingBadge);
 
   const maxPTI = 0.85;
   // 30% threshold lands at 35.29% of the bar (30/85). Used for tick position
@@ -2182,14 +2964,16 @@ function selectCounty(county) {
   const threshPct = (0.30 / maxPTI * 100).toFixed(2);
 
   // Build one row inside a PTI panel. Reuses ptiColor() for semantic color.
+  // Rows are clickable → selecting one filters the dashboard to that county.
   const ptiRow = (c, v, isState) => {
     const w = Math.min(v / maxPTI * 100, 100).toFixed(1);
     const clr = ptiColor(v);
+    const isCurrent = c === currentCounty;
     return `
-      <div class="pti-row">
+      <div class="pti-row is-clickable${isCurrent ? ' is-current' : ''}" role="button" tabindex="0" data-county="${c}" title="View ${fullLbl[c]}">
         <div class="pti-row-lbl${isState ? ' pti-row-lbl--state' : ''}">${shortLbl[c]}</div>
         <div class="pti-bar-track">
-          <div class="pti-bar-fill" style="width:${w}%;background:${clr};"></div>
+          <div class="pti-bar-fill" style="width:${w}%;background:${clr};" data-tip="${pct(v)} of income to mortgage P&amp;I"></div>
           <div class="pti-bar-tick" style="left:${threshPct}%;" title="30% cost-burden threshold"></div>
         </div>
         <div class="pti-row-val" style="color:${clr}">${pct(v)}</div>
@@ -2206,7 +2990,7 @@ function selectCounty(county) {
       </span>
       <span class="pti-legend-item">
         <span class="pti-legend-dot" style="background:rgba(224,138,91,0.75);"></span>
-        30–60% — cost-burdened
+        30–60% — <span class="gloss" data-gloss="costBurdened">cost-burdened</span>
       </span>
       <span class="pti-legend-item">
         <span class="pti-legend-dot" style="background:rgba(201,79,58,0.80);"></span>
@@ -2232,15 +3016,16 @@ function selectCounty(county) {
     const w2 = (rd.askRent / maxRentH * 100).toFixed(1);
     const gap = rd.askRent - rd.rent;
     const isState = c === 'State';
-    return `<div class="rent-row" style="${isState?'padding-bottom:10px;border-bottom:1px dashed var(--border);margin-bottom:12px;':''}">
+    const isCurrent = c === currentCounty;
+    return `<div class="rent-row is-clickable${isCurrent ? ' is-current' : ''}" role="button" tabindex="0" data-county="${c}" title="View ${fullLbl[c]}" style="${isState?'padding-bottom:10px;border-bottom:1px dashed var(--border);margin-bottom:12px;':''}">
       <div class="rent-row-lbl" style="${isState?'font-weight:700;color:var(--text);':''}">${shortLbl[c]}${isState?'<br><span style="font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:var(--ocean-mid);">Median</span>':''}</div>
       <div class="rent-bar-group">
         <div class="rent-hbar-wrap">
-          <div class="rent-hbar" style="width:${w1}%;background:var(--ocean-300);"></div>
+          <div class="rent-hbar" style="width:${w1}%;background:var(--ocean-300);" data-tip="Existing leases · ${fmt(rd.rent)}/mo"></div>
           <div class="rent-hbar-val">${fmt(rd.rent)}</div>
         </div>
         <div class="rent-hbar-wrap">
-          <div class="rent-hbar" style="width:${w2}%;background:var(--coral-500);"></div>
+          <div class="rent-hbar" style="width:${w2}%;background:var(--coral-500);" data-tip="New listings · ${fmt(rd.askRent)}/mo"></div>
           <div class="rent-hbar-val">${fmt(rd.askRent)} <span class="rent-gap-label">+${fmt(gap)}/mo premium</span></div>
         </div>
       </div>
@@ -2250,6 +3035,7 @@ function selectCounty(county) {
   // Re-render goods pane so it's ready when user switches tabs
   if (typeof renderGoodsPane === 'function') renderGoodsPane();
   if (typeof renderInflation === 'function') renderInflation();
+  if (typeof renderDataFreshness === 'function') renderDataFreshness();
 }
 
 /* ---------------- Inflation (BLS Honolulu CPI) ---------------- */
@@ -2266,24 +3052,37 @@ const cpiData = {
 /* ---------------- USDA Thrifty Food Plan (Hawaiʻi reference family of 4) ---------------- */
 /* TFP_DATA_START */
 const tfpData = {
-  hawaii:  { family4Monthly: 1529.60, latestPeriod: "2026-01",
-             source: "USDA CNPP Alaska-Hawaii Thrifty Food Plan",
-             url: "https://www.fns.usda.gov/sites/default/files/resource-files/cnpp-costfood-alaskahawaii-jan2026.pdf" },
+  hawaii:  { family4Monthly: 1544.56, latestPeriod: "2026-03", originalPeriod: "2026-01", projected: true, projectionNote: "scaled from 2026-01 via BLS Honolulu food CPI (ratio 1.0098)", source: "USDA CNPP Alaska-Hawaii Thrifty Food Plan", url: "https://www.fns.usda.gov/sites/default/files/resource-files/cnpp-costfood-alaskahawaii-jan2026.pdf" },
   us48:    { family4Monthly: 1002.30, latestPeriod: "2026-03",
              source: "USDA CNPP Thrifty Food Plan (US 48 avg)" },
-  hiRatio: 1.526,
+  hiRatio: 1.541,
   referenceFamily: "2 adults (20-50) + 2 children (6-8, 9-11)"
 };
 /* TFP_DATA_END */
 
+/* ---------------- Redfin housing latest period (sale prices) ---------------- */
+/* HOUSING_PERIOD_START */
+const housingLatestPeriod = "2026-03";
+/* HOUSING_PERIOD_END */
+
+/* ---------------- Zillow ZORI latest period (asking rent) ---------------- */
+/* ZORI_PERIOD_START */
+const zoriLatestPeriod = "2026-03";
+/* ZORI_PERIOD_END */
+
+/* ---------------- BLS Honolulu rent CPI latest period (scales ACS contract rent) ---------------- */
+/* BLS_RENT_PERIOD_START */
+const blsRentLatestPeriod = "2026-03";
+/* BLS_RENT_PERIOD_END */
+
 /* ---------------- Goods & Services (groceries) ---------------- */
 /* GROCERY_DATA_START */
 const groceryData = {
-  State:    { basketPretax:172.58, basketWithTax:180.35, monthlyFamily4:781, groceryIdx:100.4, groceryShareOfIncome:0.0762, weeklyPerCap:45, lastUpdated:"2026-04-15", household:{ singleFemale:53.74, singleMale:67.27, singleParent1Child:92.7, family4:180.35 }, categories:{ grains:39.0, vegetables:18.27, fruits:18.91, dairy:28.61, protein_meat:20.08, protein_seafood:1.78, protein_other:4.47, fats_oils:7.04, beverages:23.74, condiments:0.0, sugars_sweets:6.35, snacks:0.0, prepared:4.34 }, topItems:[ { name:"Folgers Classic Roast ground coffee", price:23.74, vsHnl:1.004 }, { name:"Calrose rice", price:21.44, vsHnl:1.007 }, { name:"Tropicana No Pulp Orange Juice, 89 oz", price:10.93, vsHnl:1.015 }, { name:"Ground beef 80/20", price:9.25, vsHnl:0.98 }, { name:"Cheerios, 12 oz", price:9.04, vsHnl:0.988 }, { name:"Land O'Lakes Salted Butter, 1 lb", price:7.84, vsHnl:1.002 }, { name:"Whole milk, gallon — any brand", price:7.58, vsHnl:0.992 }, { name:"Vegetable oil, ~40-48 fl oz", price:7.04, vsHnl:1.03 } ] },
-  Honolulu: { basketPretax:171.82, basketWithTax:179.55, monthlyFamily4:777, groceryIdx:100.0, groceryShareOfIncome:0.0721, weeklyPerCap:45, lastUpdated:"2026-04-15", household:{ singleFemale:53.5, singleMale:66.97, singleParent1Child:92.29, family4:179.55 }, categories:{ grains:38.85, vegetables:18.5, fruits:18.65, dairy:28.71, protein_meat:19.83, protein_seafood:1.8, protein_other:4.45, fats_oils:6.83, beverages:23.64, condiments:0.0, sugars_sweets:6.28, snacks:0.0, prepared:4.28 }, topItems:[ { name:"Folgers Classic Roast ground coffee", price:23.64, vsHnl:1.0 }, { name:"Calrose rice", price:21.29, vsHnl:1.0 }, { name:"Tropicana No Pulp Orange Juice, 89 oz", price:10.77, vsHnl:1.0 }, { name:"Ground beef 80/20", price:9.44, vsHnl:1.0 }, { name:"Cheerios, 12 oz", price:9.15, vsHnl:1.0 }, { name:"Land O'Lakes Salted Butter, 1 lb", price:7.82, vsHnl:1.0 }, { name:"Whole milk, gallon — any brand", price:7.64, vsHnl:1.0 }, { name:"Vegetable oil, ~40-48 fl oz", price:6.83, vsHnl:1.0 } ] },
-  Maui:     { basketPretax:180.69, basketWithTax:188.82, monthlyFamily4:818, groceryIdx:105.2, groceryShareOfIncome:0.0885, weeklyPerCap:47, lastUpdated:"2026-04-15", household:{ singleFemale:56.27, singleMale:70.43, singleParent1Child:97.05, family4:188.82 }, categories:{ grains:41.71, vegetables:19.46, fruits:20.26, dairy:30.25, protein_meat:19.4, protein_seafood:1.87, protein_other:4.63, fats_oils:7.49, beverages:24.55, condiments:0.0, sugars_sweets:6.91, snacks:0.0, prepared:4.16 }, topItems:[ { name:"Folgers Classic Roast ground coffee", price:24.55, vsHnl:1.038 }, { name:"Calrose rice", price:23.15, vsHnl:1.087 }, { name:"Tropicana No Pulp Orange Juice, 89 oz", price:11.3, vsHnl:1.049 }, { name:"Cheerios, 12 oz", price:9.63, vsHnl:1.052 }, { name:"Ground beef 80/20", price:9.38, vsHnl:0.994 }, { name:"Land O'Lakes Salted Butter, 1 lb", price:8.32, vsHnl:1.064 }, { name:"Whole milk, gallon — any brand", price:7.76, vsHnl:1.016 }, { name:"Large eggs, dozen — any brand", price:7.62, vsHnl:1.126 } ] },
-  Hawaii:   { basketPretax:172.31, basketWithTax:180.06, monthlyFamily4:780, groceryIdx:100.3, groceryShareOfIncome:0.0947, weeklyPerCap:45, lastUpdated:"2026-04-15", household:{ singleFemale:53.66, singleMale:67.16, singleParent1Child:92.56, family4:180.06 }, categories:{ grains:37.85, vegetables:16.77, fruits:19.31, dairy:27.87, protein_meat:20.99, protein_seafood:1.67, protein_other:4.53, fats_oils:8.05, beverages:24.0, condiments:0.0, sugars_sweets:6.68, snacks:0.0, prepared:4.59 }, topItems:[ { name:"Folgers Classic Roast ground coffee", price:24.0, vsHnl:1.015 }, { name:"Calrose rice", price:20.79, vsHnl:0.977 }, { name:"Tropicana No Pulp Orange Juice, 89 oz", price:11.65, vsHnl:1.082 }, { name:"Boneless skinless chicken breast", price:8.79, vsHnl:1.328 }, { name:"Cheerios, 12 oz", price:8.33, vsHnl:0.91 }, { name:"Ground beef 80/20", price:8.28, vsHnl:0.877 }, { name:"Vegetable oil, ~40-48 fl oz", price:8.05, vsHnl:1.179 }, { name:"Land O'Lakes Salted Butter, 1 lb", price:7.89, vsHnl:1.009 } ] },
-  Kauai:    { basketPretax:165.41, basketWithTax:172.85, monthlyFamily4:748, groceryIdx:96.3, groceryShareOfIncome:0.0675, weeklyPerCap:43, lastUpdated:"2026-04-15", household:{ singleFemale:51.51, singleMale:64.48, singleParent1Child:88.85, family4:172.85 }, categories:{ grains:38.06, vegetables:16.48, fruits:18.29, dairy:25.56, protein_meat:22.61, protein_seafood:1.56, protein_other:4.2, fats_oils:6.11, beverages:22.49, condiments:0.0, sugars_sweets:5.1, snacks:0.0, prepared:4.95 }, topItems:[ { name:"Folgers Classic Roast ground coffee", price:22.49, vsHnl:0.951 }, { name:"Calrose rice", price:21.41, vsHnl:1.006 }, { name:"Tropicana No Pulp Orange Juice, 89 oz", price:10.36, vsHnl:0.962 }, { name:"Boneless skinless chicken breast", price:9.78, vsHnl:1.477 }, { name:"Ground beef 80/20", price:8.99, vsHnl:0.952 }, { name:"Cheerios, 12 oz", price:8.13, vsHnl:0.889 }, { name:"Whole milk, gallon — any brand", price:7.04, vsHnl:0.921 }, { name:"Land O'Lakes Salted Butter, 1 lb", price:6.86, vsHnl:0.877 } ] },
+  State:    { basketPretax:172.58, basketWithTax:180.35, monthlyFamily4:781, groceryIdx:100.4, groceryShareOfIncome:0.0762, weeklyPerCap:45, lastUpdated:"2026-04-15", projected:false, originalPeriod:"", household:{ singleFemale:53.74, singleMale:67.27, singleParent1Child:92.7, family4:180.35 }, categories:{ grains:39.0, vegetables:18.27, fruits:18.91, dairy:28.61, protein_meat:20.08, protein_seafood:1.78, protein_other:4.47, fats_oils:7.04, beverages:23.74, condiments:0.0, sugars_sweets:6.35, snacks:0.0, prepared:4.34 }, topItems:[ { name:"Folgers Classic Roast ground coffee", price:23.74, vsHnl:1.004 }, { name:"Calrose rice", price:21.44, vsHnl:1.007 }, { name:"Tropicana No Pulp Orange Juice, 89 oz", price:10.93, vsHnl:1.015 }, { name:"Ground beef 80/20", price:9.25, vsHnl:0.98 }, { name:"Cheerios, 12 oz", price:9.04, vsHnl:0.988 }, { name:"Land O'Lakes Salted Butter, 1 lb", price:7.84, vsHnl:1.002 }, { name:"Whole milk, gallon — any brand", price:7.58, vsHnl:0.992 }, { name:"Vegetable oil, ~40-48 fl oz", price:7.04, vsHnl:1.03 } ] },
+  Honolulu: { basketPretax:171.82, basketWithTax:179.55, monthlyFamily4:777, groceryIdx:100.0, groceryShareOfIncome:0.0721, weeklyPerCap:45, lastUpdated:"2026-04-15", projected:false, originalPeriod:"", household:{ singleFemale:53.5, singleMale:66.97, singleParent1Child:92.29, family4:179.55 }, categories:{ grains:38.85, vegetables:18.5, fruits:18.65, dairy:28.71, protein_meat:19.83, protein_seafood:1.8, protein_other:4.45, fats_oils:6.83, beverages:23.64, condiments:0.0, sugars_sweets:6.28, snacks:0.0, prepared:4.28 }, topItems:[ { name:"Folgers Classic Roast ground coffee", price:23.64, vsHnl:1.0 }, { name:"Calrose rice", price:21.29, vsHnl:1.0 }, { name:"Tropicana No Pulp Orange Juice, 89 oz", price:10.77, vsHnl:1.0 }, { name:"Ground beef 80/20", price:9.44, vsHnl:1.0 }, { name:"Cheerios, 12 oz", price:9.15, vsHnl:1.0 }, { name:"Land O'Lakes Salted Butter, 1 lb", price:7.82, vsHnl:1.0 }, { name:"Whole milk, gallon — any brand", price:7.64, vsHnl:1.0 }, { name:"Vegetable oil, ~40-48 fl oz", price:6.83, vsHnl:1.0 } ] },
+  Maui:     { basketPretax:180.69, basketWithTax:188.82, monthlyFamily4:818, groceryIdx:105.2, groceryShareOfIncome:0.0885, weeklyPerCap:47, lastUpdated:"2026-04-15", projected:false, originalPeriod:"", household:{ singleFemale:56.27, singleMale:70.43, singleParent1Child:97.05, family4:188.82 }, categories:{ grains:41.71, vegetables:19.46, fruits:20.26, dairy:30.25, protein_meat:19.4, protein_seafood:1.87, protein_other:4.63, fats_oils:7.49, beverages:24.55, condiments:0.0, sugars_sweets:6.91, snacks:0.0, prepared:4.16 }, topItems:[ { name:"Folgers Classic Roast ground coffee", price:24.55, vsHnl:1.038 }, { name:"Calrose rice", price:23.15, vsHnl:1.087 }, { name:"Tropicana No Pulp Orange Juice, 89 oz", price:11.3, vsHnl:1.049 }, { name:"Cheerios, 12 oz", price:9.63, vsHnl:1.052 }, { name:"Ground beef 80/20", price:9.38, vsHnl:0.994 }, { name:"Land O'Lakes Salted Butter, 1 lb", price:8.32, vsHnl:1.064 }, { name:"Whole milk, gallon — any brand", price:7.76, vsHnl:1.016 }, { name:"Large eggs, dozen — any brand", price:7.62, vsHnl:1.126 } ] },
+  Hawaii:   { basketPretax:172.31, basketWithTax:180.06, monthlyFamily4:780, groceryIdx:100.3, groceryShareOfIncome:0.0947, weeklyPerCap:45, lastUpdated:"2026-04-15", projected:false, originalPeriod:"", household:{ singleFemale:53.66, singleMale:67.16, singleParent1Child:92.56, family4:180.06 }, categories:{ grains:37.85, vegetables:16.77, fruits:19.31, dairy:27.87, protein_meat:20.99, protein_seafood:1.67, protein_other:4.53, fats_oils:8.05, beverages:24.0, condiments:0.0, sugars_sweets:6.68, snacks:0.0, prepared:4.59 }, topItems:[ { name:"Folgers Classic Roast ground coffee", price:24.0, vsHnl:1.015 }, { name:"Calrose rice", price:20.79, vsHnl:0.977 }, { name:"Tropicana No Pulp Orange Juice, 89 oz", price:11.65, vsHnl:1.082 }, { name:"Boneless skinless chicken breast", price:8.79, vsHnl:1.328 }, { name:"Cheerios, 12 oz", price:8.33, vsHnl:0.91 }, { name:"Ground beef 80/20", price:8.28, vsHnl:0.877 }, { name:"Vegetable oil, ~40-48 fl oz", price:8.05, vsHnl:1.179 }, { name:"Land O'Lakes Salted Butter, 1 lb", price:7.89, vsHnl:1.009 } ] },
+  Kauai:    { basketPretax:165.41, basketWithTax:172.85, monthlyFamily4:748, groceryIdx:96.3, groceryShareOfIncome:0.0675, weeklyPerCap:43, lastUpdated:"2026-04-15", projected:false, originalPeriod:"", household:{ singleFemale:51.51, singleMale:64.48, singleParent1Child:88.85, family4:172.85 }, categories:{ grains:38.06, vegetables:16.48, fruits:18.29, dairy:25.56, protein_meat:22.61, protein_seafood:1.56, protein_other:4.2, fats_oils:6.11, beverages:22.49, condiments:0.0, sugars_sweets:5.1, snacks:0.0, prepared:4.95 }, topItems:[ { name:"Folgers Classic Roast ground coffee", price:22.49, vsHnl:0.951 }, { name:"Calrose rice", price:21.41, vsHnl:1.006 }, { name:"Tropicana No Pulp Orange Juice, 89 oz", price:10.36, vsHnl:0.962 }, { name:"Boneless skinless chicken breast", price:9.78, vsHnl:1.477 }, { name:"Ground beef 80/20", price:8.99, vsHnl:0.952 }, { name:"Cheerios, 12 oz", price:8.13, vsHnl:0.889 }, { name:"Whole milk, gallon — any brand", price:7.04, vsHnl:0.921 }, { name:"Land O'Lakes Salted Butter, 1 lb", price:6.86, vsHnl:0.877 } ] },
 };
 /* GROCERY_DATA_END */
 
@@ -2332,7 +3131,15 @@ function renderGoodsPane() {
   const displayMonthly = tfpMonthly ? Math.round(tfpMonthly) : g.monthlyFamily4;
   const displayWeekly  = tfpWeekly  ? tfpWeekly              : g.basketWithTax;
   const displayShare   = tfp ? (tfpMonthly * 12) / income     : g.groceryShareOfIncome;
-  const dateBadge      = tfp ? formatMonth(tfp.hawaii.latestPeriod) : 'Apr 2026';
+  // Date badge: prefer TFP period; if TFP was forward-projected, show "proj." tag.
+  const dateBadge      = tfp
+    ? fmtPeriodLabel({
+        period: tfp.hawaii.latestPeriod,
+        cadence: 'monthly',
+        projected: tfp.hawaii.projected === true,
+        originalPeriod: tfp.hawaii.originalPeriod || null,
+      })
+    : 'Apr 2026';
   const sourceSubLabel = tfp ? 'USDA Thrifty Food Plan · Hawaiʻi · incl. 4.5% GET'
                              : 'Tracked basket · incl. 4.5% GET';
 
@@ -2467,8 +3274,9 @@ function renderGoodsPane() {
       const val  = kind === 'groc'
         ? r.sharePct.toFixed(1) + '%'
         : (((r.gasRatio - 1) * 100 >= 0 ? '+' : '') + ((r.gasRatio - 1) * 100).toFixed(1) + '%');
+      const isCurrent = r.c === currentCounty;
       return `
-        <div class="bar-row ${r.isState?'bar-row--state':''}" style="align-items:flex-start;flex-direction:column;gap:4px;padding:8px 0;">
+        <div class="bar-row is-clickable-row ${r.isState?'bar-row--state':''}${isCurrent ? ' is-current' : ''}" role="button" tabindex="0" data-county="${r.c}" title="View ${fullLbl[r.c]}" style="align-items:flex-start;flex-direction:column;gap:4px;padding:8px 0;">
           <div style="display:flex;justify-content:space-between;width:100%;align-items:baseline;">
             <div class="bar-lbl ${r.isState?'bar-lbl--state':''}" style="flex:0 0 auto;min-width:auto;">${shortLbl[r.c]}${r.isState?' <span class="state-badge">Median</span>':''}</div>
             <div style="font-size:12px;color:var(--text-lt);">${lblSub}</div>
@@ -2559,14 +3367,14 @@ function renderGoodsCpiBadges() {
     if (cpi && cpi.food && typeof cpi.food.yoy === 'number') {
       const up = cpi.food.yoy > 0;
       gEl.className = 'mcard-v2-cpi ' + (up ? 'is-up' : 'is-down');
-      gEl.innerHTML = '<span class="cpi-arrow">' + (up?'▲':'▼') + '</span>Food CPI ' + (up?'+':'−') + Math.abs(cpi.food.yoy).toFixed(1) + '% YoY';
+      gEl.innerHTML = '<span class="cpi-arrow">' + (up?'▲':'▼') + '</span>Food <span class="gloss" data-gloss="CPI">CPI</span> ' + (up?'+':'−') + Math.abs(cpi.food.yoy).toFixed(1) + '% <span class="gloss" data-gloss="YoY">YoY</span>';
     } else { gEl.textContent = ''; }
   }
   if (xEl) {
     if (cpi && cpi.energy && typeof cpi.energy.yoy === 'number') {
       const up = cpi.energy.yoy > 0;
       xEl.className = 'mcard-v2-cpi ' + (up ? 'is-up' : 'is-down');
-      xEl.innerHTML = '<span class="cpi-arrow">' + (up?'▲':'▼') + '</span>Energy CPI ' + (up?'+':'−') + Math.abs(cpi.energy.yoy).toFixed(1) + '% YoY';
+      xEl.innerHTML = '<span class="cpi-arrow">' + (up?'▲':'▼') + '</span><span class="gloss" data-gloss="gasolineCpi">Gasoline</span> <span class="gloss" data-gloss="CPI">CPI</span> ' + (up?'+':'−') + Math.abs(cpi.energy.yoy).toFixed(1) + '% <span class="gloss" data-gloss="YoY">YoY</span>';
     } else { xEl.textContent = ''; }
   }
 }
@@ -2579,7 +3387,7 @@ function renderHousingCpiBadges() {
     if (cpi && cpi.shelter && typeof cpi.shelter.yoy === 'number') {
       const up = cpi.shelter.yoy > 0;
       el.className = 'mcard-v2-cpi ' + (up ? 'is-up' : 'is-down');
-      el.innerHTML = '<span class="cpi-arrow">' + (up?'▲':'▼') + '</span>Shelter CPI ' + (up?'+':'−') + Math.abs(cpi.shelter.yoy).toFixed(1) + '% YoY';
+      el.innerHTML = '<span class="cpi-arrow">' + (up?'▲':'▼') + '</span>Shelter <span class="gloss" data-gloss="CPI">CPI</span> ' + (up?'+':'−') + Math.abs(cpi.shelter.yoy).toFixed(1) + '% <span class="gloss" data-gloss="YoY">YoY</span>';
     } else { el.textContent = ''; }
   });
 }
@@ -2591,15 +3399,322 @@ function renderInflation() {
   if (!chip || !val) return;
   if (cpi && cpi.allItems && typeof cpi.allItems.yoy === 'number') {
     const y = cpi.allItems.yoy;
-    val.textContent = (y >= 0 ? '+' : '−') + Math.abs(y).toFixed(1) + '% YoY';
+    val.innerHTML = (y >= 0 ? '+' : '−') + Math.abs(y).toFixed(1) + '% <span class="gloss" data-gloss="YoY">YoY</span>';
     val.classList.remove('is-hi','is-mid','is-low');
     val.classList.add(y > 3 ? 'is-hi' : (y >= 2 ? 'is-mid' : 'is-low'));
-    if (cpi.allItems.latestPeriod) chip.title = 'Honolulu all-items CPI · ' + cpi.allItems.latestPeriod + ' · BLS';
+    // Glossary tooltip on the chip shows the CPI definition; period is disclosed in the
+    // header-asof-popover instead. No native title attribute needed.
     chip.hidden = false;
   } else {
     chip.hidden = true;
   }
   renderHousingCpiBadges();
+}
+
+/* --- Data-freshness layer: single "As of" label + popover of per-metric periods --- */
+function buildDataPeriods() {
+  const cpi = (typeof cpiData !== 'undefined' && cpiData) ? cpiData : null;
+  const tfp = (typeof tfpData !== 'undefined' && tfpData) ? tfpData : null;
+  const gas = (typeof gasData !== 'undefined' && gasData) ? gasData[currentCounty] : null;
+  const g   = (typeof groceryData !== 'undefined' && groceryData) ? groceryData[currentCounty] : null;
+  const state = (typeof countyData !== 'undefined') ? countyData.State : null;
+  const housingPeriod =
+      (typeof housingLatestPeriod !== 'undefined' && housingLatestPeriod)
+        ? housingLatestPeriod
+        : (state && state.period ? state.period.slice(0, 7) : null);
+  const gasPeriod = (gas && gas.asOf && typeof gas.asOf === 'string') ? gas.asOf.slice(0, 7) : null;
+
+  return {
+    housing:   housingPeriod ? { period: housingPeriod, cadence: 'monthly' } : null,
+    askRent:   (typeof zoriLatestPeriod !== 'undefined' && zoriLatestPeriod)
+               ? { period: zoriLatestPeriod, cadence: 'monthly' } : null,
+    rent:      (typeof blsRentLatestPeriod !== 'undefined' && blsRentLatestPeriod)
+               ? { period: blsRentLatestPeriod, cadence: 'monthly', projected: true } : null,
+    gas:       gasPeriod ? { period: gasPeriod, cadence: 'daily' } : null,
+    grocery:   (g && g.lastUpdated)
+               ? { period: g.lastUpdated.slice(0, 7),
+                   cadence: 'monthly',
+                   projected: g.projected === true,
+                   originalPeriod: (g.originalPeriod || null) } : null,
+    tfp:       (tfp && tfp.hawaii && tfp.hawaii.latestPeriod)
+               ? { period: tfp.hawaii.latestPeriod,
+                   cadence: 'monthly',
+                   projected: tfp.hawaii.projected === true,
+                   originalPeriod: tfp.hawaii.originalPeriod || null } : null,
+    cpi:       (cpi && cpi.allItems && cpi.allItems.latestPeriod)
+               ? { period: cpi.allItems.latestPeriod, cadence: 'bimonthly' } : null,
+    income:    { period: 'FY 2025',  cadence: 'annual' },
+    buildAuth: { period: '2025',     cadence: 'annual' },
+  };
+}
+
+function renderDataFreshness() {
+  const dp = buildDataPeriods();
+  // Reference month = freshest housing period (what the dashboard is "as of").
+  const refMonth = dp.housing ? dp.housing.period : null;
+  const label = document.getElementById('header-asof-label');
+  if (label) {
+    label.textContent = refMonth ? 'As of ' + formatMonth(refMonth) : 'As of —';
+  }
+  const list = document.getElementById('header-asof-list');
+  if (!list) return;
+  const rows = [
+    ['<span class="gloss" data-gloss="Redfin">Housing</span> (sale)',     dp.housing],
+    ['Rent (<span class="gloss" data-gloss="rentNowcast">tenant · nowcast</span>)', dp.rent],
+    ['Rent (<span class="gloss" data-gloss="askingRent">asking</span>, <span class="gloss" data-gloss="ZORI">ZORI</span>)', dp.askRent],
+    ['<span class="gloss" data-gloss="AAA">Gas</span>',                   dp.gas],
+    ['Grocery basket',                                                    dp.grocery],
+    ['Groceries (<span class="gloss" data-gloss="TFP">TFP</span>)',       dp.tfp],
+    ['Honolulu <span class="gloss" data-gloss="CPI">CPI</span>',          dp.cpi],
+    ['<span class="gloss" data-gloss="HUD">Income</span>',                dp.income],
+    ['<span class="gloss" data-gloss="DBEDT">Construction</span>',        dp.buildAuth],
+  ];
+  list.innerHTML = rows
+    .filter(([_, info]) => info && info.period)
+    .map(([lbl, info]) => {
+      const txt = fmtPeriodText(info);
+      return '<li><span class="asof-label">' + lbl + '</span>'
+           + '<span class="asof-value">' + txt + '</span></li>';
+    })
+    .join('');
+}
+
+/* ---------------- Glossary: definitions + data-source links for jargon terms ----------------
+   Wire-up: any <span class="gloss" data-gloss="KEY">…</span> becomes a hoverable/tappable term.
+   `entry.href` is optional — when present, tooltip renders a "Source ↗" link row. */
+const GLOSSARY = {
+  SFH:        { term: "Single-family home",
+                def:  "A detached residential property on its own parcel. Excludes condos, townhomes, and multi-family units." },
+  PTI:        { term: "Payment-to-Income",
+                def:  "Share of gross household income consumed by the estimated monthly mortgage (principal and interest only, 20% down, current Freddie Mac PMMS rate). Above 30% is considered cost-burdened." },
+  CPI:        { term: "Consumer Price Index",
+                def:  "BLS measure of the average price change over time for a basket of consumer goods. Honolulu CPI is published bimonthly.",
+                source: "BLS Honolulu CPI",
+                href:   "https://www.bls.gov/regions/west/ro9/news-release/consumerpriceindex_honolulu.htm" },
+  ZORI:       { term: "Zillow Observed Rent Index",
+                def:  "Smoothed mean of asking rents listed on Zillow — a leading indicator of what new tenants pay.",
+                source: "Zillow Rent Data",
+                href:   "https://www.zillow.com/research/data/" },
+  TFP:        { term: "Thrifty Food Plan",
+                def:  "USDA-calibrated minimum-cost food budget for a reference family of four (two adults 20&ndash;50, two children 6&ndash;8 and 9&ndash;11). The Alaska&ndash;Hawaii supplement reflects higher island food prices.",
+                source: "USDA CNPP Alaska–Hawaii TFP",
+                href:   "https://www.fns.usda.gov/cnpp/usda-food-plans-cost-food-reports-monthly-reports" },
+  ACS:        { term: "American Community Survey",
+                def:  "Census Bureau's rolling 5-year household survey. Used here for median contract rent by county (table B25058).",
+                source: "Census ACS",
+                href:   "https://www.census.gov/programs-surveys/acs" },
+  HUD:        { term: "U.S. Department of Housing and Urban Development",
+                def:  "Federal agency that publishes Area Median Income (AMI) and Fair Market Rent (FMR) limits used for affordability programs.",
+                source: "HUD Income Limits",
+                href:   "https://www.huduser.gov/portal/datasets/il.html" },
+  HHFDC:      { term: "Hawai‘i Housing Finance &amp; Development Corporation",
+                def:  "State agency that republishes HUD income limits tailored to each Hawaiʻi county for use in affordable housing programs.",
+                source: "HHFDC",
+                href:   "https://dbedt.hawaii.gov/hhfdc/" },
+  DBEDT:      { term: "Hawai‘i Dept. of Business, Economic Development &amp; Tourism",
+                def:  "Publishes the Quarterly Statistical and Economic Report (QSER) — the source for county-level construction authorization totals.",
+                source: "DBEDT QSER",
+                href:   "https://dbedt.hawaii.gov/economic/qser/" },
+  BLS:        { term: "U.S. Bureau of Labor Statistics",
+                def:  "Federal agency that publishes CPI, employment, and wage data. Hawaii-specific series track Honolulu prices.",
+                source: "BLS",
+                href:   "https://www.bls.gov/" },
+  GET:        { term: "General Excise Tax",
+                def:  "Hawaiʻi's 4.5% broad-based transaction tax (4% state + 0.5% Honolulu surcharge). Applied to groceries at the register — unlike most U.S. states, which exempt food." },
+  AAA:        { term: "American Automobile Association",
+                def:  "Publishes the daily statewide average gas price for Hawai‘i — the source used for the gas KPI.",
+                source: "AAA Hawai‘i Gas Prices",
+                href:   "https://gasprices.aaa.com/?state=HI" },
+  CNPP:       { term: "USDA Center for Nutrition Policy and Promotion",
+                def:  "The office within USDA that calibrates the Thrifty Food Plan and publishes monthly cost reports.",
+                source: "USDA CNPP",
+                href:   "https://www.fns.usda.gov/cnpp" },
+  RLB:        { term: "Rider Levett Bucknall",
+                def:  "International construction consultancy. Their Quarterly Construction Cost Report indexes Honolulu building costs against other U.S. cities.",
+                source: "RLB Quarterly Cost Report",
+                href:   "https://www.rlb.com/americas/insight/quarterly-construction-cost-report/" },
+  UHERO:      { term: "UH Economic Research Organization",
+                def:  "University of Hawai‘i research center. Publishes the annual Hawai‘i Housing Factbook — the benchmark for state housing trends.",
+                source: "UHERO",
+                href:   "https://uhero.hawaii.edu/" },
+  PMMS:       { term: "Primary Mortgage Market Survey",
+                def:  "Freddie Mac's weekly national survey of 30-year fixed conforming mortgage rates. Used to compute the payment in the mortgage bar.",
+                source: "Freddie Mac PMMS",
+                href:   "https://www.freddiemac.com/pmms" },
+  Redfin:     { term: "Redfin",
+                def:  "Online real-estate brokerage. Publishes a free monthly market data export that this dashboard uses for SFH and condo medians.",
+                source: "Redfin Data Center",
+                href:   "https://www.redfin.com/news/data-center/" },
+  USDA:       { term: "U.S. Department of Agriculture",
+                def:  "Federal agency whose CNPP office publishes the Thrifty Food Plan — the anchor for the grocery KPI.",
+                source: "USDA",
+                href:   "https://www.usda.gov/" },
+  AMI:        { term: "Area Median Income",
+                def:  "Median household income for a metropolitan area, as calculated by HUD. Often the denominator for affordability thresholds (e.g. 80% of AMI)." },
+  MFI:        { term: "Median Family Income",
+                def:  "HUD's per-family variant of AMI, adjusted for family size. Used by HHFDC for Hawaiʻi income limits." },
+  FMR:        { term: "Fair Market Rent",
+                def:  "HUD's 40th-percentile gross rent for standard-quality units in a metro area. Used to cap rental assistance." },
+  YoY:        { term: "Year over year",
+                def:  "Change relative to the same period one year earlier (e.g. Mar 2026 vs. Mar 2025)." },
+  MoM:        { term: "Month over month",
+                def:  "Change relative to the prior month (e.g. Apr 2026 vs. Mar 2026)." },
+
+  /* --- methodology terms --- */
+  costBurdened: {
+    term: "Cost-burdened",
+    def:  "HUD definition: a household paying more than 30% of gross income toward housing. Above 50% is \"severely cost-burdened.\"" },
+  affordabilityIndex: {
+    term: "Affordability index",
+    def:  "100 = a typical Hawaiʻi household can just afford the median home at a 30% payment-to-income ratio on the current mortgage rate. Below 100 = unaffordable; above 100 = affordable." },
+  contractRent: {
+    term: "Contract rent",
+    def:  "The rent actually being paid under current leases, excluding utilities. Reflects existing tenants (Census ACS table B25058)." },
+  askingRent: {
+    term: "Asking rent",
+    def:  "Rent advertised on new listings. Leading indicator of what new tenants will pay — typically runs higher than contract rent (Zillow ZORI)." },
+  projected: {
+    term: "Projected",
+    def:  "Latest raw value forward-scaled to the reference month via the relevant BLS CPI ratio. Used when the primary source lags 1–2 months behind the dashboard's reference month." },
+  mortgagePayment: {
+    term: "Monthly mortgage payment",
+    def:  "Principal + interest on a 30-year fixed loan, 20% down, at the current Freddie Mac PMMS rate. Does not include taxes, insurance, HOA, or PMI." },
+  medianPrice: {
+    term: "Median sale price",
+    def:  "The middle value of all closed sales in the period — half of homes sold for more, half for less. Less sensitive to outliers than the mean." },
+  thriftyFoodPlan: {
+    term: "Thrifty Food Plan",
+    def:  "USDA's minimum-cost reference food budget for a family of four. The Alaska–Hawaii monthly supplement is used here; Hawaiʻi values run ~1.5× the 48-state average.",
+    source: "USDA CNPP Alaska–Hawaii TFP",
+    href:   "https://www.fns.usda.gov/cnpp/usda-food-plans-cost-food-reports-monthly-reports" },
+  gasolineCpi: {
+    term: "Gasoline CPI (Honolulu)",
+    def:  "Honolulu price index for gasoline — BLS series CUURS49ASETB01 (motor fuel only). Does not include electricity, natural gas, or other home energy. YoY = change vs. the same month last year.",
+    source: "BLS Honolulu CPI",
+    href:   "https://www.bls.gov/regions/west/ro9/news-release/consumerpriceindex_honolulu.htm" },
+  rentNowcast: {
+    term: "Tenant rent · nowcast",
+    def:  "Blended estimate of what existing tenants pay this month: 70% Honolulu CPI rent (official but lags asking rent by ~12 months) + 30% Zillow ZORI growth (leading indicator). Anchored to ACS 2024 median contract rent by county. The blend accepts some asking-rent signal to cut the lag without over-reacting to new-listing noise.",
+    source: "Method: Cleveland Fed WP 22-38r",
+    href:   "https://www.clevelandfed.org/publications/working-paper/2023/wp-2238r-disentangling-rent-index-differences" },
+};
+
+function initGlossary() {
+  let tip = null, activeEl = null, closeTimer = null;
+
+  const make = () => {
+    const el = document.createElement('div');
+    el.className = 'gloss-tip';
+    el.setAttribute('role', 'tooltip');
+    el.hidden = true;
+    document.body.appendChild(el);
+    el.addEventListener('mouseenter', () => clearTimeout(closeTimer));
+    el.addEventListener('mouseleave', scheduleClose);
+    return el;
+  };
+
+  const scheduleClose = () => {
+    clearTimeout(closeTimer);
+    closeTimer = setTimeout(hide, 160);
+  };
+
+  const hide = () => {
+    if (!tip) return;
+    tip.hidden = true;
+    if (activeEl) activeEl.setAttribute('aria-expanded', 'false');
+    activeEl = null;
+  };
+
+  const show = (el) => {
+    const key = el.getAttribute('data-gloss');
+    const entry = GLOSSARY[key];
+    if (!entry) return;
+    if (!tip) tip = make();
+    tip.innerHTML =
+      '<div class="gloss-tip-term">' + entry.term + '</div>' +
+      '<div class="gloss-tip-def">'  + entry.def  + '</div>' +
+      (entry.href
+        ? '<span class="gloss-tip-src">Source: <a href="' + entry.href +
+          '" target="_blank" rel="noopener">' + (entry.source || entry.term) + ' \u2197</a></span>'
+        : '');
+    // Position: below the term, clamped to viewport; flip above if it would overflow.
+    tip.hidden = false;
+    tip.style.left = '0px';
+    tip.style.top  = '0px';
+    const r = el.getBoundingClientRect();
+    const pad = 8;
+    const tw = tip.offsetWidth, th = tip.offsetHeight;
+    let left = window.scrollX + r.left;
+    let top  = window.scrollY + r.bottom + 4;
+    if (left + tw > window.scrollX + window.innerWidth - pad)
+      left = window.scrollX + window.innerWidth - tw - pad;
+    if (left < window.scrollX + pad) left = window.scrollX + pad;
+    if (r.bottom + th + 8 > window.innerHeight)
+      top = window.scrollY + r.top - th - 4;
+    tip.style.left = left + 'px';
+    tip.style.top  = top + 'px';
+    el.setAttribute('aria-expanded', 'true');
+    activeEl = el;
+    clearTimeout(closeTimer);
+  };
+
+  // Desktop: open on enter, schedule close on leave (gives user time to move into tooltip).
+  document.addEventListener('mouseover', (ev) => {
+    const el = ev.target.closest('.gloss');
+    if (!el) return;
+    clearTimeout(closeTimer);
+    if (el !== activeEl) show(el);
+  });
+  document.addEventListener('mouseout', (ev) => {
+    if (ev.target.closest('.gloss')) scheduleClose();
+  });
+
+  // Mobile + keyboard: click to toggle; click outside or Escape to dismiss.
+  document.addEventListener('click', (ev) => {
+    const el = ev.target.closest('.gloss');
+    if (el) {
+      // Don't block clicks on links inside the tooltip itself
+      ev.preventDefault();
+      if (el === activeEl) hide(); else show(el);
+      return;
+    }
+    if (tip && !tip.hidden && !tip.contains(ev.target)) hide();
+  });
+  document.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Escape') hide();
+    else if (ev.key === 'Enter' || ev.key === ' ') {
+      const el = document.activeElement;
+      if (el && el.classList && el.classList.contains('gloss')) {
+        ev.preventDefault();
+        if (el === activeEl) hide(); else show(el);
+      }
+    }
+  });
+
+  // Make all .gloss spans focusable so keyboard users can tab to them.
+  document.querySelectorAll('.gloss').forEach(el => {
+    if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
+  });
+}
+
+function initAsofPopover() {
+  const btn = document.getElementById('header-asof-btn');
+  const pop = document.getElementById('header-asof-popover');
+  if (!btn || !pop) return;
+  btn.addEventListener('click', (ev) => {
+    ev.stopPropagation();
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+    pop.hidden = expanded;
+  });
+  // Dismiss on outside click
+  document.addEventListener('click', (ev) => {
+    if (pop.hidden) return;
+    if (!pop.contains(ev.target) && ev.target !== btn) {
+      btn.setAttribute('aria-expanded', 'false');
+      pop.hidden = true;
+    }
+  });
 }
 
 function setHH(key) {
@@ -2660,10 +3775,16 @@ function renderSummaryStrip() {
   const homeSub = document.getElementById('kpi-home-sub');
   if (currentHomeView === 'rent') {
     homeVal.textContent = fmt(d.rent) + '/mo';
-    homeSub.textContent = 'Median gross rent · ACS 5-yr';
+    homeSub.innerHTML = 'Median gross rent · <span class="gloss" data-gloss="ACS">ACS</span> 5-yr';
   } else {
     homeVal.textContent = fmtMoneyBig(d.sfhPrice);
-    homeSub.textContent = 'Median single-family · Feb 2026';
+    // Pull period (same logic as hero card): prefer global marker, fallback to countyData.
+    const _kpiHousingPeriod =
+        (typeof housingLatestPeriod !== 'undefined' && housingLatestPeriod)
+          ? housingLatestPeriod
+          : ((countyData.State && countyData.State.period) ? countyData.State.period.slice(0, 7) : null);
+    const _kpiHousingBadge = _kpiHousingPeriod ? formatMonth(_kpiHousingPeriod) : '—';
+    homeSub.innerHTML = '<span class="gloss" data-gloss="medianPrice">Median</span> single-family · ' + _kpiHousingBadge;
   }
   document.querySelectorAll('#kpi-home .kpi-seg-opt').forEach(b => {
     const on = b.getAttribute('data-view') === currentHomeView;
@@ -2714,10 +3835,18 @@ function renderSummaryStrip() {
     }
   }
 
-  // Tile 2 — Groceries (monthly, family of 4)
+  // Tile 2 — Groceries (monthly, family of 4 — TFP-anchored, mirrors Goods tab)
   const grocVal = document.getElementById('kpi-groc-value');
-  if (g && typeof g.monthlyFamily4 === 'number') {
-    grocVal.textContent = '$' + Math.round(g.monthlyFamily4).toLocaleString() + '/mo';
+  const tfp_kpi = (typeof tfpData !== 'undefined' && tfpData && tfpData.hawaii) ? tfpData : null;
+  if (g) {
+    const GET_MULT_kpi = 1.045;  // Hawaii GET — must match Goods tab
+    const countyMult_kpi = (g.groceryIdx || 100) / 100;
+    const monthly_kpi = tfp_kpi
+      ? tfp_kpi.hawaii.family4Monthly * countyMult_kpi * GET_MULT_kpi
+      : g.monthlyFamily4;
+    grocVal.textContent = typeof monthly_kpi === 'number'
+      ? '$' + Math.round(monthly_kpi).toLocaleString() + '/mo'
+      : '—';
   } else {
     grocVal.textContent = '—';
   }
@@ -2731,7 +3860,7 @@ function renderSummaryStrip() {
       const arrow = gas.mom_change > 0.005 ? '▲' : gas.mom_change < -0.005 ? '▼' : '•';
       const clr   = gas.mom_change > 0.005 ? 'var(--coral)' : gas.mom_change < -0.005 ? 'var(--green)' : 'var(--text-lt)';
       const sign  = gas.mom_change >= 0 ? '+' : '−';
-      gasSub.innerHTML = 'Regular · <span style="color:' + clr + ';font-weight:500;">' + arrow + ' ' + sign + '$' + Math.abs(gas.mom_change).toFixed(2) + ' MoM</span>';
+      gasSub.innerHTML = 'Regular · <span style="color:' + clr + ';font-weight:500;">' + arrow + ' ' + sign + '$' + Math.abs(gas.mom_change).toFixed(2) + ' <span class="gloss" data-gloss="MoM">MoM</span></span>';
     } else {
       gasSub.textContent = 'Regular unleaded · /gal';
     }
@@ -2773,10 +3902,246 @@ document.addEventListener('click', (ev) => {
   const wrap = document.querySelector('.county-select-wrap');
   if (wrap && !wrap.contains(ev.target)) closeCountyPopover();
 });
-document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeCountyPopover(); });
 
-selectCounty('State');
+/* ---------------- Number count-up animation -----------------
+   We pulse .is-updating on the big numbers each time they're
+   rewritten so the change registers visually. Doing a full count
+   from-old-to-new requires knowing the previous value; for the
+   paired cards that's tricky because innerHTML gets rebuilt, so
+   we keep this to a scale-pulse pass that works universally.   */
+const ANIM_OK = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function pulseNumbers() {
+  if (!ANIM_OK) return;
+  document.querySelectorAll(
+    '.kpi-value, .mcard-v2-price, .calc-big, .afford-price'
+  ).forEach(el => {
+    el.classList.remove('is-updating');
+    // force reflow so the class re-triggers the transition
+    void el.offsetWidth;
+    el.classList.add('is-updating');
+    setTimeout(() => el.classList.remove('is-updating'), 280);
+  });
+}
+
+/* ---------------- URL + localStorage persistence -------------
+   Share-a-view: ?county=Maui&pane=goods writes into state on
+   load. Subsequent changes echo back to the URL (replaceState so
+   we don't pollute history) and localStorage for next visit.   */
+const VALID_COUNTIES = new Set(counties);
+const VALID_PANES    = new Set(['housing','goods']);
+function loadInitialState() {
+  const params = new URLSearchParams(window.location.search);
+  let county = params.get('county');
+  let pane   = params.get('pane');
+  try {
+    if (!county) county = localStorage.getItem('hat.county');
+    if (!pane)   pane   = localStorage.getItem('hat.pane');
+  } catch (_) { /* private-mode Safari */ }
+  if (!VALID_COUNTIES.has(county)) county = 'State';
+  if (!VALID_PANES.has(pane))      pane   = 'housing';
+  return { county, pane };
+}
+function persistState() {
+  try {
+    localStorage.setItem('hat.county', currentCounty);
+    const pane = document.getElementById('pane-goods').classList.contains('is-active') ? 'goods' : 'housing';
+    localStorage.setItem('hat.pane', pane);
+    const params = new URLSearchParams(window.location.search);
+    params.set('county', currentCounty);
+    params.set('pane', pane);
+    const newUrl = window.location.pathname + '?' + params.toString() + window.location.hash;
+    window.history.replaceState(null, '', newUrl);
+  } catch (_) {}
+}
+
+/* ---------------- Back-to-top button --------------------- */
+const scrollBtn = document.getElementById('scroll-top-btn');
+function updateScrollBtn() {
+  if (!scrollBtn) return;
+  scrollBtn.classList.toggle('is-visible', window.scrollY > 400);
+}
+window.addEventListener('scroll', updateScrollBtn, { passive: true });
+if (scrollBtn) {
+  scrollBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: ANIM_OK ? 'smooth' : 'auto' });
+  });
+}
+
+/* ---------------- Keyboard shortcuts ---------------------
+   1-5  → county (State / Honolulu / Maui / Hawaiʻi / Kauaʻi)
+   H    → Housing pane     G → Goods pane
+   R    → Rent KPI view    O → Home/Own KPI view
+   Home → back to top      Esc → close popover (existing)    */
+const COUNTY_KEYMAP = { '1':'State','2':'Honolulu','3':'Maui','4':'Hawaii','5':'Kauai' };
+document.addEventListener('keydown', (ev) => {
+  if (ev.key === 'Escape') closeCountyPopover();
+  // Skip when typing in a field
+  const t = ev.target;
+  if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+  if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
+
+  if (COUNTY_KEYMAP[ev.key]) {
+    ev.preventDefault();
+    selectCounty(COUNTY_KEYMAP[ev.key]);
+    return;
+  }
+  const k = ev.key.toLowerCase();
+  if (k === 'h') { ev.preventDefault(); selectPane('housing'); persistState(); }
+  else if (k === 'g') { ev.preventDefault(); selectPane('goods'); persistState(); }
+  else if (k === 'r') { ev.preventDefault(); setHomeView('rent'); }
+  else if (k === 'o') { ev.preventDefault(); setHomeView('home'); }
+  else if (ev.key === 'Home') { ev.preventDefault(); window.scrollTo({ top: 0, behavior: ANIM_OK ? 'smooth' : 'auto' }); }
+});
+
+/* Hook persistence + pulse into the existing mutation points
+   without rewriting selectCounty/selectPane internals.        */
+const _selectCounty = selectCounty;
+selectCounty = function(c) {
+  _selectCounty(c);
+  persistState();
+  pulseNumbers();
+};
+const _selectPane = selectPane;
+selectPane = function(p) {
+  _selectPane(p);
+  persistState();
+  pulseNumbers();
+};
+const _setHomeView = setHomeView;
+setHomeView = function(v) {
+  _setHomeView(v);
+  pulseNumbers();
+};
+
+/* ---------------- Interactive row delegation ----------------
+   PTI/rent/goods-compare rows carry data-county and act like
+   buttons — clicking filters the dashboard to that county.
+   Delegated at document level so re-rendered rows keep working. */
+document.addEventListener('click', (ev) => {
+  const row = ev.target.closest('[data-county]');
+  if (!row) return;
+  // Don't hijack the popover buttons (they already wire selectCounty).
+  if (row.classList.contains('county-popover-item')) return;
+  if (row.classList.contains('county-select')) return;
+  const c = row.getAttribute('data-county');
+  if (c && VALID_COUNTIES.has(c) && c !== currentCounty) {
+    selectCounty(c);
+  }
+});
+document.addEventListener('keydown', (ev) => {
+  if (ev.key !== 'Enter' && ev.key !== ' ') return;
+  const row = ev.target.closest && ev.target.closest('[data-county]');
+  if (!row) return;
+  if (row.classList.contains('county-popover-item')) return;
+  if (row.classList.contains('county-select')) return;
+  const c = row.getAttribute('data-county');
+  if (c && VALID_COUNTIES.has(c)) {
+    ev.preventDefault();
+    selectCounty(c);
+  }
+});
+
+/* ---------------- Share-link button ---------------- */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  const m = document.getElementById('toast-msg');
+  if (!t) return;
+  if (m && msg) m.textContent = msg;
+  t.classList.add('is-visible');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => t.classList.remove('is-visible'), 1800);
+}
+function copyShareLink(ev) {
+  if (ev) ev.stopPropagation();
+  // Ensure URL reflects current state before copying.
+  persistState();
+  const btn = document.getElementById('share-link-btn');
+  const url = window.location.href;
+  const done = () => {
+    if (btn) {
+      btn.classList.add('is-copied');
+      const lbl = btn.querySelector('.share-btn-lbl');
+      if (lbl) { btn.dataset._lbl = lbl.textContent; lbl.textContent = 'Copied'; }
+      setTimeout(() => {
+        btn.classList.remove('is-copied');
+        if (lbl && btn.dataset._lbl) lbl.textContent = btn.dataset._lbl;
+      }, 1600);
+    }
+    showToast('Link copied to clipboard');
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(done).catch(() => {
+      // Fallback: ancient browsers — pop a prompt.
+      window.prompt('Copy this link:', url);
+    });
+  } else {
+    window.prompt('Copy this link:', url);
+  }
+}
+
+/* ---------------- Slider progress fill + value bubble ----------------
+   The slider's track paints an ocean fill up to the current value, and
+   a small bubble floats above the thumb while the user is dragging.   */
+function setupSlider(sliderId, bubbleId, format) {
+  const slider = document.getElementById(sliderId);
+  const bubble = document.getElementById(bubbleId);
+  if (!slider) return;
+  const row = slider.closest('.slider-row');
+  const syncProgress = () => {
+    const min = parseFloat(slider.min);
+    const max = parseFloat(slider.max);
+    const v   = parseFloat(slider.value);
+    const pctLocal = Math.max(0, Math.min(100, ((v - min) / (max - min)) * 100));
+    slider.style.setProperty('--progress', pctLocal.toFixed(2) + '%');
+    if (bubble) {
+      bubble.textContent = format(v);
+      // Position bubble centered over the slider thumb. The thumb travels
+      // from thumbW/2 to trackW - thumbW/2 as value goes min → max.
+      const thumbW = 22;
+      const trackW = slider.getBoundingClientRect().width || 1;
+      const thumbCenterInSlider = (thumbW / 2) + (pctLocal / 100) * (trackW - thumbW);
+      const leftPx = slider.offsetLeft + thumbCenterInSlider;
+      bubble.style.left = leftPx.toFixed(2) + 'px';
+    }
+  };
+  slider.addEventListener('input', syncProgress);
+  slider.addEventListener('pointerdown', () => { row && row.classList.add('is-dragging'); syncProgress(); });
+  slider.addEventListener('pointerup',   () => { row && row.classList.remove('is-dragging'); });
+  slider.addEventListener('focus',       () => { row && row.classList.add('is-dragging'); syncProgress(); });
+  slider.addEventListener('blur',        () => { row && row.classList.remove('is-dragging'); });
+  slider.addEventListener('mouseenter',  () => { row && row.classList.add('is-dragging'); syncProgress(); });
+  slider.addEventListener('mouseleave',  () => { if (document.activeElement !== slider) row && row.classList.remove('is-dragging'); });
+  window.addEventListener('resize', syncProgress);
+  syncProgress();
+}
+
+/* ---------------- First-visit discover-hint ---------------- */
+function dismissHint() {
+  const el = document.getElementById('discover-hint');
+  if (el) el.classList.remove('is-visible');
+  try { localStorage.setItem('hat.hintDismissed', '1'); } catch(_) {}
+}
+function maybeShowHint() {
+  let dismissed = false;
+  try { dismissed = localStorage.getItem('hat.hintDismissed') === '1'; } catch(_) {}
+  if (dismissed) return;
+  const el = document.getElementById('discover-hint');
+  if (!el) return;
+  setTimeout(() => el.classList.add('is-visible'), 900);
+  setTimeout(() => el.classList.remove('is-visible'), 9000);
+}
+
+/* ---------------- Initial state --------------------------- */
+const _init = loadInitialState();
+if (_init.pane === 'goods') selectPane('goods');
+selectCounty(_init.county);
 renderBuildAuth();
+updateScrollBtn();
+setupSlider('income-slider', 'income-bubble', v => '$' + Math.round(v).toLocaleString());
+setupSlider('rate-slider',   'rate-bubble',   v => v.toFixed(2) + '%');
+maybeShowHint();
+if (typeof initAsofPopover === 'function') initAsofPopover();
+if (typeof initGlossary === 'function') initGlossary();
 
 const rlbLabels = ["Q1 2020","Q2 2020","Q3 2020","Q4 2020","Q1 2021","Q2 2021","Q3 2021","Q4 2021","Q1 2022","Q2 2022","Q3 2022","Q4 2022","Q1 2023","Q2 2023","Q3 2023","Q4 2023","Q1 2024","Q2 2024","Q3 2024","Q4 2024","Q1 2025","Q2 2025","Q3 2025","Q4 2025","Q1 2026"];
 const rlbMF  = [100.0,100.0,100.0,100.0,100.0,104.9,122.0,122.0,124.4,124.4,129.3,129.3,131.7,131.7,131.7,131.7,134.1,134.1,136.6,136.6,141.5,141.5,146.3,146.3,151.2];

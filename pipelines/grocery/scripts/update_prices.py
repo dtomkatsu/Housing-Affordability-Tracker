@@ -10,6 +10,7 @@ Usage:
 """
 
 import argparse
+import json
 import sys
 from datetime import date
 from pathlib import Path
@@ -103,6 +104,26 @@ def main():
 
     chart2 = generate_household_bar_chart(estimates, output_dir / "household_costs.png", get_tax_rate=GET_TAX_RATE)
     print(f"  Household chart: {chart2}")
+
+    # CPI status sidecar — read by grocery-price-updater.py to surface the
+    # "proj." tag when target_date is past the latest observed Honolulu
+    # bimonthly CPI point. Keeps the main CSVs schema-stable.
+    cpi_status = result.get("cpi_status") or {}
+    status_path = output_dir / "cpi_status.json"
+    status_path.write_text(json.dumps({
+        "target_date":          target_date.isoformat(),
+        "is_interpolated":      bool(cpi_status.get("is_interpolated")),
+        "is_projected":         bool(cpi_status.get("is_projected")),
+        "latest_actual_period": cpi_status.get("latest_actual_period"),
+        # Surface per-category projection method + the period each ratio's
+        # target fell on (for audit). Keep the dict small — ratio itself is
+        # a float, latest_observed/target_period are short ISO strings.
+        "ratio_info":           cpi_status.get("ratio_info") or {},
+    }, indent=2))
+    print(f"  CPI status sidecar: {status_path}")
+    if cpi_status.get("is_projected"):
+        lo = cpi_status.get("latest_actual_period")
+        print(f"  ⚠ groceries flagged as PROJECTED (latest observed CPI period: {lo})")
 
     # Print summary
     print("\n" + "=" * 70)

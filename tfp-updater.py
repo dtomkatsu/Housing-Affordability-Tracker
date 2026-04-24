@@ -31,6 +31,8 @@ from __future__ import annotations
 
 import argparse
 import io
+import json
+import os
 import re
 import sys
 from datetime import date
@@ -41,6 +43,8 @@ import requests
 
 # -----------------------------------------------------------------
 PROJECT_ROOT = Path(__file__).resolve().parent
+sys.path.insert(0, str(PROJECT_ROOT))
+from common.html_patcher import patch_html_files  # noqa: E402
 DEFAULT_FILES = [
     PROJECT_ROOT / "squarespace-single-file.html",
     PROJECT_ROOT / "index.html",
@@ -60,10 +64,124 @@ REFROW_RE = re.compile(
     re.IGNORECASE,
 )
 
-PATCH_RE = re.compile(
-    r"/\* TFP_DATA_START \*/.*?/\* TFP_DATA_END \*/",
-    flags=re.DOTALL,
-)
+_DATA_TAG = "TFP"
+
+# BLS series for forward-projection: Honolulu "Food at home"
+BLS_API_URL     = "https://api.bls.gov/publicAPI/v2/timeseries/data/"
+BLS_FOOD_SERIES = "CUURS49ASAF11"  # Honolulu, food at home, not seasonally adjusted
+
+
+# -----------------------------------------------------------------
+def fetch_bls_food_cpi(start_year: int, end_year: int) -> list[dict] | None:
+    """Fetch monthly Honolulu food-at-home CPI points between start_year and
+    end_year inclusive. Returns a list of {year, period, value} dicts sorted
+    ascending, or None on any failure (caller falls back to raw TFP value).
+    """
+    api_key = os.environ.get("BLS_API_KEY", "")
+    payload: dict = {
+        "seriesid": [BLS_FOOD_SERIES],
+        "startyear": str(start_year),
+        "endyear":   str(end_year),
+    }
+    if api_key:
+        payload["registrationkey"] = api_key
+    try:
+        resp = requests.post(
+            BLS_API_URL,
+            data=json.dumps(payload),
+            headers={"Content-Type": "application/json", "User-Agent": "Mozilla/5.0"},
+            timeout=30,
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        if data.get("status") != "REQUEST_SUCCEEDED":
+            return None
+        series = data.get("Results", {}).get("series", [])
+        if not series:
+            return None
+        points = []
+        for obs in series[0].get("data", []):
+            raw_val = obs.get("value", "-")
+            if raw_val == "-":
+                continue
+            if not obs["period"].startswith("M") or obs["period"] == "M13":
+                continue
+            points.append({
+                "year":   int(obs["year"]),
+                "month":  int(obs["period"][1:]),
+                "value":  float(raw_val),
+            })
+        points.sort(key=lambda p: (p["year"], p["month"]))
+        return points or None
+    except Exception:
+        return None
+
+
+def _cpi_value_for(points: list[dict], year: int, month: int) -> float | None:
+    """Return the CPI value at (year, month), or the nearest earlier month
+    if that exact period is missing. Returns None if no earlier point exists."""
+    best = None
+    target = (year, month)
+    for p in points:
+        pt = (p["year"], p["month"])
+        if pt <= target and (best is None or pt > (best["year"], best["month"])):
+            best = p
+    return best["value"] if best else None
+
+
+def reference_month(today: date | None = None) -> tuple[int, int]:
+    """Return (year, month) of the current reference month.
+
+    Scraper runs on day 22 (after Redfin's 3rd-Friday release), so the
+    reference month is *last* calendar month. Before day 22, fall back to
+    two months ago since current-month Redfin data isn't available yet.
+    """
+    today = today or date.today()
+    y, m = today.year, today.month
+    if today.day < 22:
+        m -= 1
+    m -= 1  # Redfin data always one month behind run date
+    if m == 0:
+        m = 12
+        y -= 1
+    elif m == -1:
+        m = 11
+        y -= 1
+    return y, m
+
+
+def project_tfp_forward(hi_monthly: float, hi_period: str,
+                        ref_year: int, ref_month: int) -> tuple[float, str, float] | None:
+    """Forward-project a TFP value from hi_period to reference month via
+    BLS Honolulu food-at-home CPI ratio.
+
+    Returns (projected_monthly, cpi_period_used, ratio) or None on failure.
+    """
+    try:
+        tfp_y, tfp_m = int(hi_period[:4]), int(hi_period[5:7])
+    except (ValueError, IndexError):
+        return None
+
+    # No projection needed if TFP is already at/after reference month
+    if (tfp_y, tfp_m) >= (ref_year, ref_month):
+        return None
+
+    # Fetch CPI spanning both periods
+    start_year = min(tfp_y, ref_year) - 1  # 1-yr buffer for carry-forward
+    end_year   = max(tfp_y, ref_year)
+    points = fetch_bls_food_cpi(start_year, end_year)
+    if not points:
+        return None
+
+    tfp_cpi = _cpi_value_for(points, tfp_y, tfp_m)
+    ref_cpi = _cpi_value_for(points, ref_year, ref_month)
+    if tfp_cpi is None or ref_cpi is None or tfp_cpi == 0:
+        return None
+
+    ratio       = ref_cpi / tfp_cpi
+    projected   = hi_monthly * ratio
+    cpi_period  = f"{ref_year}-{ref_month:02d}"
+    return projected, cpi_period, ratio
 
 
 # -----------------------------------------------------------------
@@ -181,21 +299,62 @@ def parse_period(text: str) -> str | None:
 # -----------------------------------------------------------------
 def build_block(hi_monthly: float | None, us_monthly: float | None,
                 hi_period: str | None, us_period: str | None,
-                ak_hi_url: str | None) -> str:
-    """Render the tfpData block. Missing HI data yields a null tfpData block."""
+                ak_hi_url: str | None,
+                projection: tuple[float, str, float] | None = None,
+                original_period: str | None = None) -> str:
+    """Render the tfpData block. Missing HI data yields a null tfpData block.
+
+    When `projection` is provided (tuple of projected_monthly, cpi_ref_period,
+    ratio), the emitted block uses the projected value and carries
+    `projected: true` + `originalPeriod` + `projectionNote` fields so the
+    dashboard can display a "proj." tag.
+    """
     if hi_monthly is None or hi_period is None:
         return "/* TFP_DATA_START */\nconst tfpData = null;\n/* TFP_DATA_END */"
 
-    ratio = round(hi_monthly / us_monthly, 3) if us_monthly else None
+    # If projection applied: the emitted `family4Monthly` is the projected
+    # value, `latestPeriod` is the reference month (projected-to), and
+    # originalPeriod / projected / projectionNote describe the lineage.
+    if projection is not None:
+        projected_monthly, ref_period, ratio = projection
+        display_monthly   = projected_monthly
+        display_period    = ref_period
+        projected_flag    = "true"
+        orig_period_str   = original_period or hi_period
+        projection_note   = (
+            f'scaled from {orig_period_str} via BLS Honolulu food CPI '
+            f'(ratio {ratio:.4f})'
+        )
+    else:
+        display_monthly   = hi_monthly
+        display_period    = hi_period
+        projected_flag    = "false"
+        orig_period_str   = hi_period
+        projection_note   = ""
+
+    hi_ratio_vs_us = round(display_monthly / us_monthly, 3) if us_monthly else None
     us_m_str   = f"{us_monthly:.2f}" if us_monthly is not None else "null"
     us_per_str = f'"{us_period}"' if us_period else "null"
-    ratio_str  = f"{ratio}" if ratio is not None else "null"
+    ratio_str  = f"{hi_ratio_vs_us}" if hi_ratio_vs_us is not None else "null"
+
+    # Build Hawaii block fields conditionally (only emit projection fields when applied)
+    hawaii_fields = [
+        f'family4Monthly: {display_monthly:.2f}',
+        f'latestPeriod: "{display_period}"',
+        f'originalPeriod: "{orig_period_str}"',
+        f'projected: {projected_flag}',
+    ]
+    if projection_note:
+        hawaii_fields.append(f'projectionNote: "{projection_note}"')
+    hawaii_fields.extend([
+        f'source: "USDA CNPP Alaska-Hawaii Thrifty Food Plan"',
+        f'url: "{ak_hi_url or ""}"',
+    ])
+
     lines = [
         "/* TFP_DATA_START */",
         "const tfpData = {",
-        f'  hawaii:  {{ family4Monthly: {hi_monthly:.2f}, latestPeriod: "{hi_period}",',
-        f'             source: "USDA CNPP Alaska-Hawaii Thrifty Food Plan",',
-        f'             url: "{ak_hi_url or ""}" }},',
+        "  hawaii:  { " + ", ".join(hawaii_fields) + " },",
         f'  us48:    {{ family4Monthly: {us_m_str}, latestPeriod: {us_per_str},',
         f'             source: "USDA CNPP Thrifty Food Plan (US 48 avg)" }},',
         f'  hiRatio: {ratio_str},',
@@ -204,12 +363,6 @@ def build_block(hi_monthly: float | None, us_monthly: float | None,
         "/* TFP_DATA_END */",
     ]
     return "\n".join(lines)
-
-
-def patch_html(html: str, new_block: str) -> tuple[str, bool]:
-    if not PATCH_RE.search(html):
-        return html, False
-    return PATCH_RE.sub(lambda m: new_block, html, count=1), True
 
 
 # -----------------------------------------------------------------
@@ -265,25 +418,26 @@ def main() -> int:
     except Exception as e:
         print(f"WARNING: national fetch/parse failed: {e}")
 
+    # --- Forward-project HI value to reference month via BLS food CPI ---
+    projection = None
+    if hi_monthly is not None and hi_period:
+        ref_y, ref_m = reference_month()
+        print(f"\nReference month for projection: {ref_y}-{ref_m:02d}")
+        projection = project_tfp_forward(hi_monthly, hi_period, ref_y, ref_m)
+        if projection:
+            pm, cpi_per, ratio = projection
+            print(f"  Projected TFP HI: ${hi_monthly:.2f} → ${pm:.2f} "
+                  f"(×{ratio:.4f} via food CPI {cpi_per})")
+        else:
+            print("  No projection applied (raw TFP period ≥ ref month, or BLS fetch failed)")
+
     # --- Build and patch ---
-    new_block = build_block(hi_monthly, us_monthly, hi_period, us_period, ak_hi_url)
+    new_block = build_block(hi_monthly, us_monthly, hi_period, us_period, ak_hi_url,
+                            projection=projection, original_period=hi_period)
     print("\nNew tfpData block:\n" + new_block + "\n")
 
     files = [Path(args.file)] if args.file else DEFAULT_FILES
-    for target in files:
-        if not target.exists():
-            print(f"skip: {target} not found")
-            continue
-        html = target.read_text(encoding="utf-8")
-        new_html, ok = patch_html(html, new_block)
-        if not ok:
-            print(f"WARNING: TFP_DATA markers not found in {target}")
-            continue
-        if args.dry_run:
-            print(f"[dry-run] would patch {target}")
-        else:
-            target.write_text(new_html, encoding="utf-8")
-            print(f"patched {target}")
+    patch_html_files(files, _DATA_TAG, new_block, dry_run=args.dry_run)
     return 0
 
 

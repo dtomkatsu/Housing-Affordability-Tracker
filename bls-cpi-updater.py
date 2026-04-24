@@ -28,16 +28,17 @@ from __future__ import annotations
 
 import json
 import os
-import re
 import sys
 from pathlib import Path
 
-# Add pipelines/grocery to sys.path so we can import the existing fetcher
+# Add project root + pipelines/grocery to sys.path
 PROJECT_ROOT = Path(__file__).resolve().parent
 GROCERY_ROOT = PROJECT_ROOT / "pipelines" / "grocery"
+sys.path.insert(0, str(PROJECT_ROOT))
 sys.path.insert(0, str(GROCERY_ROOT))
 
-from src.cpi_fetcher import fetch_cpi_data  # noqa: E402
+from src.cpi_fetcher import fetch_cpi_data      # noqa: E402 (grocery pipeline)
+from common.html_patcher import patch_html_files   # noqa: E402
 
 # ---------------------------------------------------------------
 SERIES = {
@@ -54,10 +55,7 @@ DEFAULT_FILES = [
     PROJECT_ROOT / "index.html",
 ]
 
-PATCH_RE = re.compile(
-    r"/\* CPI_DATA_START \*/.*?/\* CPI_DATA_END \*/",
-    flags=re.DOTALL,
-)
+_DATA_TAG = "CPI"
 
 
 def compute_yoy(points: list[dict]) -> tuple[float | None, str | None]:
@@ -96,12 +94,6 @@ def build_block(yoy_by_key: dict) -> str:
     return "\n".join(lines)
 
 
-def patch_html(html: str, new_block: str) -> tuple[str, bool]:
-    if not PATCH_RE.search(html):
-        return html, False
-    return PATCH_RE.sub(lambda m: new_block, html, count=1), True
-
-
 def main() -> int:
     dry_run = "--dry-run" in sys.argv
     files = DEFAULT_FILES
@@ -129,21 +121,7 @@ def main() -> int:
 
     new_block = build_block(yoy_by_key)
     print("\nNew cpiData block:\n" + new_block + "\n")
-
-    for target in files:
-        if not target.exists():
-            print(f"skip: {target} not found")
-            continue
-        html = target.read_text(encoding="utf-8")
-        new_html, ok = patch_html(html, new_block)
-        if not ok:
-            print(f"WARNING: CPI_DATA markers not found in {target}")
-            continue
-        if dry_run:
-            print(f"[dry-run] would patch {target}")
-        else:
-            target.write_text(new_html, encoding="utf-8")
-            print(f"patched {target}")
+    patch_html_files(files, _DATA_TAG, new_block, dry_run=dry_run)
     return 0
 
 

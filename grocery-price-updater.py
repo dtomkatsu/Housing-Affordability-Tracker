@@ -29,7 +29,6 @@ from __future__ import annotations
 
 import csv
 import json
-import re
 import sys
 from pathlib import Path
 
@@ -37,9 +36,12 @@ from pathlib import Path
 # Configuration
 # -----------------------------------------------------------------
 PROJECT_ROOT = Path(__file__).resolve().parent
+sys.path.insert(0, str(PROJECT_ROOT))
+from common.html_patcher import patch_html_files  # noqa: E402
 GROCERY_PIPELINE_ROOT = PROJECT_ROOT / "pipelines" / "grocery"
 HOUSEHOLD_CSV = GROCERY_PIPELINE_ROOT / "data" / "output" / "household_estimates.csv"
 COUNTY_CSV    = GROCERY_PIPELINE_ROOT / "data" / "output" / "county_comparison.csv"
+CPI_STATUS_JSON = GROCERY_PIPELINE_ROOT / "data" / "output" / "cpi_status.json"
 
 DEFAULT_FILES = [
     PROJECT_ROOT / "squarespace-single-file.html",
@@ -218,10 +220,28 @@ def build_top_items(items: list[dict], county_csv_key: str | None,
     return scored[:limit]
 
 
+def load_cpi_status() -> dict:
+    """Load the projection-state sidecar written by scripts/update_prices.py.
+
+    Missing file (older pipeline run) → empty dict: treated as no-projection.
+    """
+    if not CPI_STATUS_JSON.exists():
+        return {}
+    try:
+        return json.loads(CPI_STATUS_JSON.read_text())
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
 def build_grocery_data() -> dict:
     hh_by_cty, pretax, withtax, last_date = load_household_estimates()
     items, cat_totals = load_county_items()
     honolulu_prices = {r["slot_id"]: float(r["honolulu"]) for r in items if r.get("honolulu")}
+    cpi_status = load_cpi_status()
+    is_projected = bool(cpi_status.get("is_projected"))
+    # When projected, surface "latest observed" CPI period as originalPeriod so
+    # the HTML period-tag formatter can render "Apr 2026 proj. (from 2026-02)".
+    original_period = cpi_status.get("latest_actual_period") if is_projected else None
 
     state_pretax, state_withtax, state_hh, state_cats, state_items = \
         compute_statewide(pretax, withtax, hh_by_cty, cat_totals, items)
@@ -257,6 +277,12 @@ def build_grocery_data() -> dict:
             "groceryShareOfIncome": round(share, 4),
             "weeklyPerCap":        weekly_per_cap,
             "lastUpdated":         last_date or "",
+            # Projection state from the pipeline's CPI status sidecar. When
+            # target_date is past the latest observed Honolulu bimonthly CPI
+            # point, ratios are linear-trend extrapolated in price_adjuster.py
+            # and the dashboard renders a "proj." tag on the grocery card.
+            "projected":           is_projected,
+            "originalPeriod":      original_period or "",
             "household":           {k: round(v, 2) for k, v in hh.items()},
             "categories":          {k: round(v, 2) for k, v in cats.items()},
             "topItems":            top,
@@ -302,17 +328,7 @@ def render_grocery_data_block(data: dict) -> str:
     return "\n".join(lines)
 
 
-PATCH_RE = re.compile(
-    r"/\* GROCERY_DATA_START \*/.*?/\* GROCERY_DATA_END \*/",
-    flags=re.DOTALL,
-)
-
-
-def patch_html(html: str, new_block: str) -> tuple[str, bool]:
-    if not PATCH_RE.search(html):
-        return html, False
-    return PATCH_RE.sub(lambda m: new_block, html, count=1), True
-
+_DATA_TAG = "GROCERY"
 
 # -----------------------------------------------------------------
 # CLI
@@ -351,21 +367,7 @@ def main() -> int:
         print("...")
         return 0
 
-    for path in files:
-        if not path.exists():
-            print(f"  skipping {path} (not found)")
-            continue
-        html = path.read_text()
-        new_html, ok = patch_html(html, new_block)
-        if not ok:
-            print(f"  WARNING: no GROCERY_DATA markers found in {path}")
-            continue
-        if new_html == html:
-            print(f"  {path.name}: no change")
-        else:
-            path.write_text(new_html)
-            print(f"  {path.name}: updated ✓")
-
+    patch_html_files(files, _DATA_TAG, new_block)
     print("\nDone.")
     return 0
 

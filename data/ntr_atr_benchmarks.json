@@ -1,0 +1,21 @@
+{
+  "_note": "National-only NTR and ATR YoY benchmarks, refreshed quarterly from BLS's R-CPI-NTR / R-CPI-ATR XLSX. Used only for dev-facing sanity checks on the Honolulu rent nowcast — the dashboard UI does NOT read this file. See METHODOLOGY.md § 'Quarterly NTR/ATR benchmark refresh' for update steps.",
+  "_source_page":   "https://www.bls.gov/cpi/research-series/r-cpi-ntr.htm",
+  "_scope":         "National, US city average. No Hawaii-specific equivalent exists.",
+  "_cadence":       "quarterly, released ~15th of month following each quarter-end (Jan/Apr/Jul/Oct). Data has a 1-quarter lag.",
+  "_sanity_band_pp": 8.0,
+
+  "latest_quarter":   null,
+  "ntr_yoy_pct":      null,
+  "atr_yoy_pct":      null,
+  "last_refreshed":   null,
+  "refreshed_by":     null,
+
+  "_refresh_howto": [
+    "1. Visit https://www.bls.gov/cpi/research-series/r-cpi-ntr.htm and download the latest R-CPI-NTR and R-CPI-ATR XLSX files.",
+    "2. Open each XLSX. The rightmost/latest quarterly column is the just-published release (e.g. '2025Q4').",
+    "3. From the same sheet pull the quarter 4 rows back (e.g. 2024Q4). YoY % = (latest / same_quarter_prior_year - 1) * 100.",
+    "4. Paste the two YoY percentages into ntr_yoy_pct and atr_yoy_pct. Set latest_quarter to the release quarter (e.g. '2025Q4'). Set last_refreshed to today's ISO date. Set refreshed_by to your name/email.",
+    "5. Commit the file in the same PR that bumps any dependent docs; the next updater run will consume the new values."
+  ]
+}

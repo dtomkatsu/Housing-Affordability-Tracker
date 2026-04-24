@@ -1,0 +1,50 @@
+{
+  "target_date": "2026-04-15",
+  "is_interpolated": false,
+  "is_projected": false,
+  "latest_actual_period": null,
+  "ratio_info": {
+    "nonalcoholic_beverages": {
+      "ratio": 1.0,
+      "is_projected": false,
+      "method": "unavailable",
+      "latest_observed": null,
+      "target_period": "2026-04"
+    },
+    "dairy": {
+      "ratio": 1.0,
+      "is_projected": false,
+      "method": "unavailable",
+      "latest_observed": null,
+      "target_period": "2026-04"
+    },
+    "meats_poultry_fish_eggs": {
+      "ratio": 1.0,
+      "is_projected": false,
+      "method": "unavailable",
+      "latest_observed": null,
+      "target_period": "2026-04"
+    },
+    "other_food_at_home": {
+      "ratio": 1.0,
+      "is_projected": false,
+      "method": "unavailable",
+      "latest_observed": null,
+      "target_period": "2026-04"
+    },
+    "fruits_vegetables": {
+      "ratio": 1.0,
+      "is_projected": false,
+      "method": "unavailable",
+      "latest_observed": null,
+      "target_period": "2026-04"
+    },
+    "cereals_bakery": {
+      "ratio": 1.0,
+      "is_projected": false,
+      "method": "unavailable",
+      "latest_observed": null,
+      "target_period": "2026-04"
+    }
+  }
+}
