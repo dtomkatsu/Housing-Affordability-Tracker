@@ -72,6 +72,11 @@ HH_TYPE_MAP = {
     "two_adults_two_children": "family4",
 }
 
+# Weekly→monthly conversion: 52 weeks / 12 months = 4.3333…
+# Defining this once keeps the dashboard's monthly-from-weekly math in lockstep
+# with the inverse used in index.html (`tfpWeekly = tfpMonthly / WEEKS_PER_MONTH`).
+WEEKS_PER_MONTH = 52 / 12
+
 # slot_id prefix → category key in index_weights.json
 CAT_PREFIX = {
     "GRAIN": "grains",
@@ -263,7 +268,7 @@ def build_grocery_data() -> dict:
             cats     = cat_totals[cty]
             top      = build_top_items(items, cty.lower(), None, honolulu_prices)
 
-        monthly_family4 = round(hh.get("family4", bt_wtax) * 4.33)
+        monthly_family4 = round(hh.get("family4", bt_wtax) * WEEKS_PER_MONTH)
         income = INCOME_BY_COUNTY[cty]
         share = (monthly_family4 * 12) / income if income else 0.0
         grocery_idx = (bt_wtax / hnl_withtax * 100) if hnl_withtax else 100.0

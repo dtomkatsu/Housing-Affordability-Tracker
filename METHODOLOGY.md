@@ -25,6 +25,38 @@ The `CUURS49A*` prefix is **Honolulu Urban Hawaii, not seasonally adjusted**.
 There is no neighbor-island CPI — every CPI adjustment applied to Maui,
 Hawaii County, or Kauai uses the Honolulu ratio as a directional proxy.
 
+The grocery pipeline's `cpi_series.json` still uses the **legacy area-426
+codes** (`CUUSA426SAF11`, etc.). BLS continues to publish both the legacy
+A426 series and the post-2018 S49A series in parallel; treat them as
+equivalent for nowcast purposes. If BLS ever sunsets one of the prefixes,
+mirror the other before re-running the pipeline.
+
+---
+
+## CPI release cadence (Honolulu, area S49A)
+
+Every Honolulu CPI series consumed here is **bimonthly**, not monthly.
+
+* **Data periods**: odd months only — Jan, Mar, May, Jul, Sep, Nov.
+  There are no Feb / Apr / Jun / Aug / Oct / Dec observations.
+* **Release**: each odd-month data point is published on or near the **15th
+  of the following even month**. So Mar-2026 data lands ~Apr-15, 2026.
+* **YoY**: same odd-month one year prior is always available, so
+  `compute_yoy` in `bls-cpi-updater.py` doesn't need interpolation.
+
+Two practical consequences for the pipeline:
+
+1. `pipelines/grocery/src/cpi_fetcher.py :: expected_latest_period()` keys
+   off the odd-month set (`BLS_DATA_MONTHS = {1,3,5,7,9,11}`). A previous
+   bug had this set to even months, which made the cache check ask BLS for
+   data points it never publishes — every run silently re-fetched.
+2. When the dashboard's reference month is even (e.g. April), every
+   downstream metric that depends on Honolulu CPI (groceries, TFP, BLS rent
+   nowcast) is **always at least one month past the latest observation**.
+   This is the case the projection / interpolation logic in
+   `price_adjuster.py` and `tfp-updater.py` exists to handle — see the
+   forward-projection rule below for the math and the per-month cap.
+
 ---
 
 ## Rent-anchor year
@@ -101,7 +133,17 @@ projected_idx = latest * (1 + monthly_rate) ** months_beyond
 ```
 
 The `±0.0189/month` cap stops a single noisy bimonthly print from
-compounding into an unrealistic three-month extrapolation.
+compounding into an unrealistic three-month extrapolation. Concretely:
+
+```
+(1 + 0.0189) ** 12 ≈ 1.252   →   +25.2 %/yr ceiling
+(1 − 0.0189) ** 12 ≈ 0.795   →   −20.5 %/yr floor
+```
+
+The same cap is applied in `tfp-updater.py :: _cpi_value_for()` when the
+reference month is past the latest BLS Honolulu food-CPI observation —
+keeps every CPI-driven projection in this repo on the same momentum
+ceiling.
 
 ### How it surfaces in the UI
 
@@ -226,6 +268,51 @@ need retuning or an upstream data source broke.
 When the benchmark JSON still has null NTR/ATR values (e.g. first commit,
 or a quarter you haven't refreshed yet), the audit prints the Honolulu
 numbers anyway and hints at the refresh path so the blind spot is visible.
+
+---
+
+## Unit conventions (cadence + conversions)
+
+To keep the dashboard internally consistent, every number flows through
+one of three native cadences:
+
+| Domain | Native cadence | Where to convert |
+|---|---|---|
+| Sale prices (Redfin) | monthly | n/a — already monthly |
+| Asking rent (ZORI) | monthly | n/a |
+| Existing-tenant rent (BLS) | bimonthly (odd months) | always reported as nowcast for the latest odd month |
+| Headline / shelter / food / energy / transport CPI | bimonthly (odd months) | YoY only; no resampling |
+| TFP (USDA CNPP) | monthly | rolled forward via Honolulu food CPI when stale |
+| Grocery basket | monthly target, weekly published | `WEEKS_PER_MONTH = 52/12` |
+| HUD income limits | annual (FY) | annual % of income → /12 for monthly comparisons |
+| DBEDT construction auth | annual | n/a |
+| AAA gas | daily snapshot | n/a |
+
+**`WEEKS_PER_MONTH` constant**: `52 / 12 = 4.3333…`. Used in two places
+that must stay reciprocal:
+
+* `grocery-price-updater.py` converts the priced basket from weekly to
+  monthly: `monthly_family4 = weekly * WEEKS_PER_MONTH`.
+* The HTML `renderGoodsPane()` does the inverse for the TFP-anchored
+  weekly display: `tfpWeekly = tfpMonthly / WEEKS_PER_MONTH`.
+
+If you change the constant in one place, change it in the other; otherwise
+the headline weekly figure will silently drift away from `monthlyFamily4 /
+4.33`.
+
+**Annualized vs monthly growth**: every per-month rate in the projection
+code (`price_adjuster.py`, `tfp-updater.py`) is a *compound* rate, not a
+simple one. `monthly_rate = (latest / prev) ** (1 / months_between) - 1`
+and `projected = latest * (1 + monthly_rate) ** months_beyond`. Don't mix
+this with the annualized YoY surfaced in the headline chip — those are
+12-month log-equivalent aggregations that already include compounding.
+
+**Rent nowcast cadence**: even though BLS rent CPI is bimonthly and ZORI
+is monthly, both ratios are applied to the same `RENT_ANCHOR_YEAR` ACS
+dollar anchor and combined in *level space*, so the blended figure is
+re-published on every monthly run regardless of whether BLS issued a fresh
+print that month — the BLS half just carries the latest odd-month ratio
+forward until the next release lands.
 
 ---
 

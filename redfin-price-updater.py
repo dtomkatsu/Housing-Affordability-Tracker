@@ -110,7 +110,8 @@ NTR_ATR_BENCHMARKS_PATH = Path(__file__).parent / "data" / "ntr_atr_benchmarks.j
 
 # Blended rent nowcast — weights for combining the lagging BLS rent CPI with
 # Zillow ZORI's leading asking-rent signal. Both series are expressed as
-# growth factors vs. 2024 and applied to the same ACS 2024 dollar anchor:
+# growth factors vs. RENT_ANCHOR_YEAR and applied to the same ACS dollar
+# anchor:
 #   blended_rent = acs_anchor × (CPI_WEIGHT · bls_ratio + (1−CPI_WEIGHT) · zori_ratio)
 # Rationale: the BLS Honolulu rent index (CUURS49ASEHA) lags market rent by
 # ~12 months due to (a) 6-month sampling with even attribution and (b) heavy
@@ -207,12 +208,19 @@ def fetch_zori_asking_rents() -> dict:
     """
     Download Zillow ZORI county CSV and extract:
       - The most recent asking rent for each Hawaii county (→ result[key])
-      - The 2024 annual average per county, used as a common anchor year with
-        BLS rent CPI for the blended nowcast (→ result["_avg2024"][key])
+      - The RENT_ANCHOR_YEAR annual average per county, used as a common
+        anchor with BLS rent CPI for the blended nowcast
+        (→ result["_anchor_avg"][key])
 
-    Returns {countyData_key: askRent_int, "_period": "YYYY-MM", "_avg2024": {...}}.
+    Returns {countyData_key: askRent_int, "_period": "YYYY-MM",
+             "_anchor_avg": {...}, "_anchor_year": "YYYY", "_yoy_pct": {...}}.
     State-level askRent is derived as a population-weighted average
     (Honolulu ~72%, Hawaii ~14%, Maui ~10%, Kauai ~4%).
+
+    The anchor-year average MUST track RENT_ANCHOR_YEAR — the BLS rent CPI
+    ratio is computed against the same year, and the blended nowcast assumes
+    both series share the anchor. A drifted anchor here would silently shift
+    the ZORI growth factor relative to BLS.
     """
     print(f"  Downloading {ZORI_URL.split('/')[-1]}...")
     raw = fetch_text(ZORI_URL)
@@ -220,12 +228,13 @@ def fetch_zori_asking_rents() -> dict:
     reader = csv.reader(io.StringIO(raw))
     headers = next(reader)
 
-    # Pre-compute which column indices belong to 2024 for the 2024-avg calc.
-    # ZORI column headers are ISO dates like "2024-01-31".
-    cols_2024 = [i for i, h in enumerate(headers) if h.startswith("2024-")]
+    # Pre-compute which column indices belong to RENT_ANCHOR_YEAR for the
+    # anchor-avg calc. ZORI column headers are ISO dates like "2024-01-31".
+    anchor_prefix = f"{RENT_ANCHOR_YEAR}-"
+    cols_anchor = [i for i, h in enumerate(headers) if h.startswith(anchor_prefix)]
 
     result = {}
-    avg_2024 = {}
+    anchor_avg = {}
     yoy_pct = {}   # per-county YoY % using same-month-prior-year column
     latest_date_header = None  # e.g. "2026-03-31" → we'll convert to "2026-03"
     for row in reader:
@@ -250,16 +259,16 @@ def fetch_zori_asking_rents() -> dict:
         if latest_date_header is None and last_idx < len(headers):
             latest_date_header = headers[last_idx]
 
-        # 2024 annual average — skip empty cells / unparseable values
-        vals_2024 = []
-        for i in cols_2024:
+        # Anchor-year annual average — skip empty cells / unparseable values
+        vals_anchor = []
+        for i in cols_anchor:
             if i < len(row) and row[i].strip():
                 try:
-                    vals_2024.append(float(row[i]))
+                    vals_anchor.append(float(row[i]))
                 except ValueError:
                     pass
-        if vals_2024:
-            avg_2024[key] = sum(vals_2024) / len(vals_2024)
+        if vals_anchor:
+            anchor_avg[key] = sum(vals_anchor) / len(vals_anchor)
 
         # YoY: current column vs the column 12 months earlier. ZORI publishes
         # every month so the same position back by 12 is the same calendar month
@@ -279,22 +288,24 @@ def fetch_zori_asking_rents() -> dict:
     if all(k in result for k in weights):
         state_avg = sum(result[k] * w for k, w in weights.items())
         result["State"] = round(state_avg)
-    # For the 2024 average, allow partial coverage (Zillow started publishing
-    # some small-market counties like Kauai only recently, so Kauai can be
-    # missing from 2024 even though its current value is reported). When that
-    # happens, re-normalize the weights across the counties we actually have.
-    present_2024 = {k: weights[k] for k in weights if k in avg_2024}
-    if len(present_2024) >= 2:
-        wsum = sum(present_2024.values())
-        avg_2024["State"] = sum(
-            avg_2024[k] * (w / wsum) for k, w in present_2024.items()
+    # For the anchor-year average, allow partial coverage (Zillow started
+    # publishing some small-market counties like Kauai only recently, so Kauai
+    # can be missing from the anchor year even when its current value is
+    # reported). When that happens, re-normalize the weights across the
+    # counties we actually have.
+    present_anchor = {k: weights[k] for k in weights if k in anchor_avg}
+    if len(present_anchor) >= 2:
+        wsum = sum(present_anchor.values())
+        anchor_avg["State"] = sum(
+            anchor_avg[k] * (w / wsum) for k, w in present_anchor.items()
         )
 
     # Convert "2026-03-31" → "2026-03" for consistency with other period fields
     if latest_date_header and len(latest_date_header) >= 7:
         result["_period"] = latest_date_header[:7]
 
-    result["_avg2024"] = avg_2024
+    result["_anchor_avg"] = anchor_avg
+    result["_anchor_year"] = RENT_ANCHOR_YEAR
     result["_yoy_pct"] = yoy_pct  # per-county YoY % — used by NTR/ATR audit
     return result
 
@@ -455,12 +466,12 @@ def blend_rent_nowcast(
 ) -> dict:
     """
     Blend BLS-CPI-scaled rent (lagging ~12 mo) with ZORI-implied rent (leading)
-    to nowcast current tenant rent. Both components use the same ACS 2024
-    dollar anchor; only the 2024→present growth factor differs.
+    to nowcast current tenant rent. Both components use the same ACS dollar
+    anchor (RENT_ANCHOR_YEAR); only the anchor→present growth factor differs.
 
-      bls_ratio    = CUURS49ASEHA(latest) / CUURS49ASEHA(2024 annual avg)
-      zori_ratio   = ZORI(latest) / ZORI(2024 annual avg)   [per county; state
-                     ratio used as proxy when a county's 2024 avg is missing]
+      bls_ratio    = CUURS49ASEHA(latest) / CUURS49ASEHA(anchor annual avg)
+      zori_ratio   = ZORI(latest) / ZORI(anchor annual avg)  [per county; state
+                     ratio used as proxy when a county's anchor avg is missing]
       blended_rent = acs_anchor × ( w·bls_ratio + (1−w)·zori_ratio )
 
     Returns a dict with the blended value plus the two single-source components
@@ -860,29 +871,31 @@ def _fetch_rents(all_prices: dict) -> tuple[
         print(f"  WARNING: BLS rent fetch failed ({e}) — rents stay at raw ACS values")
 
     # ── 3. Zillow ZORI ───────────────────────────────────────────────────────
-    zori_period   = None
-    zori_2024_avg = {}
-    zori_yoy_map  = {}
+    zori_period      = None
+    zori_anchor_avg  = {}
+    zori_yoy_map     = {}
     print("\nFetching Zillow ZORI asking rent data...")
     try:
-        zori_rents    = fetch_zori_asking_rents()
-        zori_period   = zori_rents.pop("_period",  None)
-        zori_2024_avg = zori_rents.pop("_avg2024", {}) or {}
-        zori_yoy_map  = zori_rents.pop("_yoy_pct", {}) or {}
+        zori_rents       = fetch_zori_asking_rents()
+        zori_period      = zori_rents.pop("_period",      None)
+        zori_anchor_avg  = zori_rents.pop("_anchor_avg",  {}) or {}
+        zori_anchor_year = zori_rents.pop("_anchor_year", RENT_ANCHOR_YEAR)
+        zori_yoy_map     = zori_rents.pop("_yoy_pct",     {}) or {}
         for key, ask_rent in zori_rents.items():
             all_prices.setdefault(key, {})["askRent"] = ask_rent
         print(f"  Got askRent ({zori_period or '?'}) for: {', '.join(zori_rents.keys())}")
     except Exception as e:
         print(f"  WARNING: Zillow ZORI fetch failed ({e}) — askRent will not be updated")
+        zori_anchor_year = RENT_ANCHOR_YEAR
 
     # ── 4. Blended rent nowcast ───────────────────────────────────────────────
     # 70% BLS (lagging ~12 mo, existing tenants) + 30% ZORI (leading, new listings).
     # Falls back to CPI-only rent when either input is missing.
-    if bls_ratio and zori_2024_avg:
+    if bls_ratio and zori_anchor_avg:
         zori_ratios: dict[str, float] = {}
         for key in ("Honolulu", "Maui", "Hawaii", "Kauai", "State"):
             cur  = (all_prices.get(key) or {}).get("askRent")
-            base = zori_2024_avg.get(key)
+            base = zori_anchor_avg.get(key)
             if cur and base:
                 zori_ratios[key] = cur / base
         # Proxy missing-county ZORI ratios from the state-level ratio (same
@@ -892,7 +905,8 @@ def _fetch_rents(all_prices: dict) -> tuple[
             for key in ("Honolulu", "Maui", "Hawaii", "Kauai"):
                 if key not in zori_ratios and (all_prices.get(key) or {}).get("askRent"):
                     zori_ratios[key] = proxy
-                    print(f"  {key}: no 2024 ZORI baseline — using state ratio {proxy:.4f} as proxy")
+                    print(f"  {key}: no {zori_anchor_year} ZORI baseline — "
+                          f"using state ratio {proxy:.4f} as proxy")
 
         print(f"\nComputing blended rent nowcast "
               f"({int(BLENDED_RENT_CPI_WEIGHT*100)}% CPI / "

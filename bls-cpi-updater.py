@@ -5,12 +5,17 @@ bls-cpi-updater.py
 Fetches Honolulu CPI series from BLS and patches the `cpiData` block in both
 squarespace-single-file.html and index.html.
 
-Series:
-    CUURA426SA0     — All items, Honolulu (headline)
-    CUURA426SAH     — Shelter, Honolulu
-    CUUSA426SAF11   — Food at home, Honolulu
-    CUUSA426SETB01  — Gasoline (all types), Honolulu  (energy proxy)
-    CUURA426SAT     — Transportation, Honolulu
+Series (area S49A = Urban Hawaii / Honolulu, NSA):
+    CUURS49ASA0     — All items, Honolulu (headline)
+    CUURS49ASAH     — Shelter, Honolulu
+    CUURS49ASAF11   — Food at home, Honolulu
+    CUURS49ASETB01  — Gasoline (all types), Honolulu  (energy proxy)
+    CUURS49ASAT     — Transportation, Honolulu
+
+Cadence: bimonthly. Data periods are odd months (Jan/Mar/May/Jul/Sep/Nov),
+released on or around the 15th of the following even month. YoY is computed
+against the same odd-month observation one year prior — both are guaranteed
+present in a bimonthly schedule, no interpolation needed.
 
 For each series we compute YoY % change: (latest - 12mo prior) / 12mo prior * 100.
 
@@ -42,7 +47,8 @@ from common.html_patcher import patch_html_files   # noqa: E402
 
 # ---------------------------------------------------------------
 SERIES = {
-    # Area S49A = Honolulu, HI (CUUR prefix = monthly, not seasonally adjusted)
+    # Area S49A = Urban Hawaii / Honolulu (CUUR = CPI-U, NSA, bimonthly).
+    # Odd-month data periods; see module docstring for release cadence.
     "allItems":  "CUURS49ASA0",     # All items
     "shelter":   "CUURS49ASAH",     # Shelter
     "food":      "CUURS49ASAF11",   # Food at home

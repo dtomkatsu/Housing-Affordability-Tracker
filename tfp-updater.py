@@ -117,16 +117,76 @@ def fetch_bls_food_cpi(start_year: int, end_year: int) -> list[dict] | None:
         return None
 
 
+# Per-month projection cap: bounds noisy bimonthly print from compounding
+# into an unrealistic extrapolation. (1+0.0189)^12 ≈ 1.252 → ±~25%/yr.
+# Mirrors the cap used in pipelines/grocery/src/price_adjuster.py so all
+# CPI-driven projections in this repo share the same momentum ceiling.
+_PROJ_MONTHLY_CAP = 0.0189
+
+
 def _cpi_value_for(points: list[dict], year: int, month: int) -> float | None:
-    """Return the CPI value at (year, month), or the nearest earlier month
-    if that exact period is missing. Returns None if no earlier point exists."""
-    best = None
+    """Return the CPI value at (year, month).
+
+    If the exact (year, month) is missing — common for bimonthly Honolulu CPI
+    where data lands only in odd months — interpolate linearly between the
+    bracketing observations. If the target is *past* the latest observation,
+    forward-project using the compound monthly rate from the last two points
+    (capped at ±_PROJ_MONTHLY_CAP/month). Returns None if the series has no
+    points at all.
+
+    The previous version returned the nearest *earlier* observation, which
+    silently flat-lined any reference month past the latest BLS print. That
+    masked the case where TFP was 1–2 months stale relative to the dashboard's
+    reference month, hiding what is conceptually a forward projection.
+    """
+    if not points:
+        return None
     target = (year, month)
-    for p in points:
+    ordered = sorted(points, key=lambda p: (p["year"], p["month"]))
+
+    # Exact match.
+    for p in ordered:
+        if (p["year"], p["month"]) == target:
+            return p["value"]
+
+    # Bracketing observations (interpolation).
+    before = None
+    after = None
+    for p in ordered:
         pt = (p["year"], p["month"])
-        if pt <= target and (best is None or pt > (best["year"], best["month"])):
-            best = p
-    return best["value"] if best else None
+        if pt < target and (before is None or pt > (before["year"], before["month"])):
+            before = p
+        elif pt > target and (after is None or pt < (after["year"], after["month"])):
+            after = p
+
+    if before is None and after is None:
+        return None
+    if before is None:
+        # Target precedes every observation — return the earliest as a
+        # least-bad guess (rare; would only occur if BLS hasn't backfilled).
+        return ordered[0]["value"]
+    if after is not None:
+        # Linear interpolation in month-index space.
+        b_idx = before["year"] * 12 + before["month"]
+        a_idx = after["year"]  * 12 + after["month"]
+        t_idx = year * 12 + month
+        span = a_idx - b_idx
+        if span == 0:
+            return before["value"]
+        frac = (t_idx - b_idx) / span
+        return before["value"] + frac * (after["value"] - before["value"])
+
+    # Target is past the latest observation — forward-project.
+    if len(ordered) < 2 or before["value"] <= 0:
+        return before["value"]
+    prev = ordered[-2]
+    months_between = (before["year"] - prev["year"]) * 12 + (before["month"] - prev["month"])
+    months_beyond  = (year - before["year"]) * 12 + (month - before["month"])
+    if months_between <= 0 or prev["value"] <= 0 or months_beyond <= 0:
+        return before["value"]
+    monthly_rate = (before["value"] / prev["value"]) ** (1.0 / months_between) - 1.0
+    monthly_rate = max(min(monthly_rate, _PROJ_MONTHLY_CAP), -_PROJ_MONTHLY_CAP)
+    return before["value"] * (1.0 + monthly_rate) ** months_beyond
 
 
 def reference_month(today: date | None = None) -> tuple[int, int]:

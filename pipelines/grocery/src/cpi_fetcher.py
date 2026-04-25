@@ -158,23 +158,31 @@ def find_nearest_periods(cpi_data: dict, series_id: str, target_year: int, targe
 # Staleness helpers (required by pipeline.py)
 # ---------------------------------------------------------------------------
 
-# BLS publishes bimonthly Honolulu CPI in even months; release ~15th of following month.
-BLS_RELEASE_MONTHS = {2, 4, 6, 8, 10, 12}
+# Honolulu (area S49A) CPI is bimonthly. The *data periods* are odd months
+# (Jan, Mar, May, Jul, Sep, Nov) and the release lands the following even
+# month around the 15th — e.g. Mar-2026 data is published on or around
+# Apr-15, 2026. A previous version of this constant listed the *release*
+# months (even), which made expected_latest_period() ask the cache for
+# data periods that BLS never publishes (e.g. Feb), forcing a refetch on
+# every run. Verify against the BLS Honolulu schedule before changing:
+#   https://www.bls.gov/regions/west/news-release/consumerpriceindex_honolulu.htm
+BLS_DATA_MONTHS = {1, 3, 5, 7, 9, 11}
 BLS_RELEASE_DAY = 15
 
 
 def expected_latest_period(today: date | None = None) -> tuple[int, int]:
-    """Return (year, month) of the most recent bimonthly Honolulu CPI period
-    expected to have been released by *today*.
+    """Return (year, month) of the most recent bimonthly Honolulu CPI data
+    period expected to have been released by *today*.
 
-    BLS releases the data for month M around the 15th of month M+1, so a
-    period only counts as "expected" once today >= 15th of the following month.
+    Honolulu CPI data periods are odd months; each is released on or around
+    the 15th of the *following* month. So the Mar-2026 data point only counts
+    as "expected" once today >= 2026-04-15.
     """
     if today is None:
         today = date.today()
     y, m = today.year, today.month
     for _ in range(12):
-        if m in BLS_RELEASE_MONTHS:
+        if m in BLS_DATA_MONTHS:
             release_year  = y if m < 12 else y + 1
             release_month = m + 1 if m < 12 else 1
             if (today.year, today.month, today.day) >= (release_year, release_month, BLS_RELEASE_DAY):

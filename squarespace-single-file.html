@@ -3125,9 +3125,10 @@ function renderGoodsPane() {
   // When null, fall back to the priced-basket numbers on g.
   const tfp = (typeof tfpData !== 'undefined' && tfpData && tfpData.hawaii) ? tfpData : null;
   const GET_MULT = 1.045;
+  const WEEKS_PER_MONTH = 52 / 12;  // 4.3333… — pair with grocery-price-updater.py
   const countyMult = (g.groceryIdx || 100) / 100;
   const tfpMonthly = tfp ? tfp.hawaii.family4Monthly * countyMult * GET_MULT : null;
-  const tfpWeekly  = tfpMonthly ? tfpMonthly / 4.33 : null;
+  const tfpWeekly  = tfpMonthly ? tfpMonthly / WEEKS_PER_MONTH : null;
   const displayMonthly = tfpMonthly ? Math.round(tfpMonthly) : g.monthlyFamily4;
   const displayWeekly  = tfpWeekly  ? tfpWeekly              : g.basketWithTax;
   const displayShare   = tfp ? (tfpMonthly * 12) / income     : g.groceryShareOfIncome;
