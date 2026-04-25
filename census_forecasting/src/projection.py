@@ -93,6 +93,37 @@ def _clamp(x: float, lo: float, hi: float) -> float:
     return max(lo, min(hi, x))
 
 
+def _recency_weighted_initial_trend(pts: list[tuple[float, float]]) -> float:
+    """Recency-weighted geometric mean of pairwise per-year log-difference rates.
+
+    Mirrors the smoother used in `pipelines/grocery/src/price_adjuster.py
+    :: _smoothed_monthly_rate()` (commit 0d7433f). Most-recent pair
+    weight 1.0, prior 0.5, prior-prior 0.25, … (half-life of one pair).
+
+    With n=2 collapses to the single-pair finite-difference rate, so the
+    existing test contracts on 2-point series (and the Holt closed-form
+    derivations) are preserved. With n≥3 a single noisy ACS print gets
+    diluted by the prior trend rather than driving the initial slope.
+
+    `pts` is the same list of (effective_year, log_estimate) tuples that
+    `fit_damped_trend` builds, sorted ascending by year. Returns 0.0 if
+    no usable pair exists (e.g. all timestamps tied).
+    """
+    pairs: list[tuple[float, float]] = []  # (per-year log rate, weight)
+    for i in range(1, len(pts)):
+        prev_yr, prev_ly = pts[i - 1]
+        curr_yr, curr_ly = pts[i]
+        gap = curr_yr - prev_yr
+        if gap <= 0:
+            continue
+        per_year_rate = (curr_ly - prev_ly) / gap
+        weight = 0.5 ** (len(pts) - 1 - i)
+        pairs.append((per_year_rate, weight))
+    if not pairs:
+        return 0.0
+    return sum(r * w for r, w in pairs) / sum(w for _, w in pairs)
+
+
 # -----------------------------------------------------------------------------
 # Time-index normalisation across mixed vintages
 # -----------------------------------------------------------------------------
@@ -239,6 +270,12 @@ def fit_damped_trend(
             phi=1 reduces to undamped Holt's method; phi=0.85 is the
             literature default and what the M-competitions found best
             for short series with limited training data.
+            Note: this is *per period* (here, per year). The CPI
+            projection in `pipelines/grocery/src/price_adjuster.py`
+            uses phi=0.92 *per month* — different cadence, same
+            Gardner-McKenzie discipline. Trend half-life
+            ln(0.5)/ln(phi) ≈ 4.3 yr (ACS, this module) vs ≈ 8.3 mo
+            (CPI), reflecting the noisier short-horizon source.
     alpha : level smoothing weight (higher = more responsive to most
             recent observation; lower = more inertia). 0.6 is a robust
             choice for short series with mild noise.
@@ -263,9 +300,14 @@ def fit_damped_trend(
         return None
     pts.sort(key=lambda x: x[0])
 
-    # Initialise: level = first log value, trend = first finite difference.
+    # Initialise: level = first log value, trend = recency-weighted
+    # geometric mean of pairwise log-difference rates. With n=2 this
+    # collapses to the original single-pair finite difference; with n≥3
+    # the prior trend dilutes a single noisy print rather than letting
+    # it set the entire initial slope. Same recency-weighting scheme as
+    # `price_adjuster._smoothed_monthly_rate` (cherry-pick 0d7433f).
     level = pts[0][1]
-    trend = (pts[1][1] - pts[0][1]) / max(pts[1][0] - pts[0][0], 1.0)
+    trend = _recency_weighted_initial_trend(pts)
 
     residuals: list[float] = []
     last_year = pts[0][0]

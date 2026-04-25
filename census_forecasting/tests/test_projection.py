@@ -14,6 +14,7 @@ from census_forecasting.src.projection import (
     ANNUAL_RATE_CAP,
     DampedTrendFit,
     EMPIRICAL_SE_INFLATOR,
+    _recency_weighted_initial_trend,
     effective_year,
     fit_ar1_log_diff,
     fit_damped_trend,
@@ -50,6 +51,58 @@ class TestEffectiveYear:
             vintage = "10y"
         with pytest.raises(ValueError):
             effective_year(FakeObs())  # type: ignore[arg-type]
+
+
+# ---------------------------------------------------------------------------
+# _recency_weighted_initial_trend — smoother used to initialise the fit
+# ---------------------------------------------------------------------------
+
+class TestRecencyWeightedInitialTrend:
+    def test_two_points_collapses_to_pairwise_rate(self):
+        # n=2: weight on the only pair is 0.5**0 = 1.0, so the weighted
+        # mean equals the pairwise rate exactly. Preserves the original
+        # initialization for the 2-point series tests.
+        pts = [(2020.0, math.log(100.0)), (2024.0, math.log(110.0))]
+        expected = (math.log(110.0) - math.log(100.0)) / 4.0
+        assert _recency_weighted_initial_trend(pts) == pytest.approx(expected)
+
+    def test_constant_series_yields_zero_trend(self):
+        pts = [(float(y), math.log(100.0)) for y in range(2010, 2020)]
+        assert _recency_weighted_initial_trend(pts) == pytest.approx(0.0, abs=1e-12)
+
+    def test_pure_geometric_recovers_growth_rate(self):
+        # Every pairwise rate is identical → weighted mean is that rate.
+        rate = math.log(1.05)
+        pts = [(float(y), math.log(100.0) + rate * i)
+               for i, y in enumerate(range(2010, 2020))]
+        assert _recency_weighted_initial_trend(pts) == pytest.approx(rate, rel=1e-9)
+
+    def test_one_off_early_spike_is_diluted_vs_naive(self):
+        # 5 points: a single early outlier should NOT drive the fitted
+        # initial trend the way it would under the old single-pair init.
+        # Build a series that's mostly flat with one early spike, then
+        # back to baseline. The naive init (first finite difference)
+        # would lock in the spike's slope; the recency-weighted init
+        # should give it ~weight 0.5**4 = 0.0625, dwarfed by the recent
+        # near-zero pairwise rates.
+        pts = [
+            (2018.0, math.log(100.0)),
+            (2019.0, math.log(150.0)),  # early spike (+log(1.5))
+            (2020.0, math.log(100.0)),
+            (2021.0, math.log(101.0)),
+            (2022.0, math.log(102.0)),
+        ]
+        smoothed = _recency_weighted_initial_trend(pts)
+        # First-pair rate (the naive init) would be log(1.5) ≈ 0.405.
+        # Recency-weighted should be near the recent ~1%/yr rate (~0.01).
+        assert abs(smoothed) < 0.05  # an order of magnitude less than naive
+        naive = math.log(150.0) - math.log(100.0)
+        assert abs(smoothed) < naive / 5
+
+    def test_no_usable_pairs_returns_zero(self):
+        # All same year: no positive gap → no usable pairs.
+        pts = [(2024.0, math.log(100.0)), (2024.0, math.log(110.0))]
+        assert _recency_weighted_initial_trend(pts) == 0.0
 
 
 # ---------------------------------------------------------------------------

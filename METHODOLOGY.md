@@ -171,6 +171,14 @@ The same smoothing + cap + damping is applied in
 latest BLS Honolulu food-CPI observation — keeps every CPI-driven projection
 in this repo on the same momentum ceiling.
 
+**Cross-module note.** The `census_forecasting/` package uses the same
+Gardner-McKenzie damping discipline on its own cadence — φ=0.85 *per
+year* there, vs φ=0.92 *per month* here. Trend half-lives (~8.3 months
+for CPI, ~4.3 years for ACS) reflect each source's signal-to-noise. The
+recency-weighted pairwise-rate smoother described above is also used to
+initialize the damped-trend fit in census forecasting; see
+`census_forecasting/METHODOLOGY.md` §2.3 and §2.3.1.
+
 ### What we do *not* use, and why
 
 **Machine learning (LSTM, XGBoost, Random Forest)** for projecting Honolulu

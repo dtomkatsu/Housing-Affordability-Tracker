@@ -127,6 +127,44 @@ is φ + φ² = 1.5725 (vs 2.0 undamped) — a 21% softening. At h=10 it's
 4.97 vs 10.0 — a 50% softening. Damping is mild at the production
 horizon and aggressive only when extrapolation would be irresponsible.
 
+**Cadence-aware harmonization with the CPI projection.** The grocery
+CPI and TFP code in this repo (`pipelines/grocery/src/price_adjuster.py`,
+`tfp-updater.py`) use Gardner-McKenzie damping with **φ=0.92 per
+*month***. This module uses **φ=0.85 per *year***. The two are not
+directly comparable as raw numbers — they are per-period damping
+factors on different cadences. The right way to compare them is the
+trend half-life ln(0.5)/ln(φ):
+
+| Module | φ (per period) | Period | Trend half-life |
+|---|---|---|---|
+| CPI / TFP (`price_adjuster`, `tfp-updater`) | 0.92 | month | ≈ 8.3 mo |
+| Census forecasting (this module) | 0.85 | year | ≈ 4.3 yr |
+
+The shorter half-life on the CPI side reflects the noisier
+short-horizon source (bimonthly BLS prints with limited training
+history). The longer half-life here reflects ACS's lower realised
+volatility and longer 2-year forecast horizon. Same Gardner-McKenzie
+discipline, calibrated separately to each cadence's signal-to-noise.
+
+### 2.3.1 Trend initialization (recency-weighted)
+
+Holt's recursions need an initial trend value `b₀`. The naive choice
+— the first finite difference, `(log y₂ − log y₁) / (yr₂ − yr₁)` —
+is sensitive to a single noisy first-period print: a bad y₁ or y₂
+locks in a slope that the β-weighted update has to slowly walk back.
+
+We instead initialize with a **recency-weighted geometric mean of all
+pairwise per-year log-difference rates**, with exponential weights
+(most recent pair 1.0, prior 0.5, prior-prior 0.25, …; half-life of
+one pair). This mirrors the smoother applied in
+`price_adjuster._smoothed_monthly_rate`. With n=2 observations it
+collapses to the original single-pair rate, preserving every existing
+test contract on 2-point series. With n≥3 a single noisy print
+contributes only its weighted share of the initial slope, not all of
+it.
+
+See `_recency_weighted_initial_trend()` in `src/projection.py`.
+
 ### 2.4 Why AR(1) on log-diffs as a second model
 
 The damped trend conditions on the *level path*; AR(1) on log-diffs
