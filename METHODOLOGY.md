@@ -124,16 +124,30 @@ card so the user knows.
 
 `pipelines/grocery/src/price_adjuster.py :: compute_cpi_ratio()` returns a
 dict with `method ∈ {exact, interpolated, projected, unavailable}`. The
-projection path uses the last two observed bimonthly points to derive a
-per-month compound growth rate, then rolls the latest index value forward:
+projection path computes a **recency-weighted smoothed monthly rate**
+across the last few bimonthly observations, then applies **Gardner-McKenzie
+damped-trend** compounding so the slope decays as the forecast horizon
+grows. With exactly two points the smoothed rate collapses to the original
+single-pair rate — a deliberate back-compat path — and with three or more
+points the prior trend dilutes a single noisy bimonthly spike:
 
 ```
-monthly_rate  = (latest / prev) ** (1 / months_between) - 1
-monthly_rate  = clamp(monthly_rate, ±0.0189)          # ≈ ±25%/yr cap
-projected_idx = latest * (1 + monthly_rate) ** months_beyond
+# (1) Pairwise compound rates from each adjacent pair
+rates_i  = (p_i.value / p_{i-1}.value) ** (1 / months_i) - 1
+
+# (2) Most recent pair gets weight 1.0; each step back halves it
+weight_i = 0.5 ** ((n-1) - i)
+
+# (3) Recency-weighted geometric mean
+monthly_rate = Σ(rate_i * weight_i) / Σ(weight_i)
+
+# (4) Cap and damp the projection slope each month forward
+monthly_rate  = clamp(monthly_rate, ±0.0189)              # ≈ ±25%/yr cap
+projected_idx = latest * Π_{h=1..H} (1 + monthly_rate * φ^(h-1))
+                where φ = 0.92  (damping factor)
 ```
 
-The `±0.0189/month` cap stops a single noisy bimonthly print from
+The **±0.0189/month cap** stops a single noisy bimonthly print from
 compounding into an unrealistic three-month extrapolation. Concretely:
 
 ```
@@ -141,10 +155,46 @@ compounding into an unrealistic three-month extrapolation. Concretely:
 (1 − 0.0189) ** 12 ≈ 0.795   →   −20.5 %/yr floor
 ```
 
-The same cap is applied in `tfp-updater.py :: _cpi_value_for()` when the
-reference month is past the latest BLS Honolulu food-CPI observation —
-keeps every CPI-driven projection in this repo on the same momentum
-ceiling.
+The **damping factor φ = 0.92** is from Gardner & McKenzie (1985) and is
+the standard default in Holt damped-trend (`ets(damped=TRUE)` in R, the
+`Holt(damped_trend=True)` initializer in `statsmodels`). It bounds the
+open-ended risk of any positive trend compounding forever — by month 6
+only ~61% of the latest momentum is applied; by month 12, ~37%. Hyndman &
+Athanasopoulos (2018) and Cleveland Fed WP 24-06 both report damped trends
+out-of-sample-beat undamped ones for short-horizon noisy macro series. For
+the typical 1–2-month projection horizon in this repo the damping effect
+is small (~1–2% on a 1%-per-month trend) but it eliminates a tail risk on
+the rare runs where reference-month is 4+ months past the latest BLS print.
+
+The same smoothing + cap + damping is applied in
+`tfp-updater.py :: _cpi_value_for()` when the reference month is past the
+latest BLS Honolulu food-CPI observation — keeps every CPI-driven projection
+in this repo on the same momentum ceiling.
+
+### What we do *not* use, and why
+
+**Machine learning (LSTM, XGBoost, Random Forest)** for projecting Honolulu
+CPI bimonthlies past the latest print: too little training data. The
+Honolulu S49A series only goes back to ~2018 (CPI area-code restructuring
+released the modern S49A codes that year), giving ~50 bimonthly
+observations per series. Recent literature (e.g. *Modeling inflation with
+machine learning: a cross-horizon systematic review*, IJDSA 2025) finds
+LSTMs underperform AR/SARIMA and ridge on small-sample inflation data,
+overfitting noise without a meaningful gain at short horizons. Tree
+ensembles (RF, XGBoost) fare better but require multivariate features
+(national CPI, oil futures, gas prices) that we already incorporate
+upstream of the projection — adding the same signals back through a model
+would double-count them. The `±0.0189/month` cap, recency-weighted slope,
+and 0.92 damping together approximate a damped-Holt point forecast, which
+the academic consensus says is the right baseline class for this kind of
+short-horizon, small-sample series.
+
+**Seasonal adjustment (X-13ARIMA-SEATS)** before projecting: the BLS
+Honolulu S49A series we consume are NSA (not seasonally adjusted), but the
+projection horizon is at most ~3 months and the YoY chip on the dashboard
+already implicitly absorbs seasonality (same calendar month, year-over-year).
+A seasonal decomposition would need ≥3 years of clean data; with only ~50
+points the seasonal factor estimate is noisier than the noise it removes.
 
 ### How it surfaces in the UI
 

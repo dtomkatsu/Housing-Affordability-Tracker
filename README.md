@@ -82,11 +82,22 @@ const housingData = {
 ```
 
 ### Changing Colors
-Modify the color scheme in `styles.css`. Key color variables:
-- Primary blue: `#3B82F6`
-- Success green: `#10B981`
-- Warning yellow: `#F59E0B`
-- Error red: `#EF4444`
+Both `styles.css` and `index.html` use the same coastal palette tokens
+declared at the top of each file. Override the `:root` custom properties
+to retheme:
+
+| Token              | Default     | Role                                  |
+|--------------------|-------------|---------------------------------------|
+| `--ocean-700`      | `#0b5566`   | Primary chrome, header background     |
+| `--ocean-500`      | `#1a8496`   | Secondary chrome, links               |
+| `--seafoam-700`    | `#1e8a73`   | Brand accent, "affordable" semantic   |
+| `--seafoam-500`    | `#3fc4a0`   | Bar fills, success highlights         |
+| `--coral-500`      | `#c94f3a`   | "Cost-burdened" / warning             |
+| `--coral-300`      | `#e08a5b`   | Moderate / stretched                  |
+| `--gold-500`       | `#c08a1f`   | HOA disclaimer accent (legacy only)   |
+
+The same three families (`--ocean-*`, `--seafoam-*`, `--coral-*`) are used
+in `index.html`, so when you customize one file the other stays in sync.
 
 ## Browser Support
 
