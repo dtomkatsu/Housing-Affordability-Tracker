@@ -1,0 +1,31 @@
+{
+  "source": "FRED",
+  "series_id": "HISTHPI (FHFA All-Transactions House Price Index for Hawaii)",
+  "title": "All-Transactions House Price Index for Hawaii (annual average of quarterly, 1980Q1=100)",
+  "frequency": "quarterly (annualised here as Q4 of year)",
+  "units": "index, 1980Q1=100",
+  "last_refresh": "2026-01",
+  "limitations": [
+    "Repeat-sales index; new construction is excluded by construction.",
+    "State-level only; intra-state divergence (Honolulu vs Maui vs Big Island) is not captured.",
+    "FHFA HPI tracks home-price *appreciation* across all transactions, including those with conforming GSE financing — its sample skews against jumbo/cash-only segments common in luxury Honolulu.",
+    "Annual values here are the Q4 reading of each year (year-end snapshot); Q-over-Q noise within the year is not propagated."
+  ],
+  "values_by_year": {
+    "2010": 478.91,
+    "2011": 466.95,
+    "2012": 467.03,
+    "2013": 488.23,
+    "2014": 503.24,
+    "2015": 522.78,
+    "2016": 545.73,
+    "2017": 575.64,
+    "2018": 612.60,
+    "2019": 631.71,
+    "2020": 670.82,
+    "2021": 786.94,
+    "2022": 901.72,
+    "2023": 906.38,
+    "2024": 941.55
+  }
+}

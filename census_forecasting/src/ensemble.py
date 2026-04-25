@@ -8,19 +8,35 @@ them with inverse-variance weights gives a forecast that's at least as
 accurate as the better individual model on every walk-forward fold we
 tried (see backtests/results/).
 
-We also support a *macro-anchored* blend for dollar-denominated
-indicators: on a 2-year horizon, county-level median income / median
-rent should track state-level cost-of-living growth more tightly than
-its own idiosyncratic ACS noise. The anchor is a simple compound-rate
-projection from a user-supplied annual growth rate (e.g. CPI YoY at
-target_year - 1, capped at the same momentum ceiling). The blend
-weight defaults to 0.30 — small enough to preserve county-level signal
-but big enough to pull outliers back toward the macro trend.
+Two macro-anchor flavors are supported:
+
+* `project_ensemble(...)` — legacy, takes a single user-supplied
+  `macro_annual_rate` and blends at a configurable weight (default
+  derived from calibration if available, else 0.30 for backwards
+  compatibility with prior tests).
+* `project_ensemble_multi(...)` — new in v0.2: builds a multi-source
+  anchor via `anchors.combined_anchor_rate(indicator, end_year)`,
+  inverse-variance-weighting CPI / PCE / QCEW / HUD FMR / FHFA HPI
+  per indicator. Macro/trend blend weight is also derived from
+  back-test RMSE — no hardcoded 70/30.
+
+Why a per-indicator calibrated weight beats the hardcoded 0.30
+---------------------------------------------------------------
+Different indicators have different macro/idiosyncratic ratios. Median
+home value is dominated by FHFA HPI (very tight macro signal); median
+rent is more idiosyncratic county to county; median income sits in
+between. A single 0.30 weight either over-anchors home value (forfeits
+macro signal) or under-anchors rent (lets ACS noise drive). The
+calibrated weight is `RMSE_trend² / (RMSE_trend² + RMSE_anchor²)`
+per (indicator, source-set), which is the *optimal* combination
+weight for two independent unbiased estimators (Bates & Granger 1969).
 
 References
 ----------
 Granger & Ramanathan (1984), "Improved methods of combining forecasts."
 J. Forecasting. — inverse-variance weights.
+Bates & Granger (1969), "The combination of forecasts." OR Quarterly. —
+optimal combination weight derivation.
 Cleveland Fed WP 22-38r — anchor-blend pattern (used in the existing
 `blend_rent_nowcast` in this repo).
 """
@@ -297,3 +313,211 @@ def project_ensemble(
         return anchor
 
     return combine_forecasts(components, target_year, method_label="ensemble")
+
+
+# -----------------------------------------------------------------------------
+# Multi-source anchor ensemble
+# -----------------------------------------------------------------------------
+
+def _apply_se_override(
+    fp: ForecastPoint,
+    indicator: str,
+    method_key: str,
+    calibration: dict | None,
+) -> ForecastPoint:
+    """Re-scale a ForecastPoint's *total* SE by the calibrated override factor.
+
+    The override is the new EMPIRICAL_SE_INFLATOR value derived from
+    observed CI coverage; the *ratio* (override / global_inflator) is
+    the linear factor we must multiply se_total by to bring coverage
+    into the [85%, 95%] target band.
+
+    Implementation note: we scale `se_total` directly, then back out
+    `se_forecast` so the (sample, forecast) decomposition still
+    quadrature-sums to the new total. If the target SE would drop
+    below the irreducible sample SE (would imply negative forecast
+    variance), we clamp at se_sample — an honest floor since the ACS
+    MOE itself caps how tight any 90% CI can legitimately get.
+    """
+    if calibration is None or fp is None:
+        return fp
+    override = (
+        calibration.get("se_inflator_override_by_indicator_method", {})
+        .get(indicator, {})
+        .get(method_key)
+    )
+    if override is None or not math.isfinite(override) or override <= 0:
+        return fp
+    from .projection import EMPIRICAL_SE_INFLATOR as _SE_INF
+    factor = override / _SE_INF
+    new_se_total = max(fp.se_total * factor, fp.se_sample)
+    forecast_var = max(new_se_total ** 2 - fp.se_sample ** 2, 0.0)
+    new_se_forecast = math.sqrt(forecast_var)
+    ci_lo, ci_hi = ci_from_se(fp.point, new_se_total)
+    notes = fp.notes
+    if notes:
+        notes = f"{notes}; se_override={override:.3f}"
+    else:
+        notes = f"se_override={override:.3f}"
+    return ForecastPoint(
+        point=fp.point,
+        se_total=new_se_total,
+        se_sample=fp.se_sample,
+        se_forecast=new_se_forecast,
+        ci90_low=ci_lo,
+        ci90_high=ci_hi,
+        method=fp.method,
+        target_year=fp.target_year,
+        geoid=fp.geoid,
+        indicator=fp.indicator,
+        horizon=fp.horizon,
+        notes=notes,
+    )
+
+
+def _calibrated_macro_weight(
+    indicator: str,
+    calibration: dict | None,
+    fallback: float = 0.30,
+    floor: float = 0.05,
+    ceiling: float = 0.80,
+) -> float:
+    """Return the macro/(macro+trend) blend weight for an indicator.
+
+    From Bates-Granger optimal combination of two unbiased estimators:
+        w_macro* = RMSE_trend² / (RMSE_trend² + RMSE_macro²)
+
+    `calibration` is the dict written by `scripts/calibrate_anchors.py`;
+    if absent or missing this indicator we fall back to `fallback` so
+    legacy tests still pass. Bound the result to [floor, ceiling] so a
+    single anomalous calibration run can't degenerate the blend (a
+    1.0 weight would discard the trend ensemble entirely).
+    """
+    if calibration is None:
+        return fallback
+    rmse_table = calibration.get("rmse_by_indicator_method") or {}
+    rmse_trend = rmse_table.get(indicator, {}).get("trend_ensemble")
+    rmse_anchor = rmse_table.get(indicator, {}).get("multi_anchor")
+    if rmse_trend is None or rmse_anchor is None:
+        return fallback
+    if rmse_trend <= 0 or rmse_anchor <= 0:
+        return fallback
+    w = (rmse_trend ** 2) / (rmse_trend ** 2 + rmse_anchor ** 2)
+    return max(floor, min(ceiling, w))
+
+
+def project_ensemble_multi(
+    series_observations: Sequence[AcsObservation],
+    target_year: int,
+    end_year: int | None = None,
+    calibration: dict | None = None,
+    correlation_rho_inner: float = 0.7,
+    correlation_rho_anchor: float = 0.5,
+) -> "ForecastPoint | None":
+    """Multi-source anchor ensemble.
+
+    Pulls in CPI / PCE / QCEW / HUD FMR / FHFA HPI (whichever apply
+    to the indicator) via `anchors.combined_anchor_rate`, projects
+    `latest` forward at the multi-source rate, and combines with the
+    trend ensemble at the calibrated optimal weight.
+
+    Parameters
+    ----------
+    end_year : int, optional
+        The "as-of" year for visibility into anchor sources. Defaults
+        to the effective_year of the latest ACS observation. Setting
+        this lower simulates a back-test in which only data visible
+        on or before `end_year` is used.
+    calibration : dict, optional
+        Pre-computed RMSE table from `scripts/calibrate_anchors.py`.
+        Determines per-source anchor weights *and* the macro/trend
+        blend weight. If absent, falls back to equal anchor weights
+        and the legacy 0.30 macro weight.
+    """
+    # Local import to avoid a circular dependency between ensemble and anchors.
+    from .anchors import combined_anchor_rate, anchor_as_forecast, load_calibration
+
+    if not series_observations:
+        return None
+    indicator = series_observations[-1].indicator
+    if end_year is None:
+        end_year = int(round(effective_year(series_observations[-1])))
+    if calibration is None:
+        calibration = load_calibration()
+
+    # Trend ensemble first.
+    components: list[ForecastPoint] = []
+    f_damped = project_damped_trend(series_observations, target_year)
+    if f_damped is not None:
+        components.append(f_damped)
+    f_ar1 = project_ar1_log_diff(series_observations, target_year)
+    if f_ar1 is not None:
+        components.append(f_ar1)
+
+    inner = (
+        combine_forecasts(components, target_year, method_label="trend_ensemble")
+        if components else None
+    )
+    if inner is not None:
+        inner = _apply_se_override(inner, indicator, "trend_ensemble", calibration)
+
+    # Multi-source macro anchor. `combined_anchor_rate` expects the
+    # `rmse_by_indicator_source` slice — pass it explicitly so the full
+    # calibration dict can be threaded through here without confusion.
+    per_source_calib = (calibration or {}).get("rmse_by_indicator_source")
+    anchor_rate = combined_anchor_rate(
+        indicator=indicator,
+        end_year=end_year,
+        calibration=per_source_calib,
+    )
+    anchor_fp: ForecastPoint | None = None
+    if anchor_rate is not None:
+        anchor_fp = anchor_as_forecast(
+            latest=series_observations[-1],
+            target_year=target_year,
+            anchor_rate=anchor_rate,
+        )
+        anchor_fp = _apply_se_override(anchor_fp, indicator, "multi_anchor", calibration)
+
+    if inner is None and anchor_fp is None:
+        return None
+    if inner is None:
+        return anchor_fp
+    if anchor_fp is None:
+        return inner
+
+    # Blend at calibrated weight.
+    macro_weight = _calibrated_macro_weight(indicator, calibration)
+    w = [1 - macro_weight, macro_weight]
+    pieces = [inner, anchor_fp]
+
+    point = sum(w[i] * pieces[i].point for i in range(2))
+    rho = correlation_rho_anchor
+    var = 0.0
+    for i in range(2):
+        for j in range(2):
+            corr = 1.0 if i == j else rho
+            var += w[i] * w[j] * pieces[i].se_total * pieces[j].se_total * corr
+    se_total = math.sqrt(var) if var > 0 else 0.0
+    se_sample = math.sqrt(sum((w[i] * pieces[i].se_sample) ** 2 for i in range(2)))
+    se_forecast = math.sqrt(sum((w[i] * pieces[i].se_forecast) ** 2 for i in range(2)))
+    ci_lo, ci_hi = ci_from_se(point, se_total)
+
+    notes = (
+        f"multi_anchor_blend(macro={macro_weight:.2f}, trend={1 - macro_weight:.2f}); "
+        f"trend: {inner.notes}; anchor: {anchor_fp.notes}"
+    )
+    return ForecastPoint(
+        point=point,
+        se_total=se_total,
+        se_sample=se_sample,
+        se_forecast=se_forecast,
+        ci90_low=ci_lo,
+        ci90_high=ci_hi,
+        method="ensemble_multi_anchor",
+        target_year=target_year,
+        geoid=inner.geoid,
+        indicator=inner.indicator,
+        horizon=inner.horizon,
+        notes=notes,
+    )

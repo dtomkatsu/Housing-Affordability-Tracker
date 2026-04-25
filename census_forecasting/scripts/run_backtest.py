@@ -29,7 +29,12 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT))
 
 from census_forecasting.src.acs_client import AcsClient
-from census_forecasting.src.backtest import run_backtest, DEFAULT_METHODS
+from census_forecasting.src.anchors import load_calibration
+from census_forecasting.src.backtest import (
+    DEFAULT_METHODS,
+    make_methods_with_multi_anchor,
+    run_backtest,
+)
 from census_forecasting.src.models import AcsObservation
 
 
@@ -77,7 +82,10 @@ def write_report(
     report = out_dir / f"backtest_{run_date}.md"
     csv_path = out_dir / f"backtest_{run_date}.csv"
 
-    method_order = ["carry_forward", "linear_log", "damped_log_trend", "ar1_log_diff", "ensemble"]
+    method_order = [
+        "carry_forward", "linear_log", "damped_log_trend", "ar1_log_diff",
+        "ensemble", "ensemble_multi_anchor",
+    ]
 
     lines = []
     lines.append(f"# ACS Projection Walk-Forward Back-Test\n")
@@ -180,14 +188,20 @@ def main() -> int:
     print(f"Fetched {sum(len(v) for v in series.values())} observations across "
           f"{len(series)} (geoid, indicator) pairs.")
 
+    calibration = load_calibration()
+    methods = make_methods_with_multi_anchor(calibration=calibration)
     summaries = run_backtest(
         series_by_key=series,
         anchors=ANCHOR_YEARS,
         horizon=args.horizon,
+        methods=methods,
     )
 
     print("\n=== Aggregate ===\n")
-    for m in ["carry_forward", "linear_log", "damped_log_trend", "ar1_log_diff", "ensemble"]:
+    for m in [
+        "carry_forward", "linear_log", "damped_log_trend",
+        "ar1_log_diff", "ensemble", "ensemble_multi_anchor",
+    ]:
         s = summaries.get(m)
         if s is None:
             continue

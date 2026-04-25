@@ -1,0 +1,31 @@
+{
+  "source": "HUD",
+  "series_id": "HUD Fair Market Rents — Urban Honolulu HI HUD Metro FMR Area (METRO46520M46520*, 2BR)",
+  "title": "Fair Market Rent, Honolulu MSA, 2-bedroom, FY (Oct 1 prior year - Sep 30)",
+  "frequency": "annual (FY-aligned)",
+  "units": "USD per month, gross rent (includes utility allowances)",
+  "last_refresh": "2026-01",
+  "limitations": [
+    "FMRs are administrative — set at the 40th percentile of recent-mover gross rents; not a direct rent estimate.",
+    "Lag: FY2024 FMR is published in mid-2023 and based on 2021 ACS + RDDS adjustments — so the rate of change in FMR lags spot rent by 1-2 years.",
+    "Honolulu only; neighbor-island county FMRs (Hawaii, Kauai, Maui) are published separately.",
+    "Used here as a *validation anchor* — checks whether ACS B25064 (median gross rent) growth tracks an independent administrative series. It is not a forecast of contract rent."
+  ],
+  "values_by_year": {
+    "2010": 1854,
+    "2011": 1896,
+    "2012": 1849,
+    "2013": 1849,
+    "2014": 1875,
+    "2015": 1937,
+    "2016": 2014,
+    "2017": 1979,
+    "2018": 1986,
+    "2019": 2104,
+    "2020": 2261,
+    "2021": 2376,
+    "2022": 2469,
+    "2023": 2486,
+    "2024": 2599
+  }
+}

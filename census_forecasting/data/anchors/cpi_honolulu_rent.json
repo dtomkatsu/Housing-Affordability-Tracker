@@ -1,0 +1,30 @@
+{
+  "source": "BLS",
+  "series_id": "CUUSA426SEHA",
+  "title": "Consumer Price Index for All Urban Consumers: Rent of primary residence, Honolulu, HI (semiannual, 1982-84=100)",
+  "frequency": "semiannual",
+  "units": "index, 1982-84=100",
+  "last_refresh": "2026-01",
+  "limitations": [
+    "Captures contract rent paid by surveyed renter households — lags listing/spot rent indices like Zillow ZORI by 6-12 months.",
+    "Smoothed by BLS hedonic adjustments; sharp listing-rent moves are visibly muted in this series.",
+    "Honolulu only — neighbor-island rent dynamics may differ."
+  ],
+  "values_by_year": {
+    "2010": 277.731,
+    "2011": 282.498,
+    "2012": 285.882,
+    "2013": 288.991,
+    "2014": 297.068,
+    "2015": 304.748,
+    "2016": 314.106,
+    "2017": 322.802,
+    "2018": 331.218,
+    "2019": 341.187,
+    "2020": 348.952,
+    "2021": 350.716,
+    "2022": 356.671,
+    "2023": 379.068,
+    "2024": 396.040
+  }
+}

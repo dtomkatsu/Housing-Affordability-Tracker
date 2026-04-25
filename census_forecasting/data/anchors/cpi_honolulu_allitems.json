@@ -1,0 +1,30 @@
+{
+  "source": "BLS",
+  "series_id": "CUUSA426SA0",
+  "title": "Consumer Price Index for All Urban Consumers (CPI-U): All items, Honolulu, HI (semiannual, 1982-84=100)",
+  "frequency": "semiannual",
+  "units": "index, 1982-84=100",
+  "last_refresh": "2026-01",
+  "limitations": [
+    "Honolulu CPI is published semiannually (H1 and H2), not monthly — so within-year volatility is smoothed by construction.",
+    "Series uses a 1982-84 base; rebasing within the BLS reference series is rare but possible.",
+    "Hawaii non-Honolulu counties are not directly covered; this acts as a state-wide proxy."
+  ],
+  "values_by_year": {
+    "2010": 235.829,
+    "2011": 244.951,
+    "2012": 251.327,
+    "2013": 255.348,
+    "2014": 259.123,
+    "2015": 259.971,
+    "2016": 263.139,
+    "2017": 268.751,
+    "2018": 273.988,
+    "2019": 279.464,
+    "2020": 282.247,
+    "2021": 290.788,
+    "2022": 308.358,
+    "2023": 322.017,
+    "2024": 332.060
+  }
+}

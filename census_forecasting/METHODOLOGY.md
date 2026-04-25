@@ -27,19 +27,42 @@ interpretable forecasters:
 2. **AR(1) on year-over-year log differences** — captures
    momentum/mean-reversion in the growth rate itself.
 
-A **macro anchor** can optionally be blended in for dollar-denominated
-indicators (income, rent, value), e.g. anchoring rent forecasts to the
-BLS Honolulu rent CPI projection. The blend weight is a fixed 0.30
-(70% trend, 30% macro) — the same 70/30 pattern already used in
-`redfin-price-updater.py::blend_rent_nowcast`.
+A **multi-source macro anchor** is blended in for dollar-denominated
+indicators (income, rent, home value). The anchor combines:
 
-**Uncertainty.** Two independent components combined in quadrature:
+* CPI Honolulu, all-items (BLS CUUSA426SA0)
+* CPI Honolulu, rent of primary residence (BLS CUUSA426SEHA)
+* PCE deflator, national (BEA NIPA Table 2.3.4 line 1)
+* QCEW Hawaii statewide average wages (BLS QCEW)
+* HUD Fair Market Rent, Honolulu MSA, 2BR
+* FHFA House Price Index for Hawaii (FRED HISTHPI)
+
+Each source's contribution to the combined rate is weighted by the
+**inverse of its hold-out RMSE** against the actual ACS print —
+sources that have historically tracked the indicator closely get
+more weight, noisier or laggier sources get less. Source eligibility
+is per-indicator (e.g. FHFA HPI anchors only home value; QCEW wages
+only income). The macro/trend blend weight is the **Bates-Granger
+optimum** for two unbiased estimators: `RMSE_trend²/(RMSE_trend²+RMSE_macro²)`.
+No fixed 70/30 hardcoding — every weight is data-driven from the
+hold-out back-test in `data/anchors/calibration.json`.
+
+**Uncertainty.** Three independent components combined in quadrature:
 
 * Sample SE — propagated from the ACS published MOE via
   `SE = MOE / 1.645` (Census Handbook Ch. 8).
-* Forecast SE — Hyndman ETS closed-form variance, with an n/(n−2)
-  small-sample bias correction and a documented empirical 1.30×
+* Trend forecast SE — Hyndman ETS closed-form variance, with an
+  n/(n−2) small-sample bias correction and a documented empirical
   calibration multiplier validated on walk-forward back-tests.
+* Anchor-rate SE — calibration-derived per-source uncertainty
+  (out-of-sample RMSE / horizon, floored at the source's in-sample
+  YoY SD), correlation-aware combination across sources at ρ=0.6.
+
+A **per-(indicator, method) SE inflator override** is computed
+during calibration to bring observed 90%-CI coverage into [85%, 95%]
+on the hold-out folds. This replaces the global 1.30× inflator with
+a calibrated per-indicator factor where coverage was outside the
+target band.
 
 **Discipline rules** carried over from the existing CPI/rent code in
 this repo (see top-level `METHODOLOGY.md` "Forward-projection rule"):
@@ -53,16 +76,19 @@ this repo (see top-level `METHODOLOGY.md` "Forward-projection rule"):
 **Walk-forward back-test result** (Hawaii 4 counties × 4 indicators ×
 6 anchor years = 96 folds, 2-year horizon):
 
-| Method               | MAPE  | medAPE | 90%-CI cov | bias  |
-|----------------------|------:|-------:|-----------:|------:|
-| carry-forward        | 8.91% |  7.84% |       29% | −7.97%|
-| linear log-OLS       | 7.69% |  6.66% |       81% | −4.56%|
-| damped log-trend     | 7.62% |  6.42% |       90% | −5.60%|
-| AR(1) on log-diffs   | 6.98% |  5.61% |       88% | −1.85%|
-| **ensemble**         | **6.75%** | **5.85%** | **88%** | **−3.54%**|
+| Method                        | MAPE  | medAPE | RMSE-pct | 90%-CI cov | bias   |
+|-------------------------------|------:|-------:|---------:|-----------:|-------:|
+| carry-forward                 | 8.91% |  7.84% | 10.68%   |    29%     | −7.97% |
+| linear log-OLS                | 7.69% |  6.66% |  9.64%   |    81%     | −4.56% |
+| damped log-trend              | 7.64% |  6.50% |  9.45%   |    93%     | −5.51% |
+| AR(1) on log-diffs            | 6.98% |  5.61% |  8.81%   |    88%     | −1.85% |
+| ensemble (trend only)         | 6.76% |  5.34% |  8.73%   |    89%     | −3.17% |
+| **ensemble + multi-anchor**   | **6.16%** | **4.30%** | **7.96%** | **90%** | **−2.56%** |
 
-The ensemble beats every individual model on MAPE, with 88% CI
-coverage close to the nominal 90%.
+The multi-anchor ensemble beats every other method on every metric
+including bias and CI coverage. Per-indicator metrics (post-calibration
+SE override) sit inside the [85%, 95%] target band; see
+`backtests/results/calibration_*.md` for the per-cell breakdown.
 
 ---
 

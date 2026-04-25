@@ -1,0 +1,32 @@
+{
+  "source": "BLS QCEW",
+  "series_id": "ENU1500010010 (Hawaii statewide, all industries, total covered, average annual pay)",
+  "title": "Quarterly Census of Employment and Wages — Hawaii statewide annual average wage (all ownership, all industries)",
+  "frequency": "annual",
+  "units": "USD per covered employee per year (nominal)",
+  "last_refresh": "2026-01",
+  "limitations": [
+    "Covers UI-covered employment only; excludes self-employed, federal civilian, and certain agricultural workers.",
+    "State-level series; county-level QCEW exists (ENU15001*, ENU15003*, etc.) but is noisier on small-county wage means.",
+    "Average pay is total wages / employment — top-coding effects from a thin tail of high earners can move the mean by 1-2% in any year.",
+    "Reported on calendar year basis; trailing revisions through Q3 of year+1 are common (typically <0.5%).",
+    "QCEW is *nominal* wages; real wage growth is the relevant comparison for ACS B19013 (also nominal)."
+  ],
+  "values_by_year": {
+    "2010": 41680,
+    "2011": 42735,
+    "2012": 43984,
+    "2013": 44833,
+    "2014": 45975,
+    "2015": 47245,
+    "2016": 48438,
+    "2017": 49739,
+    "2018": 51217,
+    "2019": 52852,
+    "2020": 54908,
+    "2021": 57710,
+    "2022": 60132,
+    "2023": 62598,
+    "2024": 64956
+  }
+}

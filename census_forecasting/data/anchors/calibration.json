@@ -1,0 +1,98 @@
+{
+  "anchor_years": [
+    2015,
+    2016,
+    2017,
+    2019,
+    2021,
+    2022
+  ],
+  "ci90_coverage_by_indicator_method": {
+    "B19013_001E": {
+      "multi_anchor": 0.9583333333333334,
+      "trend_ensemble": 0.9583333333333334
+    },
+    "B25058_001E": {
+      "multi_anchor": 0.875,
+      "trend_ensemble": 0.875
+    },
+    "B25064_001E": {
+      "multi_anchor": 0.9583333333333334,
+      "trend_ensemble": 0.8333333333333334
+    },
+    "B25077_001E": {
+      "multi_anchor": 0.9583333333333334,
+      "trend_ensemble": 0.875
+    }
+  },
+  "ci90_coverage_post_override": {
+    "B19013_001E": {
+      "multi_anchor": 0.9166666666666666,
+      "trend_ensemble": 0.9166666666666666
+    },
+    "B25058_001E": {
+      "multi_anchor": 0.875,
+      "trend_ensemble": 0.875
+    },
+    "B25064_001E": {
+      "multi_anchor": 0.875,
+      "trend_ensemble": 0.9166666666666666
+    },
+    "B25077_001E": {
+      "multi_anchor": 0.9166666666666666,
+      "trend_ensemble": 0.875
+    }
+  },
+  "horizon": 2,
+  "rmse_by_indicator_method": {
+    "B19013_001E": {
+      "multi_anchor": 0.06765679268716396,
+      "trend_ensemble": 0.07028450459087084
+    },
+    "B25058_001E": {
+      "multi_anchor": 0.09451976332047768,
+      "trend_ensemble": 0.1036646068289773
+    },
+    "B25064_001E": {
+      "multi_anchor": 0.0865781484739998,
+      "trend_ensemble": 0.09720513418265446
+    },
+    "B25077_001E": {
+      "multi_anchor": 0.06160300687402799,
+      "trend_ensemble": 0.0732133799825521
+    }
+  },
+  "rmse_by_indicator_source": {
+    "B19013_001E": {
+      "cpi_honolulu_allitems": 0.07081652426154833,
+      "pce_deflator": 0.0697560644933417,
+      "qcew_hawaii_wages": 0.06528840734729513
+    },
+    "B25058_001E": {
+      "cpi_honolulu_rent": 0.09892298595709118,
+      "hud_fmr_honolulu": 0.0951516056521171
+    },
+    "B25064_001E": {
+      "cpi_honolulu_rent": 0.0900394884376818,
+      "hud_fmr_honolulu": 0.08871064068417485
+    },
+    "B25077_001E": {
+      "fred_hi_hpi": 0.06160300687402799
+    }
+  },
+  "run_date": "2026-04-25",
+  "schema_version": 2,
+  "se_inflator_override_by_indicator_method": {
+    "B19013_001E": {
+      "multi_anchor": 1.0499,
+      "trend_ensemble": 1.1749
+    },
+    "B25064_001E": {
+      "multi_anchor": 1.0499,
+      "trend_ensemble": 1.8392
+    },
+    "B25077_001E": {
+      "multi_anchor": 1.0499
+    }
+  }
+}

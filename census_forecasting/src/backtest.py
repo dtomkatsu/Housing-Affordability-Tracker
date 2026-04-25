@@ -34,7 +34,8 @@ from .projection import (
     effective_year,
     ANNUAL_RATE_CAP,
 )
-from .ensemble import project_ensemble, macro_anchor_projection
+from .ensemble import project_ensemble, project_ensemble_multi, macro_anchor_projection
+from .anchors import load_calibration
 
 
 @dataclass
@@ -191,6 +192,28 @@ DEFAULT_METHODS: dict[str, ProjectorFn] = {
     "ar1_log_diff": project_ar1_log_diff,
     "ensemble": lambda s, t: project_ensemble(s, t),
 }
+
+
+def make_methods_with_multi_anchor(
+    calibration: dict | None = None,
+) -> dict[str, ProjectorFn]:
+    """DEFAULT_METHODS plus the multi-source anchor ensemble.
+
+    The multi-anchor method peeks only at data visible at the back-test
+    anchor year — see `project_ensemble_multi(end_year=...)`. Calibration
+    feeds in per-source weights and per-method SE inflators.
+    """
+    cal = calibration if calibration is not None else load_calibration()
+
+    def _multi(series: Sequence[AcsObservation], target_year: int):
+        if not series:
+            return None
+        end_year = int(round(effective_year(series[-1])))
+        return project_ensemble_multi(
+            series, target_year, end_year=end_year, calibration=cal,
+        )
+
+    return {**DEFAULT_METHODS, "ensemble_multi_anchor": _multi}
 
 
 def truncate_to_anchor(

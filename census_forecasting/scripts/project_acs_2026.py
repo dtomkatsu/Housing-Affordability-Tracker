@@ -34,7 +34,8 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT))
 
 from census_forecasting.src.acs_client import AcsClient
-from census_forecasting.src.ensemble import project_ensemble
+from census_forecasting.src.anchors import load_calibration
+from census_forecasting.src.ensemble import project_ensemble, project_ensemble_multi
 from census_forecasting.src.models import AcsObservation
 
 
@@ -74,29 +75,34 @@ def fetch_panel(client: AcsClient) -> dict[tuple[str, str], list[AcsObservation]
 def run_projections(
     panel: dict[tuple[str, str], list[AcsObservation]],
     target_year: int,
-    macro_anchors: dict[str, float] | None = None,
+    use_multi_anchor: bool = True,
 ) -> list[dict]:
     """Project every (geoid, indicator) pair forward to `target_year`.
 
-    `macro_anchors` is an optional {indicator → annual-growth-rate} dict.
-    When provided, the ensemble blends in a macro-anchor projection at
-    weight 0.30. Useful for dollar-denominated series during periods of
-    macro shock (e.g. anchoring rent forecasts to the BLS Honolulu rent
-    CPI YoY at 2024).
+    With `use_multi_anchor=True` (default), uses the multi-source anchor
+    ensemble (`project_ensemble_multi`) — CPI / PCE / QCEW / HUD FMR /
+    FHFA HPI per indicator, with weights and SE inflators sourced from
+    `data/anchors/calibration.json`. Falls back to a trend-only
+    ensemble for indicators with no admissible anchor sources.
+
+    With `use_multi_anchor=False`, uses the legacy `project_ensemble`
+    (no macro anchor — trend ensemble only).
     """
+    calibration = load_calibration() if use_multi_anchor else None
     rows: list[dict] = []
     for (geoid, indicator), obs in sorted(panel.items()):
         obs_sorted = sorted(obs, key=lambda o: o.year)
         if not obs_sorted:
             continue
         latest = obs_sorted[-1]
-        macro_rate = (macro_anchors or {}).get(indicator)
-        fp = project_ensemble(
-            obs_sorted,
-            target_year=target_year,
-            macro_annual_rate=macro_rate,
-            macro_weight=0.30 if macro_rate is not None else 0.0,
-        )
+        if use_multi_anchor:
+            fp = project_ensemble_multi(
+                obs_sorted,
+                target_year=target_year,
+                calibration=calibration,
+            )
+        else:
+            fp = project_ensemble(obs_sorted, target_year=target_year)
         if fp is None:
             continue
         rows.append({
@@ -134,7 +140,12 @@ def write_report(
     lines = []
     lines.append(f"# Hawaii ACS Projection: {target_year}\n\n")
     lines.append(f"**Run date:** {run_date}  \n")
-    lines.append(f"**Method:** Damped log-trend + AR(1) ensemble (see METHODOLOGY.md)  \n")
+    lines.append(
+        f"**Method:** Multi-source anchor ensemble — damped log-trend + "
+        f"AR(1) blended with calibrated CPI / PCE / QCEW / HUD FMR / "
+        f"FHFA HPI anchors. Anchor weights and SE inflators sourced "
+        f"from `data/anchors/calibration.json`. See METHODOLOGY.md.  \n"
+    )
     lines.append(f"**Anchor vintage:** ACS 1-year, latest year per series\n\n")
 
     by_indicator = defaultdict(list)
@@ -163,20 +174,24 @@ def write_report(
 
     lines.append("## Method notes\n\n")
     lines.append(
-        "* Point estimates are the inverse-variance ensemble of a damped "
-        "local linear trend (Holt's damped method, log space) and an "
-        "AR(1) on log-differences.\n"
-        "* 90% CIs combine ACS sample standard error (MOE/1.645) and "
-        "model forecast SE (Hyndman ETS(A,Ad,N) closed-form, with "
-        "n/(n−2) small-sample correction and an empirical 1.30× "
-        "calibration multiplier validated on walk-forward back-tests).\n"
+        "* Point estimates are the multi-source anchor ensemble: a trend "
+        "ensemble (damped log-trend + AR(1)) blended with a calibrated "
+        "macro anchor combining CPI Honolulu, PCE deflator, QCEW Hawaii "
+        "wages, HUD FMR Honolulu, and FHFA HPI Hawaii — each weighted by "
+        "its inverse-RMSE on hold-out folds. Macro/trend blend weight is "
+        "the Bates-Granger optimum: `RMSE_trend²/(RMSE_trend²+RMSE_macro²)`.\n"
+        "* 90% CIs combine ACS sample standard error (MOE/1.645), model "
+        "forecast SE (Hyndman ETS(A,Ad,N) closed-form), anchor-rate "
+        "uncertainty (calibration-derived per-source SE), and a "
+        "per-(indicator, method) empirical SE inflator that brings "
+        "back-test 90%-CI coverage into [85%, 95%].\n"
         "* Projections are capped at ±10%/yr compound growth — the "
         "annual analog of the ±0.0189/month CPI cap that governs the "
         "rest of this repo.\n"
-        "* Walk-forward back-tests on 2015-2022 anchors (96 folds, 4 "
-        "counties × 4 indicators × 6 anchors, 2-year horizon) yielded "
-        "median absolute percentage error 5.4% and 90%-CI coverage of "
-        "88.5% — see `backtests/results/backtest_*.md`.\n"
+        "* Hold-out back-tests on 2015-2022 anchors (96 folds, 4 "
+        "counties × 4 indicators × 6 anchors, 2-year horizon) — "
+        "see `backtests/results/backtest_*.md` and `calibration_*.md` "
+        "for per-indicator metrics.\n"
     )
 
     report.write_text("".join(lines))
@@ -186,11 +201,11 @@ def write_report(
 def write_json(rows: list[dict], target_year: int, out_dir: Path, run_date: str) -> Path:
     out_dir.mkdir(parents=True, exist_ok=True)
     payload = {
-        "schema_version": 1,
+        "schema_version": 2,
         "run_date": run_date,
         "run_timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "target_year": target_year,
-        "method": "ensemble (damped_log_trend + ar1_log_diff)",
+        "method": "ensemble_multi_anchor (damped_log_trend + ar1_log_diff + multi-source macro)",
         "rows": rows,
     }
     out = out_dir / f"projections_{target_year}_{run_date}.json"
