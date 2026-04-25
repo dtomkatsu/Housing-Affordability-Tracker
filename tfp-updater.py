@@ -117,49 +117,50 @@ def fetch_bls_food_cpi(start_year: int, end_year: int) -> list[dict] | None:
         return None
 
 
-# Per-month projection cap: bounds noisy bimonthly print from compounding
-# into an unrealistic extrapolation. (1+0.0189)^12 ≈ 1.252 → ±~25%/yr.
-# Mirrors the cap used in pipelines/grocery/src/price_adjuster.py so all
-# CPI-driven projections in this repo share the same momentum ceiling.
-_PROJ_MONTHLY_CAP = 0.0189
+# CPI projection helpers — single source of truth in
+# `census_forecaster.bls.projection`. We re-export the constants under
+# their historical names (`_PROJ_MONTHLY_CAP`, `_PROJ_DAMPING`) and keep
+# `_smoothed_monthly_rate` / `_damped_compound_factor` as thin shape-
+# adapting wrappers so the existing test contract stays intact.
+#
+# Why pull from the package: a calibration improvement to the cap,
+# damping factor, or SE inflator happens upstream in Census-Forecaster
+# and propagates here automatically. Previously this file duplicated the
+# math from price_adjuster.py and the two had drifted; now there's one
+# authoritative implementation.
+from census_forecaster.bls.projection import (
+    PROJ_MONTHLY_CAP as _PROJ_MONTHLY_CAP,
+    PROJ_DAMPING as _PROJ_DAMPING,
+    smoothed_monthly_rate as _bls_smoothed_monthly_rate,
+    damped_compound_factor as _grocery_damped_compound_factor,
+)
 
-# Damped-trend factor (Gardner & McKenzie 1985). Each successive forecast
-# month applies PROJ_DAMPING^(h-1) of the latest momentum, so the slope
-# decays rather than compounding flat. Mirrors price_adjuster.PROJ_DAMPING.
-_PROJ_DAMPING = 0.92
+
+def _to_bls_shape(p: dict) -> dict:
+    """Convert a TFP-shaped point {year, month, value} → BLS shape
+    {year, period: 'MNN', value}. Lossless adapter at the import boundary."""
+    return {"year": p["year"], "period": f"M{p['month']:02d}", "value": p["value"]}
 
 
 def _smoothed_monthly_rate(ordered: list[dict]) -> float | None:
-    """Recency-weighted geometric mean of pairwise monthly growth rates.
+    """Thin shape-adapting wrapper around the canonical smoother.
 
-    Same logic as price_adjuster._smoothed_monthly_rate, but ordered points
-    here use {year, month} (TFP's own shape) rather than the BLS
-    {year, period:'MNN'} shape. With exactly 2 points this returns the
-    single pairwise rate — preserving the previous behaviour and existing
-    test contract. With 3+ points it dilutes one-off bimonthly spikes.
+    Production logic lives in
+    `census_forecaster.bls.projection.smoothed_monthly_rate`. This
+    wrapper adapts the TFP-native `{year, month}` point shape to the
+    BLS `{year, period}` shape that the canonical smoother expects.
     """
-    pairs: list[tuple[float, float]] = []
-    for i in range(1, len(ordered)):
-        prev = ordered[i - 1]
-        curr = ordered[i]
-        months_between = (curr["year"] - prev["year"]) * 12 + (curr["month"] - prev["month"])
-        if months_between <= 0 or prev["value"] <= 0:
-            continue
-        monthly_rate = (curr["value"] / prev["value"]) ** (1.0 / months_between) - 1.0
-        weight = 0.5 ** (len(ordered) - 1 - i)
-        pairs.append((monthly_rate, weight))
-    if not pairs:
-        return None
-    return sum(r * w for r, w in pairs) / sum(w for _, w in pairs)
+    return _bls_smoothed_monthly_rate([_to_bls_shape(p) for p in ordered])
 
 
 def _damped_compound_factor(monthly_rate: float, months_beyond: int) -> float:
-    """Compound growth over months_beyond with Gardner-McKenzie damping."""
-    factor = 1.0
-    for h in range(1, months_beyond + 1):
-        damped_rate = monthly_rate * (_PROJ_DAMPING ** (h - 1))
-        factor *= 1.0 + damped_rate
-    return factor
+    """Re-export of the canonical damped compounding factor.
+
+    Production logic lives in
+    `census_forecaster.bls.projection.damped_compound_factor`. Uses the
+    package's default `phi=PROJ_DAMPING`.
+    """
+    return _grocery_damped_compound_factor(monthly_rate, months_beyond)
 
 
 def _cpi_value_for(points: list[dict], year: int, month: int) -> float | None:

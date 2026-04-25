@@ -1,0 +1,497 @@
+[
+  {
+    "year": 2018,
+    "period": "M01",
+    "value": 246.027
+  },
+  {
+    "year": 2018,
+    "period": "M02",
+    "value": 256.766
+  },
+  {
+    "year": 2018,
+    "period": "M03",
+    "value": 261.783
+  },
+  {
+    "year": 2018,
+    "period": "M04",
+    "value": 271.328
+  },
+  {
+    "year": 2018,
+    "period": "M05",
+    "value": 281.58
+  },
+  {
+    "year": 2018,
+    "period": "M06",
+    "value": 278.31
+  },
+  {
+    "year": 2018,
+    "period": "M07",
+    "value": 274.462
+  },
+  {
+    "year": 2018,
+    "period": "M08",
+    "value": 272.792
+  },
+  {
+    "year": 2018,
+    "period": "M09",
+    "value": 277.522
+  },
+  {
+    "year": 2018,
+    "period": "M10",
+    "value": 290.16
+  },
+  {
+    "year": 2018,
+    "period": "M11",
+    "value": 275.024
+  },
+  {
+    "year": 2018,
+    "period": "M12",
+    "value": 257.773
+  },
+  {
+    "year": 2019,
+    "period": "M01",
+    "value": 247.517
+  },
+  {
+    "year": 2019,
+    "period": "M02",
+    "value": 250.262
+  },
+  {
+    "year": 2019,
+    "period": "M03",
+    "value": 261.512
+  },
+  {
+    "year": 2019,
+    "period": "M04",
+    "value": 300.758
+  },
+  {
+    "year": 2019,
+    "period": "M05",
+    "value": 303.027
+  },
+  {
+    "year": 2019,
+    "period": "M06",
+    "value": 282.687
+  },
+  {
+    "year": 2019,
+    "period": "M07",
+    "value": 278.711
+  },
+  {
+    "year": 2019,
+    "period": "M08",
+    "value": 269.106
+  },
+  {
+    "year": 2019,
+    "period": "M09",
+    "value": 284.163
+  },
+  {
+    "year": 2019,
+    "period": "M10",
+    "value": 312.811
+  },
+  {
+    "year": 2019,
+    "period": "M11",
+    "value": 299.212
+  },
+  {
+    "year": 2019,
+    "period": "M12",
+    "value": 274.921
+  },
+  {
+    "year": 2020,
+    "period": "M01",
+    "value": 268.329
+  },
+  {
+    "year": 2020,
+    "period": "M02",
+    "value": 266.97
+  },
+  {
+    "year": 2020,
+    "period": "M03",
+    "value": 247.056
+  },
+  {
+    "year": 2020,
+    "period": "M04",
+    "value": 217.188
+  },
+  {
+    "year": 2020,
+    "period": "M05",
+    "value": 210.463
+  },
+  {
+    "year": 2020,
+    "period": "M06",
+    "value": 223.166
+  },
+  {
+    "year": 2020,
+    "period": "M07",
+    "value": 232.451
+  },
+  {
+    "year": 2020,
+    "period": "M08",
+    "value": 237.788
+  },
+  {
+    "year": 2020,
+    "period": "M09",
+    "value": 239.63
+  },
+  {
+    "year": 2020,
+    "period": "M10",
+    "value": 236.445
+  },
+  {
+    "year": 2020,
+    "period": "M11",
+    "value": 233.181
+  },
+  {
+    "year": 2020,
+    "period": "M12",
+    "value": 235.018
+  },
+  {
+    "year": 2021,
+    "period": "M01",
+    "value": 246.904
+  },
+  {
+    "year": 2021,
+    "period": "M02",
+    "value": 264.161
+  },
+  {
+    "year": 2021,
+    "period": "M03",
+    "value": 285.179
+  },
+  {
+    "year": 2021,
+    "period": "M04",
+    "value": 294.486
+  },
+  {
+    "year": 2021,
+    "period": "M05",
+    "value": 306.245
+  },
+  {
+    "year": 2021,
+    "period": "M06",
+    "value": 313.044
+  },
+  {
+    "year": 2021,
+    "period": "M07",
+    "value": 319.494
+  },
+  {
+    "year": 2021,
+    "period": "M08",
+    "value": 322.764
+  },
+  {
+    "year": 2021,
+    "period": "M09",
+    "value": 323.535
+  },
+  {
+    "year": 2021,
+    "period": "M10",
+    "value": 329.77
+  },
+  {
+    "year": 2021,
+    "period": "M11",
+    "value": 342.229
+  },
+  {
+    "year": 2021,
+    "period": "M12",
+    "value": 344.224
+  },
+  {
+    "year": 2022,
+    "period": "M01",
+    "value": 343.793
+  },
+  {
+    "year": 2022,
+    "period": "M02",
+    "value": 351.114
+  },
+  {
+    "year": 2022,
+    "period": "M03",
+    "value": 425.278
+  },
+  {
+    "year": 2022,
+    "period": "M04",
+    "value": 430.416
+  },
+  {
+    "year": 2022,
+    "period": "M05",
+    "value": 441.335
+  },
+  {
+    "year": 2022,
+    "period": "M06",
+    "value": 469.166
+  },
+  {
+    "year": 2022,
+    "period": "M07",
+    "value": 439.859
+  },
+  {
+    "year": 2022,
+    "period": "M08",
+    "value": 395.77
+  },
+  {
+    "year": 2022,
+    "period": "M09",
+    "value": 405.371
+  },
+  {
+    "year": 2022,
+    "period": "M10",
+    "value": 445.375
+  },
+  {
+    "year": 2022,
+    "period": "M11",
+    "value": 392.951
+  },
+  {
+    "year": 2022,
+    "period": "M12",
+    "value": 336.196
+  },
+  {
+    "year": 2023,
+    "period": "M01",
+    "value": 332.026
+  },
+  {
+    "year": 2023,
+    "period": "M02",
+    "value": 348.035
+  },
+  {
+    "year": 2023,
+    "period": "M03",
+    "value": 360.457
+  },
+  {
+    "year": 2023,
+    "period": "M04",
+    "value": 362.041
+  },
+  {
+    "year": 2023,
+    "period": "M05",
+    "value": 358.187
+  },
+  {
+    "year": 2023,
+    "period": "M06",
+    "value": 362.182
+  },
+  {
+    "year": 2023,
+    "period": "M07",
+    "value": 366.09
+  },
+  {
+    "year": 2023,
+    "period": "M08",
+    "value": 386.936
+  },
+  {
+    "year": 2023,
+    "period": "M09",
+    "value": 425.469
+  },
+  {
+    "year": 2023,
+    "period": "M10",
+    "value": 422.091
+  },
+  {
+    "year": 2023,
+    "period": "M11",
+    "value": 375.634
+  },
+  {
+    "year": 2023,
+    "period": "M12",
+    "value": 350.793
+  },
+  {
+    "year": 2024,
+    "period": "M01",
+    "value": 340.4
+  },
+  {
+    "year": 2024,
+    "period": "M02",
+    "value": 351.094
+  },
+  {
+    "year": 2024,
+    "period": "M03",
+    "value": 367.031
+  },
+  {
+    "year": 2024,
+    "period": "M04",
+    "value": 393.569
+  },
+  {
+    "year": 2024,
+    "period": "M05",
+    "value": 382.348
+  },
+  {
+    "year": 2024,
+    "period": "M06",
+    "value": 356.202
+  },
+  {
+    "year": 2024,
+    "period": "M07",
+    "value": 345.473
+  },
+  {
+    "year": 2024,
+    "period": "M08",
+    "value": 336.083
+  },
+  {
+    "year": 2024,
+    "period": "M09",
+    "value": 337.383
+  },
+  {
+    "year": 2024,
+    "period": "M10",
+    "value": 335.514
+  },
+  {
+    "year": 2024,
+    "period": "M11",
+    "value": 328.883
+  },
+  {
+    "year": 2024,
+    "period": "M12",
+    "value": 323.376
+  },
+  {
+    "year": 2025,
+    "period": "M01",
+    "value": 328.949
+  },
+  {
+    "year": 2025,
+    "period": "M02",
+    "value": 346.746
+  },
+  {
+    "year": 2025,
+    "period": "M03",
+    "value": 346.284
+  },
+  {
+    "year": 2025,
+    "period": "M04",
+    "value": 357.359
+  },
+  {
+    "year": 2025,
+    "period": "M05",
+    "value": 352.277
+  },
+  {
+    "year": 2025,
+    "period": "M06",
+    "value": 342.64
+  },
+  {
+    "year": 2025,
+    "period": "M07",
+    "value": 332.704
+  },
+  {
+    "year": 2025,
+    "period": "M08",
+    "value": 333.03
+  },
+  {
+    "year": 2025,
+    "period": "M09",
+    "value": 347.25
+  },
+  {
+    "year": 2025,
+    "period": "M10",
+    "value": 346.152
+  },
+  {
+    "year": 2025,
+    "period": "M11",
+    "value": 354.135
+  },
+  {
+    "year": 2025,
+    "period": "M12",
+    "value": 333.661
+  },
+  {
+    "year": 2026,
+    "period": "M01",
+    "value": 323.732
+  },
+  {
+    "year": 2026,
+    "period": "M02",
+    "value": 338.924
+  },
+  {
+    "year": 2026,
+    "period": "M03",
+    "value": 410.868
+  }
+]

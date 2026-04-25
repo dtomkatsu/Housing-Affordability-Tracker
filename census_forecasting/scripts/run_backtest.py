@@ -28,14 +28,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT))
 
-from census_forecasting.src.acs_client import AcsClient
-from census_forecasting.src.anchors import load_calibration
-from census_forecasting.src.backtest import (
+from census_forecaster.acs.client import AcsClient
+from census_forecaster.acs.anchors import load_calibration
+from census_forecaster.backtest.acs import (
     DEFAULT_METHODS,
     make_methods_with_multi_anchor,
     run_backtest,
 )
-from census_forecasting.src.models import AcsObservation
+from census_forecaster.models import AcsObservation
 
 
 HAWAII_FIPS = "15"

@@ -4,3 +4,11 @@ pandas>=2.2
 requests>=2.31
 matplotlib>=3.8
 plotly>=5.18
+
+# Forecasting + CPI projection — single source of truth lives in the
+# Census Forecaster package (extracted from this repo). All ACS forecast
+# logic, BLS CPI projection, walk-forward backtest harnesses, MOE
+# propagation, multi-source anchors, and hidden-data calibration are
+# imported from there. Use a git pin (or `pip install -e
+# /path/to/Census-Forecaster` for local development).
+census-forecaster @ git+https://github.com/dtomkatsu/Census-Forecaster.git@main

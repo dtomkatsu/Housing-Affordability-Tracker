@@ -9,42 +9,84 @@
       "is_projected": false,
       "method": "unavailable",
       "latest_observed": null,
-      "target_period": "2026-04"
+      "target_period": "2026-04",
+      "cap_fired": null,
+      "monthly_rate": null,
+      "implied_annual_rate": null,
+      "forecast_se": null,
+      "ratio_ci90_low": null,
+      "ratio_ci90_high": null,
+      "horizon_months": null
     },
     "dairy": {
       "ratio": 1.0,
       "is_projected": false,
       "method": "unavailable",
       "latest_observed": null,
-      "target_period": "2026-04"
+      "target_period": "2026-04",
+      "cap_fired": null,
+      "monthly_rate": null,
+      "implied_annual_rate": null,
+      "forecast_se": null,
+      "ratio_ci90_low": null,
+      "ratio_ci90_high": null,
+      "horizon_months": null
     },
     "meats_poultry_fish_eggs": {
       "ratio": 1.0,
       "is_projected": false,
       "method": "unavailable",
       "latest_observed": null,
-      "target_period": "2026-04"
+      "target_period": "2026-04",
+      "cap_fired": null,
+      "monthly_rate": null,
+      "implied_annual_rate": null,
+      "forecast_se": null,
+      "ratio_ci90_low": null,
+      "ratio_ci90_high": null,
+      "horizon_months": null
     },
     "other_food_at_home": {
       "ratio": 1.0,
       "is_projected": false,
       "method": "unavailable",
       "latest_observed": null,
-      "target_period": "2026-04"
+      "target_period": "2026-04",
+      "cap_fired": null,
+      "monthly_rate": null,
+      "implied_annual_rate": null,
+      "forecast_se": null,
+      "ratio_ci90_low": null,
+      "ratio_ci90_high": null,
+      "horizon_months": null
     },
     "fruits_vegetables": {
       "ratio": 1.0,
       "is_projected": false,
       "method": "unavailable",
       "latest_observed": null,
-      "target_period": "2026-04"
+      "target_period": "2026-04",
+      "cap_fired": null,
+      "monthly_rate": null,
+      "implied_annual_rate": null,
+      "forecast_se": null,
+      "ratio_ci90_low": null,
+      "ratio_ci90_high": null,
+      "horizon_months": null
     },
     "cereals_bakery": {
       "ratio": 1.0,
       "is_projected": false,
       "method": "unavailable",
       "latest_observed": null,
-      "target_period": "2026-04"
+      "target_period": "2026-04",
+      "cap_fired": null,
+      "monthly_rate": null,
+      "implied_annual_rate": null,
+      "forecast_se": null,
+      "ratio_ci90_low": null,
+      "ratio_ci90_high": null,
+      "horizon_months": null
     }
   }
 }
