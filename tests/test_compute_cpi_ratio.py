@@ -15,7 +15,13 @@ _GROCERY_ROOT = Path(__file__).resolve().parent.parent / "pipelines" / "grocery"
 if str(_GROCERY_ROOT) not in sys.path:
     sys.path.insert(0, str(_GROCERY_ROOT))
 
-from src.price_adjuster import compute_cpi_ratio, _project_forward  # noqa: E402
+from src.price_adjuster import (  # noqa: E402
+    compute_cpi_ratio,
+    _project_forward,
+    _smoothed_monthly_rate,
+    _damped_compound_factor,
+    PROJ_DAMPING,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -160,3 +166,43 @@ class TestProjectForward:
     def test_empty_series_raises(self):
         with pytest.raises(ValueError, match="cannot project forward from empty series"):
             _project_forward([], date(2024, 6, 1))
+
+    def test_smoothing_dilutes_one_off_spike(self):
+        """A spike on the latest print should not dominate when prior trend was flat.
+
+        Three flat points + one spike → smoothed rate is well below the
+        single-pair rate from just the last two points. This is the whole
+        point of recency-weighted smoothing: avoid being whipsawed by a
+        single noisy bimonthly print.
+        """
+        flat_then_spike = [
+            _make_point(2024, 1, 300.0),
+            _make_point(2024, 3, 300.0),
+            _make_point(2024, 5, 300.0),
+            _make_point(2024, 7, 312.0),    # +4% jump on the last print
+        ]
+        smoothed = _smoothed_monthly_rate(flat_then_spike)
+        # Naive 2-point rate: (312/300)^(1/2) - 1 ≈ 0.0198/mo
+        # Smoothed rate (weights 0.125, 0.25, 0.5, normalised over last 3 pairs):
+        # 0% + 0% + 1.98% blended → well under 0.0198, but positive.
+        assert 0.0 < smoothed < 0.012
+
+    def test_damped_factor_decays_with_horizon(self):
+        """Damped compounding should grow slower than undamped at long horizons."""
+        rate = 0.01  # 1% per month
+        damped_6mo = _damped_compound_factor(rate, 6)
+        undamped_6mo = (1 + rate) ** 6
+        assert damped_6mo < undamped_6mo
+        # Damping factor PROJ_DAMPING < 1 → projected slope decays each month.
+        assert 0 < PROJ_DAMPING < 1.0
+
+    def test_damped_factor_flat_when_rate_zero(self):
+        """Zero growth → damped factor is exactly 1.0 at any horizon."""
+        assert _damped_compound_factor(0.0, 12) == pytest.approx(1.0)
+
+    def test_smoothing_collapses_to_pair_with_two_points(self):
+        """With exactly 2 points, smoothed rate == pairwise rate (back-compat)."""
+        pts = [_make_point(2024, 2, 300.0), _make_point(2024, 4, 306.0)]
+        smoothed = _smoothed_monthly_rate(pts)
+        pairwise = (306.0 / 300.0) ** 0.5 - 1.0
+        assert smoothed == pytest.approx(pairwise, rel=1e-9)

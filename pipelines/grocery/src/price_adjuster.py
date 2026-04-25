@@ -39,14 +39,85 @@ def _latest_observed_point(points: list[dict]) -> dict | None:
     return max(points, key=lambda p: (p["year"], int(p["period"][1:])))
 
 
+# Per-month projection cap: bounds noisy bimonthly print from compounding
+# into an unrealistic extrapolation. (1+0.0189)^12 ≈ 1.252 → ±~25%/yr.
+PROJ_MONTHLY_CAP = 0.0189
+
+# Damping factor (Gardner & McKenzie 1985, used in Holt damped-trend).
+# Each successive month of forecast carries (PROJ_DAMPING)^h of the trend,
+# so the projection asymptotes rather than compounding indefinitely. φ=0.92
+# means by month 6 we apply ~61% of the latest trend; by month 12, ~37%.
+# This guards against the most pernicious failure mode of trend extrapolation:
+# treating a transient bimonthly spike as a permanent slope.
+PROJ_DAMPING = 0.92
+
+
+def _smoothed_monthly_rate(ordered: list[dict]) -> float | None:
+    """Recency-weighted geometric mean of pairwise monthly growth rates.
+
+    For a series with N≥2 observations, computes the per-month compound rate
+    between each consecutive pair, then blends them with exponential recency
+    weights (most-recent rate weight 1.0, prior 0.5, prior-prior 0.25, …).
+
+    With exactly 2 points this collapses to the single pairwise rate — the
+    previous behaviour. With 3+ points the smoothing absorbs single-period
+    noise: a one-print spike that doesn't repeat gets diluted by the prior
+    trend, mirroring how Holt's linear-trend smoother (β<1) carries momentum
+    rather than slavishly chasing the latest delta.
+
+    Returns None if no usable pair exists (e.g. all zeros or non-monotonic
+    timestamps); caller should fall back to the latest observed value.
+    """
+    pairs: list[tuple[float, float]] = []  # (monthly_rate, weight)
+    for i in range(1, len(ordered)):
+        prev = ordered[i - 1]
+        curr = ordered[i]
+        prev_y, prev_m = prev["year"], int(prev["period"][1:])
+        curr_y, curr_m = curr["year"], int(curr["period"][1:])
+        months_between = (curr_y - prev_y) * 12 + (curr_m - prev_m)
+        if months_between <= 0 or prev["value"] <= 0:
+            continue
+        monthly_rate = (curr["value"] / prev["value"]) ** (1.0 / months_between) - 1.0
+        # Most recent pair: weight 1.0; each step back halves the weight.
+        # Sum of weights for n pairs: 1 + 0.5 + 0.25 + … converges to 2.
+        weight = 0.5 ** (len(ordered) - 1 - i)
+        pairs.append((monthly_rate, weight))
+
+    if not pairs:
+        return None
+    return sum(r * w for r, w in pairs) / sum(w for _, w in pairs)
+
+
+def _damped_compound_factor(monthly_rate: float, months_beyond: int) -> float:
+    """Compound growth over `months_beyond` with Gardner-McKenzie damping.
+
+    Each successive month applies PROJ_DAMPING^(h-1) of the trend, so the
+    projection slope decays rather than compounding flat. Reduces to standard
+    compounding when PROJ_DAMPING == 1.0, and to flat when monthly_rate == 0.
+    """
+    factor = 1.0
+    for h in range(1, months_beyond + 1):
+        damped_rate = monthly_rate * (PROJ_DAMPING ** (h - 1))
+        factor *= 1.0 + damped_rate
+    return factor
+
+
 def _project_forward(points: list[dict], target_date: date) -> float:
     """Extrapolate a CPI index value forward past the last observed bimonthly point.
 
-    Uses the *compound* monthly rate derived from the last two observed Honolulu
-    bimonthly points (typically 2 months apart). We then multiply the latest
-    observed index by (1 + monthly_rate)**(months_beyond) — a linear-trend
-    projection that collapses to flat when the series is flat, but honestly
-    carries momentum when prices are still moving.
+    Uses a *recency-weighted* compound monthly rate derived from the last few
+    observed Honolulu bimonthly points, then applies Holt damped-trend
+    compounding (Gardner & McKenzie 1985) so the projected slope decays as the
+    horizon lengthens. With only two points this collapses to the original
+    single-pair compound rate — preserving the existing test contract.
+
+    Rationale: Honolulu CPI is bimonthly and noisy. A pure 2-point trend
+    chases the latest print; the smoothed-rate variant honours momentum
+    while diluting one-off spikes. Damping caps the open-ended risk of
+    compounding any positive trend forever — the empirical literature
+    (Hyndman & Athanasopoulos 2018; Cleveland Fed WP 2406 on inflation
+    nowcasting) consistently finds damped trends out-of-sample-beat
+    undamped ones for short horizons on noisy macro series.
 
     Caller must ensure *target_date* is strictly past the latest observed
     point. Returns the projected index value.
@@ -63,18 +134,15 @@ def _project_forward(points: list[dict], target_date: date) -> float:
         # Defensive: caller should have screened exact / past-bracketed cases.
         return float(latest["value"])
 
-    prev = ordered[-2]
-    prev_year, prev_month = prev["year"], int(prev["period"][1:])
-    months_between = (latest_year - prev_year) * 12 + (latest_month - prev_month)
-    if months_between <= 0 or prev["value"] <= 0:
+    monthly_rate = _smoothed_monthly_rate(ordered)
+    if monthly_rate is None:
         return float(latest["value"])
 
-    # Compound growth per month, then project forward. Cap the per-period
-    # rate at ±0.0189/month (~±25% annualized) to stop a single noisy bimonthly
-    # print from compounding into an unrealistic extrapolation.
-    monthly_rate = (latest["value"] / prev["value"]) ** (1.0 / months_between) - 1.0
-    monthly_rate = max(min(monthly_rate, 0.0189), -0.0189)
-    return float(latest["value"] * (1.0 + monthly_rate) ** months_beyond)
+    # Cap the per-period rate at ±0.0189/month (~±25% annualized) to stop a
+    # single noisy bimonthly print from compounding into an unrealistic
+    # extrapolation, then apply damped compounding over the horizon.
+    monthly_rate = max(min(monthly_rate, PROJ_MONTHLY_CAP), -PROJ_MONTHLY_CAP)
+    return float(latest["value"] * _damped_compound_factor(monthly_rate, months_beyond))
 
 
 def _value_at(

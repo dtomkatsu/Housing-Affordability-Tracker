@@ -123,6 +123,44 @@ def fetch_bls_food_cpi(start_year: int, end_year: int) -> list[dict] | None:
 # CPI-driven projections in this repo share the same momentum ceiling.
 _PROJ_MONTHLY_CAP = 0.0189
 
+# Damped-trend factor (Gardner & McKenzie 1985). Each successive forecast
+# month applies PROJ_DAMPING^(h-1) of the latest momentum, so the slope
+# decays rather than compounding flat. Mirrors price_adjuster.PROJ_DAMPING.
+_PROJ_DAMPING = 0.92
+
+
+def _smoothed_monthly_rate(ordered: list[dict]) -> float | None:
+    """Recency-weighted geometric mean of pairwise monthly growth rates.
+
+    Same logic as price_adjuster._smoothed_monthly_rate, but ordered points
+    here use {year, month} (TFP's own shape) rather than the BLS
+    {year, period:'MNN'} shape. With exactly 2 points this returns the
+    single pairwise rate — preserving the previous behaviour and existing
+    test contract. With 3+ points it dilutes one-off bimonthly spikes.
+    """
+    pairs: list[tuple[float, float]] = []
+    for i in range(1, len(ordered)):
+        prev = ordered[i - 1]
+        curr = ordered[i]
+        months_between = (curr["year"] - prev["year"]) * 12 + (curr["month"] - prev["month"])
+        if months_between <= 0 or prev["value"] <= 0:
+            continue
+        monthly_rate = (curr["value"] / prev["value"]) ** (1.0 / months_between) - 1.0
+        weight = 0.5 ** (len(ordered) - 1 - i)
+        pairs.append((monthly_rate, weight))
+    if not pairs:
+        return None
+    return sum(r * w for r, w in pairs) / sum(w for _, w in pairs)
+
+
+def _damped_compound_factor(monthly_rate: float, months_beyond: int) -> float:
+    """Compound growth over months_beyond with Gardner-McKenzie damping."""
+    factor = 1.0
+    for h in range(1, months_beyond + 1):
+        damped_rate = monthly_rate * (_PROJ_DAMPING ** (h - 1))
+        factor *= 1.0 + damped_rate
+    return factor
+
 
 def _cpi_value_for(points: list[dict], year: int, month: int) -> float | None:
     """Return the CPI value at (year, month).
@@ -130,9 +168,9 @@ def _cpi_value_for(points: list[dict], year: int, month: int) -> float | None:
     If the exact (year, month) is missing — common for bimonthly Honolulu CPI
     where data lands only in odd months — interpolate linearly between the
     bracketing observations. If the target is *past* the latest observation,
-    forward-project using the compound monthly rate from the last two points
-    (capped at ±_PROJ_MONTHLY_CAP/month). Returns None if the series has no
-    points at all.
+    forward-project using a recency-weighted compound monthly rate with
+    Gardner-McKenzie damped trend (capped at ±_PROJ_MONTHLY_CAP/month).
+    Returns None if the series has no points at all.
 
     The previous version returned the nearest *earlier* observation, which
     silently flat-lined any reference month past the latest BLS print. That
@@ -179,14 +217,14 @@ def _cpi_value_for(points: list[dict], year: int, month: int) -> float | None:
     # Target is past the latest observation — forward-project.
     if len(ordered) < 2 or before["value"] <= 0:
         return before["value"]
-    prev = ordered[-2]
-    months_between = (before["year"] - prev["year"]) * 12 + (before["month"] - prev["month"])
-    months_beyond  = (year - before["year"]) * 12 + (month - before["month"])
-    if months_between <= 0 or prev["value"] <= 0 or months_beyond <= 0:
+    months_beyond = (year - before["year"]) * 12 + (month - before["month"])
+    if months_beyond <= 0:
         return before["value"]
-    monthly_rate = (before["value"] / prev["value"]) ** (1.0 / months_between) - 1.0
+    monthly_rate = _smoothed_monthly_rate(ordered)
+    if monthly_rate is None:
+        return before["value"]
     monthly_rate = max(min(monthly_rate, _PROJ_MONTHLY_CAP), -_PROJ_MONTHLY_CAP)
-    return before["value"] * (1.0 + monthly_rate) ** months_beyond
+    return before["value"] * _damped_compound_factor(monthly_rate, months_beyond)
 
 
 def reference_month(today: date | None = None) -> tuple[int, int]:

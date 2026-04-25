@@ -154,9 +154,9 @@ function renderAffordabilityChart() {
                         <div class="bar-label">${county}</div>
                         <div class="bar-container">
                             <div class="bar-fill" style="width: ${affordIndex}%; background: ${
-                                affordIndex >= 80 ? 'linear-gradient(90deg, #10B981 0%, #34D399 100%)' :
-                                affordIndex >= 60 ? 'linear-gradient(90deg, #F59E0B 0%, #FBBF24 100%)' :
-                                'linear-gradient(90deg, #EF4444 0%, #F87171 100%)'
+                                affordIndex >= 80 ? 'linear-gradient(90deg, var(--seafoam-700) 0%, var(--seafoam-500) 100%)' :
+                                affordIndex >= 60 ? 'linear-gradient(90deg, var(--coral-300) 0%, #ecb38a 100%)' :
+                                'linear-gradient(90deg, var(--coral-500) 0%, var(--coral-300) 100%)'
                             }; animation-delay: ${index * 0.15}s">
                                 <span class="bar-value">${affordIndex}</span>
                             </div>

@@ -78,7 +78,12 @@
   }
 
   header {
-    background: var(--ocean);
+    /* Soft vertical gradient: deep ocean fading to standard ocean. Reads
+       as a single coastal hue rather than a flat block, and gives the
+       seafoam chips at the top of the page a touch more dimensional contrast. */
+    background:
+      radial-gradient(ellipse 90% 60% at 50% -20%, rgba(63, 196, 160, 0.10), transparent 70%),
+      linear-gradient(180deg, var(--ocean-900) 0%, var(--ocean) 65%);
     color: white;
     padding: 1.1rem 0 2.6rem;
     position: relative;
@@ -159,7 +164,18 @@
     font-size: 11.5px;
     letter-spacing: 0.04em;
     cursor: help;
+    transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
   }
+  .header-inflation-chip:hover {
+    background: rgba(255,255,255,0.14);
+    border-color: rgba(255,255,255,0.32);
+  }
+  /* Soft tinted glow that picks up the headline-inflation severity. The
+     glow lives on the chip rather than the value so the underline-on-hover
+     glossary affordance stays unambiguous. */
+  .header-inflation-chip:has(.is-low)  { box-shadow: 0 0 0 0 rgba(63, 196, 160, 0.0), inset 0 0 12px rgba(109, 220, 187, 0.10); }
+  .header-inflation-chip:has(.is-mid)  { box-shadow: inset 0 0 12px rgba(245, 196, 167, 0.14); }
+  .header-inflation-chip:has(.is-hi)   { box-shadow: inset 0 0 12px rgba(241, 155, 134, 0.18); }
   .header-inflation-lbl {
     color: rgba(255,255,255,0.7);
     text-transform: uppercase;
@@ -244,8 +260,12 @@
     font-family: inherit;
     letter-spacing: 0.005em;
   }
-  .county-popover-item:hover { background: var(--sky); color: var(--ocean); }
+  .county-popover-item {
+    transition: background 0.12s ease, color 0.12s ease;
+  }
+  .county-popover-item:hover { background: var(--seafoam-100); color: var(--seafoam-700); }
   .county-popover-item.is-active { background: var(--ocean); color: white; font-weight: 500; }
+  .county-popover-item.is-active:hover { background: var(--ocean-700); color: white; }
 
   /* Summary strip (white KPI row between hero and tabs) */
   .summary-strip {
@@ -358,6 +378,21 @@
     text-transform: uppercase;
     color: var(--text-lt);
     margin: 2.5rem 0 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  /* Tiny seafoam accent on each section label — same coastal tint that runs
+     through bar fills and the masthead rule, used here as a quiet wayfinding
+     marker so the eye can scan section breaks without a heavier divider. */
+  .section-label::before {
+    content: '';
+    display: inline-block;
+    width: 18px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--seafoam-500), var(--seafoam-700));
+    border-radius: 2px;
+    flex-shrink: 0;
   }
 
   /* Top-level (primary) tabs — Housing / Goods & Services */
@@ -527,6 +562,10 @@
     border-radius: 16px;
     padding: 20px 22px;
     margin-bottom: 1.25rem;
+    /* Soft, ocean-tinted elevation — keeps the flat aesthetic while lifting
+       the card off the warm sand background just enough to feel deliberate. */
+    box-shadow: 0 1px 2px rgba(7, 56, 74, 0.04),
+                0 6px 18px rgba(7, 56, 74, 0.04);
   }
 
   /* Editorial narrative card (prose + coverage bar + status chips) */
@@ -536,6 +575,8 @@
     border-radius: 16px;
     padding: 22px 24px;
     margin-bottom: 1.25rem;
+    box-shadow: 0 1px 2px rgba(7, 56, 74, 0.04),
+                0 6px 18px rgba(7, 56, 74, 0.04);
   }
   .narrative-eyebrow {
     font-size: 11px;
