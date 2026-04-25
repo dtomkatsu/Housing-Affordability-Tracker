@@ -20,6 +20,7 @@ fresh ACS vintage drops, this is the file to read before touching numbers.
 | Thrifty Food Plan | USDA CNPP | Alaska-Hawaii monthly report | monthly | `tfp-updater.py` |
 | Gas prices | AAA Hawaii | statewide average | daily | `gas-price-updater.py` |
 | Grocery basket | In-house scrape, CPI-adjusted | `pipelines/grocery/` | ad-hoc + monthly CPI roll | `grocery-price-updater.py` |
+| Typical-household FAH spending (side-stat) | BLS CE PUMD interview survey | Honolulu PSU `S49A`–`S49D`, FINLWT21-weighted, 5y pool | annual, target October | `pipelines/grocery/scripts/refresh_ce_pumd.py` |
 
 The `CUURS49A*` prefix is **Honolulu Urban Hawaii, not seasonally adjusted**.
 There is no neighbor-island CPI — every CPI adjustment applied to Maui,
@@ -185,6 +186,36 @@ Fallback chain:
   as proxy, analogous to how Honolulu BLS rent CPI is already applied
   statewide
 
+### Walk-forward backtest
+
+`backtests/rent_blend_walkforward.py` runs a Cleveland-Fed-style
+pseudo-out-of-sample evaluation of the 70/30 weight. For each anchor
+T ∈ {2022-04, 2022-10, 2023-04, 2023-10, 2024-04} the harness:
+
+1. Pulls BLS rent CPI, ZORI, and the ACS 5-year vintage that was actually
+   live at T (vintage_year+1 December release rule).
+2. Runs `blend_rent_nowcast()` to project T+12 rent.
+3. Compares the projection against realized rent at T+12 under two
+   ground-truth views:
+   - **Blend-truth** = `(BLS_T+12 + ZORI_T+12) / 2` (symmetric)
+   - **BLS-only-truth** = `BLS_T+12` (anchored to the slow-moving series
+     that already lags ~12 months, so BLS_T+12 ≈ true rent at T)
+
+5 anchors × 5 regions = 25 cells per scheme. Five schemes evaluated:
+BLS-only, 70/30, 60/40, 50/50, ZORI-only. Results in
+`backtests/results/rent_blend_2026-04.md`.
+
+The current results (April 2026 run): under blend-truth ZORI-only "wins"
+on MAPE but the metric is mechanically biased toward whichever input
+dominates the ground truth; under BLS-only-truth the live 70/30 weight
+sits at ~3.3% MAPE versus 2.9% for 50/50 — a small enough gap that the
+existing 70/30 weight remains defensible. No auto-tuning of the live
+constant; weight changes go through a separate review.
+
+Refresh cadence: rerun annually after a new ACS vintage drops, then
+again any time the blend logic changes. Cached BLS/ACS responses live in
+`backtests/cache/` so reruns are deterministic.
+
 ---
 
 ## Grocery basket: effective price
@@ -200,6 +231,132 @@ Published prices are the all-in consumer cost:
 
 The dashboard's `basketWithTax` field is the post-GET, post-weighting number;
 `basketPretax` is the pre-GET subtotal for audit.
+
+---
+
+## BLS CE PUMD "typical household" side-statistic
+
+### What this is
+
+`pipelines/grocery/data/pumd_honolulu_monthly.json` holds a **separate**
+benchmark of average monthly food-at-home (FAH) spending per Honolulu
+household, derived from the BLS Consumer Expenditure Public Use Microdata
+(CE PUMD) interview-survey microdata. The dashboard's grocery card surfaces
+this as a "Typical: $X/mo per BLS CE PUMD" line under the existing
+`monthlyFamily4` derived from our receipt basket.
+
+**This is a side-statistic only.** It does **not** drive any per-item
+pricing, does **not** modify the receipt basket, and does **not** change
+the headline `basketWithTax` or `monthlyFamily4` numbers. It exists so
+readers can compare the basket-derived family-of-4 cost against an
+independently measured household spending figure.
+
+### Why it's separate from the basket
+
+- **Receipts** measure *prices* — what a specific item costs at a specific
+  store on a specific date. Per-item, per-category, per-county granularity.
+- **PUMD** measures *spending* — what households actually pay for groceries
+  per month, including substitution, brand choice, and basket composition
+  effects we can't capture in a fixed basket. PSU resolution: only Urban
+  Honolulu is identifiable in PUMD.
+
+The two answer different questions, and we surface both rather than
+calibrating one against the other.
+
+### How the figures are derived
+
+`pipelines/grocery/scripts/refresh_ce_pumd.py` orchestrates a full
+microdata refresh:
+
+1. **Download** the 5 most recent annual interview-survey ZIPs from
+   `https://www.bls.gov/cex/pumd/data/comma/intrvw{yy}.zip` (default
+   2019–2023; ~30 MB each, written to `data/pumd_raw/` which is
+   git-ignored).
+2. **Filter** FMLI rows to PSU codes for Urban Honolulu (`S49A`–`S49D`).
+3. **Aggregate** food-at-home directly from MTBI (per BLS errata for
+   2023+, the `FDHOMEPQ`/`FDHOMECQ` summary columns were stripped):
+   sum UCCs whose hierarchical-grouping code starts with `19` and excludes
+   `1909*` (groceries on trips).
+4. **Per-household monthly FAH** = sum(MTBI FAH UCCs) / 3 (each FMLI row
+   is a quarterly interview).
+5. **Inflation-adjust** each year to the latest period via the Honolulu
+   food CPI series `CUURS49ASAF11`.
+6. **Apply CE-recommended `FINLWT21` weights** for population-representative
+   means; pool 5 years to mitigate small Honolulu PSU sample size
+   (~50–200 households/quarter; 5y pool gives ~1.5–4k Honolulu HH-quarters).
+7. **Stratify** by family size: 1, 2, 3, 4+ buckets.
+
+### Neighbor-island projection
+
+PUMD only resolves to Honolulu; Maui, Hawaii, and Kauai household samples
+don't exist. We project the Honolulu PUMD value to the neighbor islands
+using the **receipt-derived basket gradient**:
+
+```
+county_factor[c]   = basket_total[c] / basket_total[Honolulu]
+pumd_estimate[c]   = pumd_honolulu × county_factor[c]
+state_estimate     = population-weighted mean over the four counties
+```
+
+This preserves PUMD as the **absolute-level anchor** (real measured
+Honolulu spending) and the receipts as the **spatial gradient** (real
+measured price gaps across counties). Both inputs are real data; the
+combination is internally consistent.
+
+### Refresh cadence
+
+- **Timing**: annually, target October. BLS releases each PUMD year ~9–12
+  months after collection ends; new full-year data typically lands in
+  September–October.
+- **Window**: each refresh shifts the 5-year pool forward by one year.
+  E.g. the 2026 refresh uses 2020–2024 once 2024 is published.
+- **Command**:
+  ```bash
+  python3 pipelines/grocery/scripts/refresh_ce_pumd.py --years 2020 2021 2022 2023 2024
+  ```
+  This downloads ~150 MB of raw data, runs the extractor, and overwrites
+  `pumd_honolulu_monthly.json`.
+
+### Bootstrap-vs-microdata distinction
+
+The current `pumd_honolulu_monthly.json` carries
+`method: "bootstrap_from_published_aggregates_pending_microdata_refresh"`.
+That means the figures were derived from BLS CES 2022-23 published
+Honolulu MSA aggregates (Table 3204 metro-area patterns), inflated to
+2024-12 via the Honolulu food CPI, and projected across counties via the
+basket gradient.
+
+The bootstrap exists because the BLS PUMD ZIP endpoint is blocked from
+this development environment by Akamai access controls. Running the
+refresh script from an unblocked network (residential, etc.) will:
+
+- Replace `method` with `5y_pooled_finlwt21_inflated_to_as_of`
+- Populate `n_households_total` with the pooled sample count
+- Populate `honolulu_ci_95_overall` and `honolulu_ci_95_family4` with
+  bootstrap 95% confidence intervals from the FINLWT21 weighted means
+
+The pipeline tolerates either form: the JSON's `byCounty` numbers feed the
+dashboard tile regardless of method, and the methodology popover annotates
+the source.
+
+### Sample-size caveats
+
+- Honolulu PSU draws ~50–200 households per quarterly interview wave.
+- 5-year pooling gives ~1,500–4,000 HH-quarters of FAH observations — wide
+  enough for a single Honolulu mean but **not** enough to support fine
+  cross-tabulation (e.g. family size × dwelling type × income tertile).
+- Family-size buckets (1 / 2 / 3 / 4+) are usable; deeper splits would
+  shrink CIs past the point of usefulness.
+- Neighbor-island projections inherit the basket gradient's uncertainty —
+  treat them as directional rather than precise.
+
+### Failure modes
+
+- Missing JSON → grocery pipeline logs and continues; "Typical" line is
+  omitted from the card. No exception, no broken render.
+- Corrupt JSON → same graceful fallback.
+- Refresh script can't reach BLS → bootstrap stays in place; the file's
+  `note` field documents the situation.
 
 ---
 

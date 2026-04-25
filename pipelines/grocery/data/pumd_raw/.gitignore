@@ -1,0 +1,4 @@
+# Raw PUMD interview-survey extracts (~30 MB/year × 5 years = ~150 MB).
+# These are downloaded fresh by `scripts/refresh_ce_pumd.py`; never commit.
+*
+!.gitignore

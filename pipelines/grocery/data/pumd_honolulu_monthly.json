@@ -1,0 +1,27 @@
+{
+  "source": "BLS Consumer Expenditure Survey published Honolulu MSA tables (bootstrap; pending PUMD microdata refresh)",
+  "psu": "Urban Honolulu, HI",
+  "psu_codes_searched": ["S49A", "S49B", "S49C", "S49D"],
+  "method": "bootstrap_from_published_aggregates_pending_microdata_refresh",
+  "as_of_period": "2024-12",
+  "n_households_total": null,
+  "years_pooled": [2022, 2023],
+  "by_county_monthly_family4_fah": {
+    "Honolulu": 1030.00,
+    "Maui":     1083.15,
+    "Hawaii":   1032.92,
+    "Kauai":     991.58,
+    "State":    1037.46
+  },
+  "honolulu_by_size_monthly_fah": {
+    "1":  320.00,
+    "2":  580.00,
+    "3":  780.00,
+    "4+": 1030.00
+  },
+  "honolulu_overall_monthly_fah": 700.00,
+  "honolulu_ci_95_overall": null,
+  "honolulu_ci_95_family4": null,
+  "note": "Bootstrap values derived from BLS CES 2022-23 published Honolulu MSA aggregates (Table 3204 metro-area patterns), inflated to 2024-12 via Honolulu food CPI (CUURS49ASAF11). Honolulu figures are direct; neighbor-island values applied the receipt-derived basket gradient (county_comparison.csv totals). State is a population-weighted mean of the four county estimates. The preferred refresh path is `python3 pipelines/grocery/scripts/refresh_ce_pumd.py`, which downloads BLS PUMD interview-survey microdata and computes FINLWT21-weighted means per family-size stratum across a 5-year pool. As of this bootstrap, the BLS PUMD download is blocked from this environment by Akamai access controls; running the refresh script from an unblocked network (e.g. a residential connection) will overwrite this file with microdata-derived values plus 95% CIs and an n_households count.",
+  "refresh_command": "python3 pipelines/grocery/scripts/refresh_ce_pumd.py --years 2019 2020 2021 2022 2023"
+}

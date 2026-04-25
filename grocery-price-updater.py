@@ -42,6 +42,7 @@ GROCERY_PIPELINE_ROOT = PROJECT_ROOT / "pipelines" / "grocery"
 HOUSEHOLD_CSV = GROCERY_PIPELINE_ROOT / "data" / "output" / "household_estimates.csv"
 COUNTY_CSV    = GROCERY_PIPELINE_ROOT / "data" / "output" / "county_comparison.csv"
 CPI_STATUS_JSON = GROCERY_PIPELINE_ROOT / "data" / "output" / "cpi_status.json"
+PUMD_JSON     = GROCERY_PIPELINE_ROOT / "data" / "pumd_honolulu_monthly.json"
 
 DEFAULT_FILES = [
     PROJECT_ROOT / "squarespace-single-file.html",
@@ -238,6 +239,31 @@ def load_cpi_status() -> dict:
         return {}
 
 
+def load_pumd_data() -> dict:
+    """Load the BLS CE PUMD side-statistic JSON written by refresh_ce_pumd.py.
+
+    Missing or malformed → empty dict (HTML "Typical:" line will be omitted
+    gracefully). Pipeline keeps running.
+    """
+    if not PUMD_JSON.exists():
+        return {}
+    try:
+        d = json.loads(PUMD_JSON.read_text())
+    except (json.JSONDecodeError, OSError):
+        print(f"  WARNING: {PUMD_JSON} malformed; skipping PUMD overlay.")
+        return {}
+    by_county = d.get("by_county_monthly_family4_fah") or {}
+    if not by_county:
+        return {}
+    return {
+        "byCounty":   by_county,
+        "source":     d.get("source", "BLS CE PUMD"),
+        "asOf":       d.get("as_of_period", ""),
+        "method":     d.get("method", ""),
+        "yearsPooled": d.get("years_pooled", []),
+    }
+
+
 def build_grocery_data() -> dict:
     hh_by_cty, pretax, withtax, last_date = load_household_estimates()
     items, cat_totals = load_county_items()
@@ -247,6 +273,8 @@ def build_grocery_data() -> dict:
     # When projected, surface "latest observed" CPI period as originalPeriod so
     # the HTML period-tag formatter can render "Apr 2026 proj. (from 2026-02)".
     original_period = cpi_status.get("latest_actual_period") if is_projected else None
+
+    pumd = load_pumd_data()
 
     state_pretax, state_withtax, state_hh, state_cats, state_items = \
         compute_statewide(pretax, withtax, hh_by_cty, cat_totals, items)
@@ -292,6 +320,18 @@ def build_grocery_data() -> dict:
             "categories":          {k: round(v, 2) for k, v in cats.items()},
             "topItems":            top,
         }
+
+        # BLS CE PUMD side-statistic — actual measured monthly food-at-home
+        # spending for "typical" households. Renders the "Typical: $Y/mo per
+        # BLS CE PUMD" line in the county card. Optional: omitted if the
+        # PUMD JSON is missing or empty.
+        if pumd and cty in pumd["byCounty"]:
+            out[cty]["pumd"] = {
+                "monthlyFamily4": round(float(pumd["byCounty"][cty])),
+                "source":         pumd["source"],
+                "asOf":           pumd["asOf"],
+                "method":         pumd["method"],
+            }
     return out
 
 
